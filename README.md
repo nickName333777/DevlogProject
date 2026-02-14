@@ -20,10 +20,8 @@ https://github.com/user-attachments/assets/0255a6f4-1a4e-4262-8b37-7d327bf8c04b
 - 프로젝트 다운로드/실행시 유의사항:
 1. 첨부된 config_properties_example.txt 에서 요구되는 유효한 키 값들이 설정된 파일이 다음 경로: Devlog/src/main/resources/config.properties 로 저장되어야 함.
 
-<br>
 2. Project의 Java Compiler 설정에서 methed parameter 저장(via reflection)이 아래 처럼 활성화 되어야 함.
 <img width="735" height="730" alt="JavaCompilerMethodParaOptionCheck" src="https://github.com/user-attachments/assets/3c463ee1-8def-458e-9865-a5c85603fca9" />
 
-<br>
 3. 카카오 소셜로그인과 챗봇구현을 위한 키 설정은 아래와 같이 Run configurations의 환경변수 탭에 환경변수로 설정한다.
 <img width="1336" height="868" alt="image" src="https://github.com/user-attachments/assets/e930b6e6-a46d-4bf7-9279-5492951d588f" />
