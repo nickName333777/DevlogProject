@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.devlog.project.board.ITnews.mapper.ITnewsMapper">
+
+	<!-- 뉴스 목록 조회 -->
+	<select id="selectITnewsList" resultType="ITnewsDTO">
+	    SELECT 
+	        B.BOARD_NO,
+	        B.BOARD_TITLE,
+	        B.BOARD_CONTENT,
+	        B.BOARD_COUNT,
+	        B.BOARD_CODE,
+	        I.IMG_PATH,
+	        I.IMG_RENAME,
+	        TO_CHAR(B.B_CREATE_DATE, 'YYYY-MM-DD') AS B_CREATE_DATE
+	    FROM BOARD B
+	    LEFT JOIN BOARD_IMG I ON B.BOARD_NO = I.BOARD_NO
+	    LEFT JOIN BOARDTYPE T ON B.BOARD_CODE = T.BOARD_CODE 
+	    WHERE B.BOARD_DEL_FL = 'N'
+	      AND T.PARENTS_BOARD_CODE = 2
+	    
+	    <if test="boardCode != null and boardCode != 0">
+	        AND B.BOARD_CODE = #{boardCode} </if>
+	    
+	    ORDER BY B.BOARD_NO DESC
+	</select>
+
+	<!-- 뉴스 상세 조회 -->
+	<select id="selectNewsDetail" resultType="ITnewsDTO">
+	    SELECT
+	        B.BOARD_NO,
+	        B.BOARD_TITLE,
+	        B.BOARD_CONTENT,
+	        B.BOARD_COUNT,
+	        B.NEWS_REPORTER,
+	        B.MEMBER_NO,  TO_CHAR(B.B_CREATE_DATE, 'YYYY-MM-DD') AS B_CREATE_DATE,
+	        I.IMG_PATH,
+	        I.IMG_RENAME
+	    FROM BOARD B
+	    LEFT JOIN BOARD_IMG I ON (B.BOARD_NO = I.BOARD_NO)
+	    WHERE B.BOARD_NO = #{boardNo} AND B.BOARD_DEL_FL = 'N'
+	</select>
+	
+	<!-- 좋아요 여부 확인 -->
+	<select id="newsLikeCheck" resultType="_int">
+		SELECT COUNT(*) FROM BOARD_LIKE
+		WHERE BOARD_NO = #{boardNo}
+		AND MEMBER_NO = #{memberNo}
+	</select>
+
+	<!--조회수 증가-->
+	<update id="updateReadCount">
+		UPDATE BOARD SET
+		BOARD_COUNT = BOARD_COUNT + 1
+		WHERE BOARD_NO = ${boardNo}
+	</update>
+
+
+	<!-- 좋아요 테이블 삽입 -->
+	<insert id="insertBoardLike">
+		INSERT INTO BOARD_LIKE VALUES(${boardNo}, ${memberNo})
+	</insert>
+
+	<!-- 좋아요 테이블 삭제 -->
+	<delete id="deleteBoardLike">
+		DELETE FROM BOARD_LIKE
+		WHERE BOARD_NO = ${boardNo}
+		AND MEMBER_NO = ${memberNo}
+	</delete>
+
+	<!-- 좋아요 수 조회 -->
+	<select id="countBoardLike" resultType="_int">
+		SELECT COUNT(*) FROM BOARD_LIKE WHERE BOARD_NO = ${boardNo}
+	</select>
+
+
+	<!-- 게시글 삭제 -->
+	<update id="boardDelete">
+		UPDATE BOARD SET
+		BOARD_DEL_FL = 'Y'
+		WHERE
+		BOARD_NO = ${boardNo}
+	</update>
+
+
+	<update id="boardUpdate" parameterType="ITnewsDTO">
+    UPDATE BOARD SET
+        BOARD_TITLE   = #{boardTitle},
+        BOARD_CONTENT = #{boardContent},
+        NEWS_REPORTER = #{newsReporter},
+        BOARD_CODE    = #{boardCode},
+        B_UPDATE_DATE = SYSDATE
+      WHERE BOARD_NO = #{boardNo}
+	</update>
+
+	<update id="imageUpdate" parameterType="ITnewsDTO">
+	    UPDATE BOARD_IMG SET
+	        IMG_PATH   = #{imgPath},
+	        IMG_RENAME = #{imgRename}
+	    WHERE BOARD_NO = #{boardNo}
+	</update>
+	
+	<insert id="imageInsert" parameterType="ITnewsDTO">
+	    INSERT INTO BOARD_IMG (IMG_NO, IMG_PATH, IMG_RENAME, BOARD_NO, IMG_ORDER)
+	    VALUES (SEQ_IMG_NO.NEXTVAL, #{imgPath}, #{imgRename}, #{boardNo}, 0)
+	</insert>
+	
+	<!-- 스크랩 확인 -->
+	<select id="checkScrap" resultType="_int">
+    SELECT COUNT(*) FROM USER_SCRAP
+    WHERE MEMBER_NO = #{memberNo}
+    AND TARGET_NO = #{targetNo}
+    AND TYPE = #{type}
+	</select>
+	
+	<insert id="insertScrap">
+	    INSERT INTO USER_SCRAP (SCRAP_NO, MEMBER_NO, TYPE, TARGET_NO)
+	    VALUES (SEQ_SCRAP_NO.NEXTVAL, #{memberNo}, #{type}, #{targetNo})
+	</insert>
+	
+	<delete id="deleteScrap">
+	    DELETE FROM USER_SCRAP
+	    WHERE MEMBER_NO = #{memberNo}
+	    AND TARGET_NO = #{targetNo}
+	    AND TYPE = #{type}
+	</delete>
+	
+	
+
+</mapper>

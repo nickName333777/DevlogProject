@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.devlog.project.notification.mapper.NotiMapper">
+	
+	<select id="selectBoardCode" resultType="_int">
+		
+	    SELECT BOARD_CODE
+	    FROM BOARD
+	    WHERE BOARD_NO = ${boardNo}
+		
+		
+	</select>
+
+	<select id="selectBoardNo" resultType="long">
+		SELECT BOARD_NO
+		FROM "COMMENT"
+		WHERE COMMENT_NO = ${targetId}
+		
+	</select>
+</mapper>

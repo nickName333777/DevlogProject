@@ -1,0 +1,112 @@
+plugins {
+   id 'java'
+   id 'org.springframework.boot' version '3.5.7'
+   id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.devlog'
+version = '0.0.1-SNAPSHOT'
+description = 'Devlog Team Project'
+
+java {
+   toolchain {
+      languageVersion = JavaLanguageVersion.of(17)
+   }
+}
+
+tasks.withType(JavaCompile) { 
+	options.compilerArgs += "-parameters" 
+}
+
+configurations {
+   compileOnly {
+      extendsFrom annotationProcessor
+   }
+}
+
+repositories {
+   mavenCentral()
+}
+
+ext {
+   set('springAiVersion', "1.1.0")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // JDBC (MyBatis나 기본 DataSource에 필요)
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    // Oracle JDBC
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+
+    // MyBatis
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+
+    // Elasticsearch
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
+    // Logstash
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+    // Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // ConfigurationProperties metadata
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // DevTools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Tests
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    
+    // Chatbot
+   implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+   
+   // 오탈자 검출
+   implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+   
+   // Spring Security, 2025/12/20
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+   // JWT(jjwt), 2025/12/20
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'   
+    
+    // additional: DTO validation(선택)&test, 2025/12/20
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.security:spring-security-test'  
+    
+    
+    // 페이지 헬퍼
+    implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:2.1.1'  
+    
+}
+
+dependencyManagement {
+   imports {
+      mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+   }
+}
+
+
+tasks.named('test') {
+   useJUnitPlatform()
+}

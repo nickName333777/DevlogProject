@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 뉴스 검수</title>
+  <link rel="stylesheet" href="../../../static/css/board/ITnews/ITnewsWrite.css">
+</head>
+
+<body>
+  <form action="/admin/news/register" method="POST" enctype="multipart/form-data">
+
+    <div class="news-header-edit">
+      <div class="image-upload-box">
+        <label for="main-image">
+          <div class="upload-icon">+</div>
+          <span>대표 이미지 미리보기/변경</span>
+        </label>
+        <input type="file" id="main-image" name="imageFile" hidden>
+        <input type="hidden" name="crawlImgUrl" value="https://t1.daumcdn.net/news/...">
+      </div>
+    </div>
+
+    <section class="news-form">
+      <div class="category-wrapper">
+        <select name="boardCode" class="select-category" required>
+          <option value="">카테고리 선택</option>
+          <option value="21">AI</option>
+          <option value="22">테크</option>
+          <option value="23">IT기업</option>
+          <option value="24">게임</option>
+          <option value="25">과학</option>
+          <option value="26">우주</option>
+        </select>
+      </div>
+
+      <input type="text" name="boardTitle" class="input-title" placeholder="제목을 입력하세요" value="[AI는 지금] 변우석 효과 통할까...">
+
+      <div class="info-row">
+        <input type="text" name="newsReporter" class="input-author" placeholder="기자명" value="장유미 기자">
+
+        <input type="date" name="createDate" class="input-date">
+      </div>
+
+      <hr class="divider">
+
+      <textarea name="boardContent" class="input-content" placeholder="뉴스 내용을 검수하세요...">
+(지디넷코리아=장유미 기자)글로벌 시장에서 오픈AI '챗GPT'의 왕좌를 위협 중인 구글이...
+            </textarea>
+    </section>
+
+    <div class="button-area">
+      <button type="button" class="cancle-btn">취소</button>
+      <button type="submit" class="submit-btn">최종 등록하기</button>
+    </div>
+  </form>
+
+  <script>
+    /* 이미지 업로드 시 미리보기 자바스크립트 등 추가 가능 */
+  </script>
+</body>
+
+</html>

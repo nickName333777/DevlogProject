@@ -1,0 +1,425 @@
+/* 기본 설정 */
+body {
+    /* background: #fafafa; */
+    background-color: #ffffff;  
+    margin: 0;
+    padding: 0;
+    font-family: 'Pretendard Variable', Arial, Helvetica, sans-serif;
+}
+
+/* header와의 간격벌리기 */
+.top-space-bw-header{
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    margin-bottom: 150px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+/* 상단 타이틀 바 */
+.title-main {
+    background: linear-gradient(
+        to right,
+        rgba(241, 198, 231, 1) 0%,       /* #F1C6E7 불투명도 100% */
+        rgba(241, 198, 231, 0.75) 50%,   /* 50% 위치도 불투명도 75% */
+        rgba(241, 198, 231, 0.75) 50%,   /* 50% 위치 투명도 75% */
+        rgba(241, 198, 231, 0.5) 100%    /* 100% 위치 투명도 50% */
+    );    
+    padding: 22px 22px 22px 120px;
+    /*border-radius: 6px;*/
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    color: #000;
+    font-size: 36px;
+    font-weight: bolder;
+    margin-bottom: 25px;
+}
+
+/* 전체 컨테이너 */
+.container {
+    max-width: 1440px; /* 내용 길이 1440px */
+    margin: 30px auto;
+    padding: 0 10px;
+}
+
+/* 글작성 도우미 */
+.helper-box {
+    display: flex;
+    align-items: center;
+    margin-top: 60px;
+    margin-bottom: 100px;
+    padding: 0px 50px;
+}
+
+.helper-btn {
+    width: 260;
+    height: 60;
+    background: #BD83CE;
+    border: 1px solid #BD83CE;
+    border-radius: 6px;
+    color: white;
+    font-size: 36px;
+    padding: 1px 20px;
+    margin-right: 20px;
+    cursor: pointer;    
+}
+.helper-btn:hover {
+    background-color: #E5B0EA;
+    border: 1px solid #E5B0EA;
+}
+
+/* .ai-select {
+    margin-left: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    font-size: 14px;
+} */
+
+.select-box {
+    position: relative;
+    width: 260;
+    /* height: 60;   */
+
+}
+.select-box select {
+    width: 100%;
+    padding:10px 70px 10px 10px;
+
+    background: #F7E8F6;
+    /* padding: 10px 6px; */
+    border-radius: 6px;
+    /*  */
+    font-size: 32px;
+    font-weight: bolder;
+    /* margin-left: 15px;     */
+
+    appearance: none; /* 기본화살표 숨기기 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+/* 커스텀 화살표 */
+.select-box::after { /* .select-box 요소 뒤에 가상의 요소로 커스텀 화살표 생성: 실제 HTML에는 없지만 화면에는 보임*/
+    content: "";
+    position: absolute;
+    right: 0px;
+    top: 51%;
+    transform: translateY(-50%);
+
+    width: 60px;          /* 화살표-png 크기 */
+    height: 60px;
+    background-image: url("../../../images/board/freeboard/fb_select_SortDown3.png");
+    background-repeat: no-repeat;
+    background-size: contain; /* 또는 cover */
+    pointer-events: none;
+}
+
+
+/* 제목 입력 */
+.title-input {
+    /* width: 100%;
+    height: 55px;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #dcdcdc;
+    font-size: 15px;
+    background: #ffffff; */
+
+    height: 127px;
+    width: 80%; /* 내용 길이 1440px의 80% */
+    margin-left: 110px;
+    padding: 15px 0px 15px 20px;
+    border: 1px solid #CFCFCF;
+    border-radius: 20px;
+    font-size: 36px;
+    /* color: #B4B4B4; */
+    margin-bottom: 60px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* 사진 영역 */
+.photo-header {
+    /* display: flex;
+    justify-content: space-between;
+    margin-top: 20px; */
+
+    width: 80%;
+    margin-left: 130px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;    
+}
+
+.photo-title-spaceholder{
+    width: 600px; /* (preview-img 크기: 200px  ) x preview-img갯수  */
+}
+
+.photo-title {
+    /* font-size: 15px;
+    font-weight: 600; */
+    font-weight: bold;
+    font-size: 36px;    
+
+}
+.photo-max {
+    /* font-size: 12px;
+    color: #777; */
+    font-size: 36px;
+    color: #B4B4B4;
+    margin-right:90px;    
+}
+
+
+/* 사진 업로드 박스 */
+/* 사진 */
+.photo-upload {
+
+    /* width: 200px;
+    height: 200px; */
+    width: 175px;
+    height: 175px;
+    /* margin-left: 10px;
+    margin-top: 20px;    */
+    border: 1px solid #ccc;
+    background: #fbfbfb;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;    
+
+    flex-shrink: 0; /* 부모 컨테이너 공간이 부족해도 이 요소는 크기를 줄이지 않는다 (스크롤 생김)*/
+}
+
+/* .photo-upload:hover {
+    background-color: #F7E8F6;
+} */
+
+.plus {
+    font-size: 50px;
+    font-weight: 100;
+    color: #8E8E8E;
+}
+
+/* 이미지 경고글 */
+.image-warning {
+    font-size: 36px;
+    margin-left: 130px;   
+    margin-top: 35px;
+    color: #B4B4B4;
+
+}
+
+/* 이미지 미리보기(preview-img) + 업로드(photo-upload) */
+/* photo-row vs. photo-section */
+.photo-row { 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    padding-left: 120px;
+}
+
+
+/* .preview-img {
+    object-fit: cover;
+    border-radius: 6px;
+
+    width: 175px;
+    height: 175px;    
+    margin-left: 10px;
+    margin-top: 20px;   
+
+    border-radius: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;      
+} */
+
+/* ===== 사진 업로드 박스: 추가 ===== */
+/* 썸네일 지정 알림 텍스트 */
+.photo-title p{ 
+    color: #B4B4B4;
+    font-size: 24px;
+    padding-left: 40px;
+}
+
+.photo-section {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.photo-upload-area {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-left: 130px;
+    margin-bottom: 10px;
+}
+
+
+.photo-preview {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.preview-img-container {
+    position: relative;
+    /* width: 200px;
+    height: 200px; */
+    width: 175px;
+    height: 175px;    
+    /*  */
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+}
+
+.preview-img {
+    /* width: 200px;
+    height: 200px; */
+    width: 175px;
+    height: 175px;    
+    object-fit: cover;
+    border-radius: 6px;
+    
+    /*  */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* .preview-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+} */
+
+.preview-remove {
+    position: absolute;
+
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background-color: #f74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.preview-remove:hover {
+    background-color: #80392b;
+}
+
+/* 썸네일(대표) 이미지 강조 */
+.preview-img-container.thumbnail {
+    outline: 4px solid #F7A1C4;
+}
+
+.thumbnail-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background-color: #F7A1C4;
+    color: white;
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+
+
+/* 본문 내용: 게시글 내용 입력  */
+.content-box {
+
+    /* width: 100%; */
+    height: 463px;
+    width: 80%;
+    margin-left: 110px;    
+    margin-top: 0px;
+    /* padding: 15px; */
+    padding: 15px 10px;
+    resize: none;
+    border: 1px solid #B4B4B4;
+    border-radius: 20px;
+    font-size: 30px;
+    line-height: 1.4;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);    
+}
+
+/* 글자수 안내 */
+.text-limit {
+    width: 80%;
+    margin-left: 70px;  
+    margin-right: 40px;        
+    text-align: right;
+    margin-top: 5px;
+    font-size: 36px;
+    color: #B4B4B4;    
+}
+
+/* 버튼 */
+.button-box {
+    width: 82%;
+    margin-left: 110px;       
+    /* margin-right: 80px;     */
+    text-align: right;
+    margin-top: 100px;
+    margin-bottom: 200px;
+}
+
+.submit-btn {
+    width: 180px;
+    height: 60px;
+    background: #BD83CE;
+    color: white;
+    padding: 0px 2px;
+    border: none;
+    border-radius: 6px;
+    font-size: 35px;
+    cursor: pointer;    
+}
+.submit-btn:hover {
+    background: #E5B0EA;
+}
+
+.cancel-btn {
+    width: 180px;
+    height: 60px;    
+    background: #BD83CE;
+    color: white;
+    padding: 0px 2px;
+    border: none;
+    border-radius: 6px;
+    font-size: 35px;
+    margin-left: 5px;
+    /* margin-right: 120px; */
+    cursor: pointer;
+}
+.cancel-btn:hover {
+    background: #E5B0EA;
+}
+
+
+#updateText {
+    font-weight: bold;
+    font-size: 36px;
+    margin-left: 130px;    
+}

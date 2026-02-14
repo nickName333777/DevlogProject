@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.devlog.project.myPage.mapper.MyPageMapper">
+	
+	<!-- 내 정보 변경 -->
+    <update id="updateMemberInfo">
+        UPDATE "MEMBER"
+        SET 
+            MEMBER_NICKNAME = #{dto.memberNickname},
+            MEMBER_CAREER = #{dto.memberCareer},
+            MY_INFO_INTRO = #{dto.myInfoIntro},
+            MEMBER_TEL = #{dto.memberTel},
+            MY_INFO_GIT = #{dto.myInfoGit},
+            MY_INFO_HOMEPAGE = #{dto.myInfoHomepage}
+        WHERE MEMBER_EMAIL = #{email}
+    </update>
+    
+	<!-- 프로필 사진 변경 -->
+    <update id="updateProfileImage">
+        UPDATE "MEMBER"
+        SET PROFILE_IMG = #{imageUrl}
+        WHERE MEMBER_EMAIL = #{email}
+    </update>
+    
+    
+    <!-- 내 활동 resultMap -->
+    <resultMap id="ActivityMap" type="com.devlog.project.myPage.dto.MyActivityDto">
+        <id property="boardNo" column="BOARD_NO"/>
+        <result property="boardTitle" column="BOARD_TITLE"/>
+        <result property="boardContent" column="BOARD_CONTENT"/>
+        <result property="boardCount" column="BOARD_COUNT"/>
+        
+        <result property="memberNickname" column="MEMBER_NICKNAME"/>
+        <result property="memberEmail" column="MEMBER_EMAIL"/>
+        
+        <result property="isPaid" column="IS_PAID"/>
+        <result property="thumbnailUrl" column="THUMBNAIL"/>
+        
+        <result property="activityDate" column="ACTIVITY_DATE"/>
+        <result property="categoryName" column="CATEGORY"/>
+    </resultMap>
+	<!-- 좋아요 한 게시물 조회 -->
+    <select id="selectLikedPosts" resultMap="ActivityMap">
+        SELECT 
+            B.BOARD_NO,
+            B.BOARD_TITLE,
+            B.BOARD_CONTENT,
+            B.BOARD_COUNT,
+            NVL(IMG.IMG_PATH || IMG.IMG_RENAME, NULL) AS THUMBNAIL,
+            TO_CHAR(B.B_CREATE_DATE, 'YYYY.MM.DD') AS ACTIVITY_DATE,
+            'BLOG' AS CATEGORY,
+            M.MEMBER_NICKNAME,
+            M.MEMBER_EMAIL,
+            BL.IS_PAID
+        FROM BOARD_LIKE L
+        JOIN BOARD B ON L.BOARD_NO = B.BOARD_NO
+        JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+        LEFT JOIN BLOG BL ON B.BOARD_NO = BL.BOARD_NO
+        LEFT JOIN BOARD_IMG IMG ON B.BOARD_NO = IMG.BOARD_NO AND IMG.IMG_ORDER = 0
+        WHERE L.MEMBER_NO = #{memberNo}
+          AND B.BOARD_DEL_FL = 'N'
+        ORDER BY B.BOARD_NO DESC
+    </select>
+    
+	<!-- 최근 본 게시물 조회 -->
+    <select id="selectViewHistory" resultMap="ActivityMap">
+        SELECT * FROM (
+            SELECT 
+                B.BOARD_NO,
+                B.BOARD_TITLE,
+                B.BOARD_CONTENT,
+                B.BOARD_COUNT,
+                NVL(IMG.IMG_PATH || IMG.IMG_RENAME, NULL) AS THUMBNAIL,
+                TO_CHAR(V.VIEW_DATE, 'YYYY.MM.DD HH24:MI') AS ACTIVITY_DATE,
+                'BLOG' AS CATEGORY,
+                M.MEMBER_NICKNAME,
+                M.MEMBER_EMAIL,
+                BL.IS_PAID,
+                ROW_NUMBER() OVER(PARTITION BY B.BOARD_NO ORDER BY V.VIEW_DATE DESC) as rn
+            FROM VIEW_LOG V
+            JOIN BOARD B ON V.BOARD_NO = B.BOARD_NO
+            JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+            LEFT JOIN BLOG BL ON B.BOARD_NO = BL.BOARD_NO
+            LEFT JOIN BOARD_IMG IMG ON B.BOARD_NO = IMG.BOARD_NO AND IMG.IMG_ORDER = 0
+            WHERE V.MEMBER_NO = #{memberNo}
+              AND B.BOARD_DEL_FL = 'N'
+        ) WHERE rn = 1
+        ORDER BY ACTIVITY_DATE DESC
+    </select>
+    
+	<!-- 임시 저장한 글 조회 -->
+    <select id="selectDrafts" resultMap="ActivityMap">
+        SELECT 
+            B.BOARD_NO,
+            B.BOARD_TITLE,
+            B.BOARD_CONTENT,
+            B.BOARD_COUNT,
+            NVL(IMG.IMG_PATH || IMG.IMG_RENAME, NULL) AS THUMBNAIL,
+            TO_CHAR(B.B_CREATE_DATE, 'YYYY.MM.DD HH24:MI') AS ACTIVITY_DATE,
+            'BLOG' AS CATEGORY,
+            M.MEMBER_NICKNAME,
+            M.MEMBER_EMAIL,
+            BL.IS_PAID
+        FROM BOARD B
+        JOIN BLOG BL ON B.BOARD_NO = BL.BOARD_NO
+        JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+        LEFT JOIN BOARD_IMG IMG ON B.BOARD_NO = IMG.BOARD_NO AND IMG.IMG_ORDER = 0
+        WHERE B.MEMBER_NO = #{memberNo}
+          AND BL.TEMP_FL = 'Y'
+          AND B.BOARD_DEL_FL = 'N'
+        ORDER BY B.B_CREATE_DATE DESC
+    </select>
+    
+	<!-- 구매 내역 조회 -->
+    <select id="selectPurchasedPosts" resultMap="ActivityMap">
+        SELECT * FROM (
+            -- 1. [직접 구매]
+            SELECT 
+                B.BOARD_NO,
+                B.BOARD_TITLE,
+                DBMS_LOB.SUBSTR(B.BOARD_CONTENT, 600, 1) AS BOARD_CONTENT, /* [수정] CLOB -> String 변환 */
+                B.BOARD_COUNT,
+                NVL(IMG.IMG_PATH || IMG.IMG_RENAME, NULL) AS THUMBNAIL,
+                TO_CHAR(H.REG_DATE, 'YYYY.MM.DD') AS ACTIVITY_DATE,
+                'BLOG' AS CATEGORY,
+                M.MEMBER_NICKNAME,
+                M.MEMBER_EMAIL,
+                'Y' AS IS_PAID,
+                H.REG_DATE AS SORT_DATE
+            FROM COFFEE_BEANS_HISTORY H
+            JOIN COFFEE_BEANS_TRADE T ON H.TRADE_NO = T.TRADE_NO
+            JOIN BOARD B ON T.CONTENT_ID = B.BOARD_NO
+            JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+            LEFT JOIN BOARD_IMG IMG ON B.BOARD_NO = IMG.BOARD_NO AND IMG.IMG_ORDER = 0
+            WHERE H.MEMBER_NO = #{memberNo}
+              AND H.PAY_AMOUNT &lt; 0 
+              AND T.CONTENT_TYPE = 'POST'
+
+            UNION
+
+            -- 2. [구독 권한]
+            SELECT 
+                B.BOARD_NO,
+                B.BOARD_TITLE,
+                DBMS_LOB.SUBSTR(B.BOARD_CONTENT, 600, 1) AS BOARD_CONTENT, /* [수정] CLOB -> String 변환 */
+                B.BOARD_COUNT,
+                NVL(IMG.IMG_PATH || IMG.IMG_RENAME, NULL) AS THUMBNAIL,
+                TO_CHAR(B.B_CREATE_DATE, 'YYYY.MM.DD') AS ACTIVITY_DATE,
+                'BLOG' AS CATEGORY,
+                M.MEMBER_NICKNAME,
+                M.MEMBER_EMAIL,
+                'Y' AS IS_PAID,
+                B.B_CREATE_DATE AS SORT_DATE
+            FROM SUBSCRIBE S
+            JOIN BOARD B ON S.CREATOR_ID = B.MEMBER_NO 
+            JOIN BLOG BL ON B.BOARD_NO = BL.BOARD_NO
+            JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+            LEFT JOIN BOARD_IMG IMG ON B.BOARD_NO = IMG.BOARD_NO AND IMG.IMG_ORDER = 0
+            WHERE S.SUBSCRIBER_ID = #{memberNo}
+              AND BL.IS_PAID = 'Y'
+              AND B.BOARD_DEL_FL = 'N'
+        )
+        ORDER BY SORT_DATE DESC
+    </select>
+	
+	<!-- 최근 본 게시물 로그 db저장 -->
+    <insert id="insertViewLog">
+        INSERT INTO VIEW_LOG (LOG_NO, MEMBER_NO, BOARD_NO, VIEW_DATE)
+        VALUES (SEQ_VIEW_LOG_NO.NEXTVAL, #{memberNo}, #{boardNo}, SYSDATE)
+    </insert>
+    
+    <!-- 회원 탈퇴 시 팔로워 목록에서 삭제하는거 -->
+    <delete id="deleteMemberFollows" parameterType="long">
+	    DELETE FROM "FOLLOW"
+	    WHERE FOLLOW_ID = #{memberNo}   OR FOLLOWED_ID = #{memberNo} </delete>
+	
+	<delete id="deleteMemberSubscribes" parameterType="long">
+	    DELETE FROM "SUBSCRIBE"
+	    WHERE SUBSCRIBER_ID = #{memberNo} OR CREATOR_ID = #{memberNo}    </delete>
+
+    
+    
+    
+    
+    
+    
+
+</mapper>

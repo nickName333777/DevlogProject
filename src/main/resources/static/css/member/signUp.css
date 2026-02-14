@@ -1,0 +1,236 @@
+
+/* section, div{ border : 1px solid black;}  */
+
+/* === 전체 초기화 및 공통 설정 === */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    font-family: 'Pretendard Variable', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+/* === 전체 페이지 레이아웃 === */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+
+}
+
+.main-header,
+.main-nav,
+.main-footer {
+    height: 60px;
+    background-color: white;
+    width: 100%;
+    color: white;
+}
+
+
+/* ========================= */
+body {
+    margin: 0;
+    background-color: #ffffff;
+    font-family: 'Pretendard Variable', Arial, Helvetica, sans-serif;
+    /* body 전체에 Pretendard Variable Font 적용*/
+}
+
+
+.container-wrapper {
+    margin: 0;
+}
+
+/* header와의 간격벌리기 */
+.top-space-bw-header{
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    margin-bottom: 150px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+
+.title {
+    background: linear-gradient(
+        to right,
+        rgba(241, 198, 231, 1) 0%,       /* #F1C6E7 불투명도 100% */
+        rgba(241, 198, 231, 0.75) 50%,   /* 50% 위치도 불투명도 75% */
+        rgba(241, 198, 231, 0.75) 50%,   /* 50% 위치 투명도 75% */
+        rgba(241, 198, 231, 0.5) 100%    /* 100% 위치 투명도 50% */
+    );    
+    padding: 12px 12px 12px 120px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    color: #000;
+    font-size: 30px;
+    font-weight: bolder;
+    margin-bottom: 25px;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    padding: 10px 0;
+    justify-content: center;
+}
+
+.signup-box {
+    width: 1080px;
+    background: #fff;
+    padding: 30px 40px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}    
+
+
+
+.label {
+    font-size: 30px;
+    font-weight: bold;
+    display: block;
+    margin-top: 18px;
+}
+
+.required {
+    color: red;
+}
+
+.input {
+    width: 100%;
+    margin-top: 6px;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #D9D9D9;
+    font-size: 24px; /* placeholder 크기 */
+    color:  #000;
+    box-sizing: border-box;
+
+}
+
+/* 'signUp-message' == 'desc' */
+.desc { 
+    font-size: 24px;
+    color: #000;
+    margin-top: 14px;
+    padding-left: 30px; /* 설명 들여쓰기 */
+}
+
+.row {
+    display: flex;
+    gap: 1px; /* input과 인증번호 버튼간 간격 */
+    margin-top: 6px;
+}
+
+/* :focus-within : 내부 input 요소에 포커스가 맞춰졌을 때 */
+.row:focus-within{
+    border-bottom-color: #BD83CE;
+}
+
+/* 메세지 색상 지정 */
+.confirm{ color : green; }
+.error{ color : red; }
+
+
+.btn-gray {
+    width: 200px;
+    margin-top: 6px;    
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #000;
+    cursor: pointer;
+    border-radius: 0px;
+    font-size: 24px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.btn-gray:hover {
+    background: #BD83CE;
+    color: white;
+    border: 1px solid #BD83CE;
+}
+
+div.spaceholder{ /* 임의 행간격 삽입용*/
+    margin: 30px;
+}
+
+
+/* 체크 박스 항목 */
+.check {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 40px; 
+    font-size: 24px;
+}
+
+.check input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(2.0);
+    accent-color: #BD83CE; 
+    margin-right: 26px;
+}
+
+.row.admin-code {
+    display: flex;
+    justify-content: start;
+    flex-direction: row;
+    align-items: first baseline;
+}
+
+
+.input-admin-code-wrapper{
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input.admin-code {
+    width: 80%;
+    margin-top: 0px;
+    margin-left: 76px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #D9D9D9;
+    font-size: 24px; /* placeholder 크기 */
+    color:  #000;
+    box-sizing: border-box;
+}
+
+
+/* 가입하기 버튼 */
+.btn-join-wrapper{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn-join {
+    width: 40%;
+    margin-top: 25px;
+    margin-bottom: 100px;
+    padding: 14px;
+
+    background-color: #BD83CE;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 36px;
+    cursor: pointer;
+}
+
+.btn-join:hover {
+    background-color: #E5B0EA;
+}

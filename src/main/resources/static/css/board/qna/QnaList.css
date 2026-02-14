@@ -1,0 +1,351 @@
+/* section, div{ border : 1px solid black;}  */
+
+/* === 전체 초기화 및 공통 설정 === */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    font-family: 'Pretendard Variable', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+.table-wrap {
+  width: 1100px; 
+  margin: 0 auto;
+}
+
+.table-wrap table {
+  width: 100%;
+}
+
+.qna-table {
+  width: 100%;
+  table-layout: fixed;   /* 폭 제어의 핵심 */
+  border-collapse: collapse;
+  margin: 10px;
+
+}
+
+.div-qna-table {
+     border: 1px solid rgb(230, 208, 221);
+     border-radius: 6px;
+     margin: 8px;    /* 글 박스 간격  */
+}
+
+.search-box {
+  border: 1px solid #000; /* 테두리 색상 */
+  border-radius: 6px; /* 테두리를 둥글게 (값이 클수록 더 둥글어짐) */
+  width: 300px;
+  height: 25px;
+}
+
+.search-btn {
+  border: none;
+  border-radius: 6px; /* 테두리를 둥글게 (값이 클수록 더 둥글어짐) */
+  background-color: #BD83CE;
+  width: 70px;
+  height: 25px;
+
+  color: #ffffff;      /* 글자 색상을 하얀색으로 */
+  font-weight: 500;   /* 글자 두께를 약간 두껍게 (bold : 700과 같음) */
+  cursor: pointer;     /* 마우스를 올렸을 때 손가락 모양으로 변경 (추천) */
+}
+
+
+
+table td {
+  font-size: 13px;
+}
+
+
+/* 이미지 */
+.col-img {
+  width: 180px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.col-img img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  /* border-radius: 8px; */
+}
+
+
+.col-writer {
+  width: 180px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.col-date {
+  width: 110px;
+  font-size: 12px;
+  color: #000;
+}
+
+.col-viewcount {
+  width: 90px;
+  font-size: 12px;
+  color: #000;
+}
+
+.col-comment {
+  width: 80px;
+  font-size: 12px;
+  color: #000;
+}
+
+/* 여백용 (가변 공간 확보용) */
+.col-spacer {
+  width: auto;
+}
+
+/* 제목 (가변폭 핵심) */
+.col-title {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 0;
+}
+
+.col-content {
+  font-size: 12px;
+  height: 100px;
+  vertical-align: top;
+}
+
+#pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;              /* 숫자 간격 */
+  margin: 30px 0;
+}
+
+/* === 전체 페이지 레이아웃 === */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+
+}
+
+.main-header,
+.main-nav,
+.main-footer {
+    height: 60px;
+    background-color: white;
+    width: 100%;
+    color: white;
+}
+
+
+/* ========================= */
+
+/* @font-face {
+    font-family: 'Pretendard';
+    src: url('../font/PretendardVariable.ttf') format('truetype');
+    font-weight: 45 920;
+    font-style: normal;
+    font-display: swap;
+} */
+/* Spring Boot 절대경로 => src: url('/font/PretendardVariable.ttf') format('truetype'); */
+/* 상대경로 => src: url('../font/PretendardVariable.ttf') format('truetype'); */
+/* Spring Security의 Security Config에 "/font/**" 로 폰트경로 허용 필요 */
+
+body {
+    margin: 0;
+    background-color: #ffffff;
+    font-family: 'Pretendard Variable', Arial, Helvetica, sans-serif;
+    /* body 전체에 Pretendard Variable Font 적용*/
+}
+
+.container {
+    width: 100%;
+    height: 100vh; /* 부모와 상관없이 항상 화면 높이(Viewport Height)기준: 브라우저 화면 전체 높이 100%*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 238px;
+    margin-bottom: 2px;
+}
+
+/* 로그인 박스 */
+.login-box {
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 입력창 */
+.input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 2px solid #000;
+    font-size: 20px;
+    color: black;
+    box-sizing: border-box;
+}
+
+/* 로그인 버튼 */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: #BD83CE;   /* DevLog 보라 */
+    border: none;
+    border-radius: 6px;
+    font-size: 26px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-login:hover {
+    background-color: #E5B0EA;
+}
+
+/* 아이디 저장 / 회원가입 */
+.options {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+   
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    padding-left: 6px;
+}
+
+/*
+.checkbox input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.4);
+    accent-color: #2563eb; 
+}*/
+
+#inputCheckboxSaveId {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 20px;
+    height: 20px;
+
+    margin-right: 10px; /* '아이디저장' 들여쓰기 되도록 */
+
+    border: 1px solid #999;
+    border-radius: 0;
+
+    background-color: #fff;   /* 필수 */
+    cursor: pointer;
+    position: relative;
+}
+
+#inputCheckboxSaveId:checked {
+    background-color: #BD83CE;
+    border-color: #BD83CE;
+}
+
+#inputCheckboxSaveId:checked::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    top: 1px;
+    left: 3px;
+    bottom: 0px;
+    margin-bottom: 1px;
+    margin-left: 2px;
+}
+
+
+.signUp {
+    text-decoration: none;
+    color: #000;
+    font-size: 20px;
+}
+
+.signUp:hover {
+    text-decoration: underline;    
+}
+
+/* OR Divider */
+.divider {
+    width: 100%;
+    text-align: center;
+    color: #000;
+
+    margin-bottom: 20px;
+    position: relative;
+    font-size: 20px;
+    /*font-weight: bold;*/
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    width: 40%;
+    height: 4px;
+    background-color: #BD83CE;
+    position: absolute;
+    top: 50%;
+}
+
+.divider::before {
+    left: 6px;
+}
+
+.divider::after {
+    right: 6px;
+}
+
+/* 카카오 로그인 버튼 */
+.btn-kakao {
+    width: 100%;
+    padding: 6px;
+    background-color: #F2D51F;
+    font-size: 20px;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kakao-icon {
+    width: 48px;
+    margin-right: 28px;
+}
+
+.btn-kakao:hover {
+    background-color: #FEE500;
+}
+

@@ -1,0 +1,193 @@
+.detail_container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 50px 20px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* 상단 타이틀 */
+.company_name {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.posting_title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 40px;
+}
+
+/* 레이아웃 */
+.detail_main {
+  display: flex;
+  gap: 50px;
+  align-items: flex-start;
+}
+
+.posting_content {
+  flex: 7;
+}
+
+.info_cards {
+  flex: 3;
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  position: sticky;
+  top: 20px;
+  margin-top: 65px;
+}
+
+/* 카드 */
+.info_card {
+  display: flex;
+  background: #fff;
+  border-radius: 40px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  min-height: 160px;
+}
+
+.card_title {
+  width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* 카드 테마색 */
+.purple_card .card_title {
+  background-color: #F3EDFF;
+}
+
+.blue_card .card_title {
+  background-color: #E8F1FF;
+}
+
+.green_card .card_title {
+  background-color: #E8FFF8;
+}
+
+/* 데이터 행 */
+.card_content {
+  padding: 25px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 400px;
+}
+
+.row {
+  display: flex;
+  font-size: 14px;
+}
+
+.row strong {
+  width: 90px;
+  color: #888;
+  shrink: 0;
+}
+
+.row span {
+  color: #333;
+  font-weight: 600;
+}
+
+.content_view img {
+  width: 100%;
+  border-radius: 20px;
+}
+
+
+
+.header_top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  /* 아래쪽 라인 맞춤 */
+  margin-bottom: 40px;
+}
+
+.header_left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.header_utils {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 5px;
+  justify-content: right;
+}
+
+.header_utils button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  /* 살짝 둥근 사각형 */
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  transition: 0.2s;
+}
+
+/* 스크랩 버튼 (노란색 포인트) */
+.btn_scrap {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.scrap-icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* 기본: 빈 북마크 */
+.scrap-icon {
+  background-image: url("/images/common/scrap-empty.png");
+}
+
+/* 스크랩됨 */
+.btn_scrap.active .scrap-icon {
+  background-image: url("/images/common/scrap-filled.png");
+}
+
+
+/* 공유하기 버튼 */
+.kakao_icon {
+  width: 18px;
+  height: 18px;
+}
+
+.link_share:hover {
+  background-color: #F7F7F7;
+  border-color: #CCC;
+}
+
+.kakao_share:hover {
+  background-color: #F7F7F7;
+  border-color: #CCC;
+}
+
+/* 제목 폰트 키우기 */
+.posting_title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #000;
+}

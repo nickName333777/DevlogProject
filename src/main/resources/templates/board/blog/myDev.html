@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${userProfile.nickname + ' - DevLog'}">DevLog - My Blog</title>
+
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+
+    <link rel="stylesheet" th:href="@{/css/board/blog/myDev.css}">
+</head>
+
+<body>
+
+    <div th:replace="~{common/header :: header}"></div>
+
+    <div class="container">
+        <header class="blog-header">
+            <div class="header-left">
+                <div class="profile-main-img">
+                    <img th:src="${userProfile.profileImgUrl != null ? userProfile.profileImgUrl : 'https://placehold.co/180x180/333/fff?text=Profile'}"
+                        alt="Profile">
+                </div>
+                <div class="profile-content">
+                    <div class="nickname-area">
+                        <h1 th:text="${userProfile.nickname}">Nickname</h1>
+
+                        <div class="dropdown-owner" th:if="${isOwner}">
+                            <i class="fa-solid fa-ellipsis-vertical" id="blogOptionBtn"></i>
+                            <div class="dropdown-box" id="dropdownMenu">
+                                <a href="/myPage/activity"><i class="fa-solid fa-clock-rotate-left"></i> 내 활동</a>
+                                <a href="/myPage/check-password"><i class="fa-solid fa-user-gear"></i> 프로필 설정</a>
+                                <hr>
+                                <a href="/logout">로그아웃</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lv-row">
+                        <span class="user-name" th:text="${levelTitle}">칭호</span>
+                        <div class="exp-container" th:if="${isOwner}" role="progressbar" aria-valuemin="0"
+                            th:attr="aria-valuemax=${nextExp}, aria-valuenow=${currentExp}">
+                            <div class="exp-fill" th:style="'width:' + (${currentExp} * 100 / ${nextExp}) + '%'"></div>
+                            <span class="lv-text" th:text="|LV ${memberLevel}|">회원 레벨</span>
+                        </div>
+
+                        <div class="exp-info fs-12 fw-600" th:if="${isOwner}">
+                            <span th:text="|다음 레벨까지 ${nextExp - currentExp} EXP|"></span>
+                        </div>
+                    </div>
+
+                    <p class="job-tag" th:text="${userProfile.job} ?: '개발자'">직업 태그</p>
+                    <div class="social-links">
+                        <a th:href="${userProfile.githubUrl}" th:if="${userProfile.githubUrl}"><i
+                                class="fa-brands fa-github"></i></a>
+                        <a th:href="${userProfile.blogUrl}" th:if="${userProfile.blogUrl}"><i
+                                class="fa-solid fa-house"></i></a>
+                    </div>
+                    <p class="bio" th:utext="${userProfile.bio} ?: '소개가 없습니다.'">Bio</p>
+                </div>
+            </div>
+
+            <div class="header-center">
+                <div class="top-stat-row">
+                    <div class="stat-btn" onclick="openUserModal('follower')">
+                        팔로워 <strong id="followerCnt" th:text="${followerCount}">0</strong>
+                    </div>
+
+                    <div class="stat-btn" onclick="openUserModal('following')">
+                        팔로잉 <strong id="followingCnt" th:text="${followingCount}">0</strong>
+                    </div>
+                    
+                    <div class="stat-btn" th:if="${isOwner}" onclick="openUserModal('subscriber')">
+                        구독 <strong th:text="${subscriberCount}">0</strong>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <th:block th:unless="${isOwner}">
+                        <button class="btn-purple" id="btnFollow" onclick="toggleFollow()"
+                            th:classappend="${isFollowed} ? 'active'" th:text="${isFollowed} ? '팔로잉' : '팔로우'">
+                            팔로우
+                        </button>
+
+                        <button class="btn-white">메시지</button>
+                        
+                        <button th:if="${subPrice > 0}" id="btnSubscribe" class="btn-purple"
+                            th:data-sub-price="${subPrice}" th:classappend="${isSubscribed} ? 'active'"
+                            th:text="${isSubscribed} ? '구독중' : '구독'">
+                            구독
+                        </button>
+                    </th:block>
+
+                    <button class="btn-white" th:if="${isOwner}" onclick="location.href='/blog/write'">
+                        <i class="fa-solid fa-plus"></i> 새 글 작성
+                    </button>
+
+                </div>
+                <div class="visit-summary">
+                    <p>전체 방문자 <strong th:text="${totalVisit}">0</strong></p>
+                    <p>전체 글 <strong class="purple-txt" th:text="${postCount}">0</strong></p>
+                    <p class="visit-today">오늘 <span th:text="${todayVisit}">0</span></p>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <p class="pick-title">유저 PICK 인기 글🔥</p>
+                <div class="pick-card-item" th:if="${pickPost != null}"
+                    th:onclick="|location.href='@{/blog/detail/{no}(no=${pickPost.boardNo})}'|" style="cursor:pointer;">
+
+                    <img th:src="${pickPost.thumbnailUrl != null ? pickPost.thumbnailUrl : 'https://placehold.co/100x100/333/fff?text=No+Img'}"
+                        alt="Pick Thumb">
+
+                    <div class="pick-info">
+                        <h4 class="pick-card-title" th:text="${pickPost.boardTitle}">제목</h4>
+
+                        <span class="tag-pill">Popular</span>
+
+                        <div class="pick-meta-row">
+                            <div class="p-meta">
+                                <i class="fa-solid fa-heart"></i> <span th:text="${pickPost.likeCount}">0</span>
+                            </div>
+                            <span class="p-date" th:text="${pickPost.bCreateDate}">날짜</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pick-card-item empty" th:unless="${pickPost != null}">
+                    <p style="color:#aaa; font-size:0.9rem;">아직 인기글이 없어요!</p>
+                </div>
+            </div>
+        </header>
+
+        <hr class="header-line">
+
+        <nav class="main-tabs">
+            <div class="tab-btn active" data-type="all" title="일반 글"><i class="fa-solid fa-book"></i></div>
+            <div class="tab-btn" data-type="scrap" title="스크랩한 글" th:if="${isOwner}"><i
+                    class="fa-solid fa-bookmark"></i></div>
+            <div class="tab-btn" data-type="paid" title="유료 콘텐츠"><i class="fa-solid fa-crown"></i></div>
+        </nav>
+
+        <div class="content-body">
+            <main class="post-area">
+                <div class="list-controls">
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+                        <i class="fa-solid fa-magnifying-glass" id="searchBtn"></i>
+                    </div>
+                    <div class="filter-options">
+                        <span class="filter-item active" data-sort="latest">최신순</span>
+                        <span class="filter-item" data-sort="view">조회순</span>
+                        <span class="filter-item" data-sort="like">인기순</span>
+                        <span class="filter-item" data-sort="comment">댓글순</span>
+                    </div>
+                </div>
+
+                <div id="post-list-wrap"></div>
+
+                <div id="infinite-sentinel" class="scroll-loader">
+                    <div class="dot-loader"></div>
+                </div>
+            </main>
+
+            <aside class="side-area">
+                <h3>태그 <span th:text="'(' + ${#lists.size(tags)} + ')'">(0)</span></h3>
+                <ul class="tag-cat-list" id="tag-list">
+                    <li class="tag-item" th:each="tag : ${tags}" th:data-tag="${tag.name}">
+                        <span th:text="${tag.name}">TagName</span>
+                        <small th:text="${tag.count}">0</small>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">목록 타이틀</h3>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeUserModal()"></i>
+            </div>
+            <ul class="user-list" id="modalUserList">
+            </ul>
+        </div>
+    </div>
+
+    <button id="goTopBtn" title="Go to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+
+
+    <div id="subModal" class="modal-overlay">
+        <div class="sub-modal-content">
+            <div class="sub-modal-header">
+                <span class="crown-icon">👑</span>
+                <h2>유료 정기 구독하기</h2>
+                <i class="fa-solid fa-xmark close-sub-modal" id="closeSubModal"></i>
+            </div>
+
+            <div class="sub-modal-body">
+                <div class="sub-body-left">
+                    <h3>결제 수단</h3>
+                    <p class="sub-desc">회원님의 결제 수단을 선택해주세요!</p>
+
+                    <div class="bean-balance-card">
+                        <div class="bean-title">
+                            <img th:src="@{/images/common/coffebean.png}" alt="콩">
+                            <span>내 보유 커피콩</span>
+                        </div>
+                        <div class="bean-amount">
+                            <strong id="myBeanBalance">0</strong>콩
+                        </div>
+                    </div>
+
+                    <div class="check-area">
+                        <input type="checkbox" id="useBeanCheck" checked>
+                        <label for="useBeanCheck">커피콩 결제 사용</label>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="sub-body-right">
+                    <h3>구매 정보</h3>
+                    <p class="sub-desc">정기구독은 한 달 마다 결제됩니다.</p>
+
+                    <div class="info-row">
+                        <span>블로거:</span>
+                        <strong id="subBlogOwner">이름</strong>
+                    </div>
+
+                    <div class="info-row price-row">
+                        <span>가격:</span>
+                        <strong><span id="subDisplayPrice">0</span>원</strong>
+                    </div>
+
+                    <button id="btnFinalSubscribe" class="btn-subscribe-confirm">구매하기</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div th:replace="~{common/footer :: footer}"></div>
+    <script th:src="@{/js/notification/noti.js}"></script>
+    <script th:src="@{/js/common/header.js}"></script>
+
+    <script th:src="@{/js/board/blog/myDev.js}"></script>
+
+    <script th:inline="javascript">
+        /* 컨트롤러에서 model.addAttribute("userProfile", profile); 을 했으므로
+            userProfile 안에 있는 id(이메일)를 가져옵니다.
+        */
+        const blogOwnerId = [[${ userProfile.id }]];
+        const loginMemberNo = [[${session.loginMember != null ? session.loginMember.memberNo : 0}]];
+        const blogOwnerNo = [[${ userProfile.memberNo }]];
+
+        const subPrice = /*[[${subPrice}]]*/ 0;
+
+        console.log("현재 블로그 주인 ID:", blogOwnerId); // 확인용 로그
+    </script>
+</body>
+
+</html>

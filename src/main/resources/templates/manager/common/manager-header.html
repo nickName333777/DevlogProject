@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="header" th:fragment="header">
+  <div class="left-area">
+      <a th:href="@{/}">
+        <img th:src="@{/images/manager/devlog.svg}"
+            alt="Devlog logo"
+            class="logo"/>
+      </a>
+    <span class="welcome"
+      th:text="|${session.loginMember != null 
+        ? session.loginMember.memberNickname 
+        : '관리자'}님, 돌아오신 것을 환영합니다.|">
+    </span>
+  </div>
+
+  <div class="dashboard-info">
+    Devlog<br />
+    <span>Manager Dashboard</span>
+  </div>
+</header>
+</body>
+</html>

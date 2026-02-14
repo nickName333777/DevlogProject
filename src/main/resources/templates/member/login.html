@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+
+    <link rel="stylesheet" th:href="@{/css/member/login.css}">
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+
+</head>
+
+<body>
+
+
+    <main>
+        <!-- 헤더 -->
+        <!-- <header class="main-header">header</header> -->
+        <!-- header.html (fragment) 추가 -->
+        <!-- <th:block th:replace="~{/common/header}">header.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/header :: header"></div>
+        <script th:src="@{/js/common/header.js}"></script>
+
+
+        <!-- 네비게이션 -->
+        <nav class="main-nav"></nav>
+        <!--  ###################################################### -->
+
+
+        <div class="container">
+            <!-- session.loginMember 테스트 -->
+            <!-- <p th:text="${session.loginMember}"></p> -->
+
+            <!-- 로고 영역 -->
+            <img th:src="@{/images/member/DevLog_logo.png}" class="logo" alt="logo">
+    
+            <div class="login-box">
+                <form th:action="@{/member/login}" method="POST" id="loginFrm">
+
+                    <!-- 아이디 -->
+                    <input  type="text" name="memberEmail" 
+                            class="input" placeholder="아이디" 
+                            th:value="${cookie?.saveId?.value}" 
+                            required 
+                    />
+                    <!-- cookie 는 Spring이 항상 넣어주는 객체가 아님: 쿠키가 하나도 없으면 cookie == null -->
+
+                    <!-- 비밀번호 -->
+                    <input  type="password" name="memberPw" 
+                            class="input" placeholder="비밀번호" required 
+                    />
+        
+                    <!-- 로그인 버튼 -->
+                    <button type="submit" class="btn-login">로그인</button>
+        
+                    <div class="options">
+                        <label class="checkbox">
+                            <input  type="checkbox" name="saveId" 
+                                    id="saveId"  
+                                    th:checked="${cookie?.saveId?.value}" 
+                            />
+                            아이디 저장
+                        </label>
+        
+                        <a th:href="@{/member/signUp}" class="signUp">회원가입</a>
+                    </div>
+        
+                    <!-- OR 구분선 -->
+                    <div class="divider">OR</div>
+        
+                    <!-- 카카오 로그인 -->
+                    <button type="button" class="btn-kakao" id="kakaoLoginBtn">
+                        <img th:src="@{/images/member/topic_ballon.png}" class="kakao-icon" alt="">
+                        카카오 로그인
+                    </button>
+                </form>
+            </div>
+        </div>
+
+
+        <!--  ###################################################### -->
+        <!-- <footer class="main-footer">footer</footer> -->
+        <!-- footer.html 추가 -->
+        <!-- <th:block th:replace="~{common/footer}">footer.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/footer :: footer"></div>
+
+    </main>
+
+    <!-- login.js 추가 -->
+    <script th:src="@{/js/member/login.js}"></script>
+
+</body>
+</html>

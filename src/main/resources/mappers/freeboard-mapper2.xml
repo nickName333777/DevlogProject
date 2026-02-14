@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.devlog.project.board.freeboard.model.mapper.FreeboardMapper2">
+                  
+
+	<!-- 게시글 삽입: insert하기전에 조회부터 해야함: useGeneratedKeys="true" -->
+	<insert id="freeboardInsert" parameterType="Freeboard"
+		useGeneratedKeys="true">  <!-- 전달받은 파라미터 타입은 "Freeboard" -->
+
+		<selectKey order="BEFORE" resultType="_long"
+			keyProperty="boardNo"> <!-- boardNo 필드에 생성한 key를 세팅해주겠다 -->
+			SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
+		</selectKey>
+
+		INSERT INTO "BOARD" (
+         BOARD_NO,
+         BOARD_TITLE,
+         BOARD_CONTENT,
+         B_CREATE_DATE,
+         B_UPDATE_DATE,
+         BOARD_COUNT,
+         BOARD_DEL_FL,
+         BOARD_CODE,
+         MEMBER_NO,
+         NEWS_REPORTER
+      )
+		<!-- VALUES(SEQ_BOARD_NO.NEXTVAL, -->
+		VALUES(
+		#{boardNo},
+		#{boardTitle},
+		#{boardContent},
+		SYSDATE, 
+		NULL,
+		0,
+		'N',
+		3,
+		#{memberNo}, 
+		NULL
+		)
+	</insert>
+	
+
+	<!-- 이미지 리스트 삽입 -->
+	<!-- " UNION ALL " 앞뒤로 띄어쓰기 꼭 필요 -->
+	<insert id="insertImageList" parameterType="list"> <!-- 전달받은 파라미터 타입은 "list" -->
+		INSERT INTO BOARD_IMG
+		SELECT SEQ_IMAGE_NO.NEXTVAL, A.*
+		FROM (
+		<foreach collection="list" item="img" separator=" UNION ALL ">
+			SELECT
+			#{img.imgPath} IMG_PATH,
+			#{img.imgOrig} IMG_ORIG,
+			#{img.imgRename} IMG_RENAME,
+			#{img.imgOrder} IMG_ORDER,
+			#{img.boardNo} BOARD_NO
+			FROM DUAL
+		</foreach>
+		) A
+	</insert>
+
+
+	<!-- ==============================================  -->
+	<!-- 게시글 수정에서 이미지삭제/추가에서 기존이미지 한개 삭제: 데이터베이스에 존재 확인된 이미지 삭제 (DB삭제 -> 성공시 파일삭제해야함), AJAX --> 
+	<delete id="deleteImageByImgNo">
+		DELETE FROM BOARD_IMG
+		WHERE IMG_NO = #{imgNo}
+	</delete>	
+	
+	
+	<!-- 게시글 수정 (전체 성공을 위해서는 게시글 첨부 이미지 수정도 성공해야함)-->
+	<update id="freeboardUpdate"> <!-- 전달받은 파라미터 타입은 생략가능: b/c DML -->
+		UPDATE BOARD SET
+		BOARD_TITLE = #{boardTitle},
+		BOARD_CONTENT = #{boardContent},
+		B_UPDATE_DATE = SYSDATE
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+
+		
+	<!-- deleteList에 이미지들이 DB에 존재하는지 확인 (게시글에 존재하는 IMG_ORDER와 deleteList내용값 일치 확인)-->
+	<select id="checkImage" resultType="_int">
+		SELECT COUNT(*) FROM
+		BOARD_IMG 
+		WHERE BOARD_NO = #{boardNo}
+		AND IMG_ORDER IN (${deleteList})
+	</select>   		
+
+
+	<!-- 게시글 이미지 삭제: 여러개 이미지 in deleteList -->
+	<delete id="imageDelete">
+		DELETE FROM BOARD_IMG
+		WHERE BOARD_NO = #{boardNo}
+		AND IMG_ORDER IN (${deleteList})
+	</delete>
+
+
+	<!-- 이미지 수정  -->
+	<update id="imageUpdate">
+		UPDATE BOARD_IMG SET
+		IMG_PATH = #{imgPath},
+		IMG_RENAME =#{imgRename},
+		IMG_ORIG = #{imgOrig}
+		WHERE BOARD_NO = #{boardNo}	
+		AND IMG_ORDER = #{imgOrder}
+	</update>
+	<!--  이미 이미지 있는곳에 update -> update; 이미지 없는 곳에 update -> insert해야함 -->
+	
+	
+	<!-- 이미지 삽입: 이미지 한개 삽입  -->
+	<insert id="imageInsert">
+		INSERT INTO BOARD_IMG (
+            IMG_NO,
+            IMG_PATH,
+            IMG_ORIG,
+            IMG_RENAME,
+            IMG_ORDER,
+            BOARD_NO
+        )
+		VALUES(SEQ_IMAGE_NO.NEXTVAL, #{imgPath}, #{imgOrig}, #{imgRename},#{imgOrder}, #{boardNo})
+	</insert>
+	<!--  이미 이미지 있는곳에 update -> update; 이미지 없는 곳에 update -> insert해야함 : 따라서 수정해서 실패하면 INSERT한다 -->
+	
+
+	<!-- ==============================================  -->
+    <!-- 특정 이미지 번호 리스트에 포함되지 않은 이미지 삭제 -->
+    <delete id="deleteImagesNotInList">
+        DELETE FROM BOARD_IMG
+        WHERE BOARD_NO = #{boardNo}
+        AND IMG_NO NOT IN
+        <foreach collection="keepImgNos" item="imgNo" open="(" close=")" separator=",">
+            #{imgNo}
+        </foreach>
+    </delete>
+
+    <!-- 이미지 순서 업데이트 -->
+    <update id="updateImageOrder">
+        UPDATE BOARD_IMG
+        SET IMG_ORDER = #{imgOrder}
+        WHERE IMG_NO = #{imgNo}
+    </update>	
+    
+    <!-- 게시글의 모든 이미지 삭제 -->
+    <delete id="deleteAllImagesByBoardNo">
+        DELETE FROM BOARD_IMG
+        WHERE BOARD_NO = #{boardNo}
+    </delete>
+	
+	<!-- ==============================================  -->
+	<!-- 게시글 삭제 by update BOARD_DEL_FL--> <!-- 전달받은 파라미터 타입은 생략가능: b/c DML항상 int반환, 오히려 쓰면 에러 -->
+	<update id="freeboardDelete">
+		UPDATE BOARD SET
+		BOARD_DEL_FL = 'Y'
+		WHERE BOARD_NO = #{boardNo}
+	</update>		
+	
+</mapper>

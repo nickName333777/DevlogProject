@@ -1,0 +1,498 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+input {
+  border: none;
+  outline: none;
+}
+
+img {
+  display: block;
+}
+
+/* 메인 컨테이너 */
+.main-container {
+  max-width: 1440px;
+  margin: 120px auto;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* ===== 섹션 기본설정? ===== */
+section {
+  padding: 20px;
+  background-color: var(--bg);
+}
+
+/* ===== 상단 ===== */
+.main-top {
+  display: flex;
+  gap: 20px;
+}
+
+/* ===== 오늘의 인기글 - 카드목록 ===== */
+.popular-posts {
+  flex: 3;
+  /* border: 2px solid #f1c6e7;
+  border-radius: 10px;
+  background: #fff0fa;
+  text-align: center; */
+  padding: 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+/* 카드 리스트 컨테이너 */
+.post-grid {
+  display: grid;
+  /* 한 줄에 들어갈 컬럼(열) 들의 개수를 자동으로 계산해서,
+각 열의 너비는 최소 220px, 최대는 1fr 비율로 설정 */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 한 줄에 다섯 개. 일일히 width를 설정하는건 처음에 보기엔 괜찮지만, 화면 크기 줄이면 다깨짐 */
+  gap: 20px;
+}
+
+/* 카드 하나 */
+.post-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.post-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+/* 카드 이미지 */
+.post-img {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+
+.post-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.post-card:hover .post-img img {
+  transform: scale(1.05);
+}
+
+/* 카드 하단 정보 */
+.post-info {
+  padding: 14px 16px 20px;
+}
+
+.post-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.likes img {
+  width: 18px;
+  height: 18px;
+}
+
+.likes span {
+  font-size: 14px;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.writer {
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+/* 미리보기 텍스트 */
+.post-preview {
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== 나머지 섹션 ===== */
+.latest-feed {
+  text-align: center;
+  padding: 60px;
+}
+
+.news {
+  /* border: 2px solid #000; */
+  text-align: center;
+  padding: 50px;
+}
+
+.cafe {
+  /* border: 2px solid #000; */
+  text-align: center;
+  padding: 50px;
+}
+
+/* 섹션 제목이랑..더보기 버튼 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.more-link {
+  font-size: 15px;
+  color: var(--accent-main);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.more-link:hover {
+  color: var(--text-main);
+}
+
+/* 최신 피드용 카드 */
+.latest-feed .post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* ===== 활동중인 친구들 ===== */
+.active-friends {
+  flex: 1.2;
+  padding: 85px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 18px;
+  text-align: left;
+  background: var(--bg);
+}
+
+/* 인사 문구 */
+.greeting p {
+  font-size: 16px;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+.greeting strong {
+  color: var(--accent-main);
+}
+
+/* 글 작성 버튼 */
+.write-btn {
+  margin-top: 8px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1.8px solid var(--accent-main);
+  background-color: var(--accent-soft);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.write-btn:hover {
+  background-color: var(--accent-strong);
+}
+
+.guest-guide {
+  list-style: none;
+  margin: 20px 0px;
+}
+/* 친구 */
+.friends-section {
+  margin-top: 8px;
+}
+
+.friends-section h4 {
+  font-size: 15px;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+/* 친구 목록 */
+.friends-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* 친구 기본 스타일 */
+.friend {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.friend img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #dcb8e9;
+}
+
+/* 활동중일 때만 녹색불 표시하도록 클래스를 붙이는 식으로 만들어줌 */
+.friend.active::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background-color: #33cc33;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.divider {
+  width: 2px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-top: 85px;
+  height: 300px;
+}
+
+/* ===== 뉴스 섹션 ===== */
+.news-section {
+  max-width: 1400px;
+  margin: 60px auto;
+  padding: 20px 40px;
+  background: var(--bg);
+}
+
+.news-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.news-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.more-link {
+  font-size: 14px;
+  color: var(--text-main);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.more-link:hover {
+  color: #57106c;
+}
+
+/* 뉴스 카드 그리드 */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 40px; /* 행, 열 간격 */
+}
+
+/* 개별 뉴스 카드 */
+.news-card {
+  color: var(--bg-card);
+  background-color: var(--bg-card);
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* 카드 왼쪽 텍스트 */
+.news-text {
+  flex: 1;
+  margin-right: 16px;
+}
+
+.news-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+
+.news-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-sub);
+}
+
+/* 카드 오른쪽 이미지 */
+.news-thumb {
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.news-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===== 카페 추천 섹션 ===== */
+.cafe-section {
+  max-width: 1200px;
+  margin: 80px auto;
+  padding: 20px 40px;
+  text-align: center;
+  background: var(--bg);
+}
+
+/* 제목 영역 중앙 정렬 */
+.cafe-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.cafe-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.cafe-sub {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 16px;
+}
+
+/* "더보기" 버튼 오른쪽 상단 고정 느낌 */
+.cafe-more {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  font-size: 14px;
+  color: #a678d6;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.cafe-more:hover {
+  color: #6b3fa0;
+}
+
+/* 카페 리스트 */
+.cafe-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px 30px;
+  justify-items: center;
+}
+
+/* 개별 카페 아이템 */
+.cafe-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  text-align: left;
+}
+
+.cafe-thumb {
+  flex-shrink: 0;
+  width: 140px;
+  height: 140px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cafe-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 텍스트 부분 */
+.cafe-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cafe-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+
+.cafe-address,
+.cafe-phone,
+.cafe-hours {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.4;
+}
+
+/* 길찾기 버튼 (은은한 느낌) */
+.cafe-btn {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px;
+  background-color: var(--accent-soft);
+  border: 1.5px solid var(--accent-main);
+  color: var(--text-main);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cafe-btn img {
+  width: 13px;
+  height: 13px;
+}

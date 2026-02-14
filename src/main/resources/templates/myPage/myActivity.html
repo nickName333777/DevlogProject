@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DevLog - 내 활동</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+
+    <link rel="stylesheet" th:href="@{/css/myPage/myActivity.css}">
+</head>
+
+<body>
+    <div th:replace="~{common/header :: header}"></div>
+
+    <div class="activity-container">
+
+        <h2 class="page-title"><i class="fa-regular fa-clock"></i> 내 활동</h2>
+
+        <nav class="tab-nav">
+            <ul class="tab-list">
+                <li class="tab-item active" data-tab="likes">
+                    <i class="fa-solid fa-heart"></i>
+                </li>
+                <li class="tab-item" data-tab="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </li>
+                <li class="tab-item" data-tab="drafts">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </li>
+                <li class="tab-item" data-tab="purchases">
+                    <i class="fa-solid fa-briefcase"></i>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            <h3 id="section-title">좋아요 한 게시물</h3>
+
+            <div id="list-container" class="list-container">
+                <div class="spinner-wrapper" id="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <p class="modal-text">임시저장된 글이 삭제됩니다</p>
+            <div class="modal-buttons">
+                <button id="btn-confirm-delete" class="btn-confirm">예</button>
+                <button id="btn-cancel-delete" class="btn-cancel">아니오</button>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{common/footer :: footer}"></div>
+    
+    <script th:src="@{/js/notification/noti.js}"></script>
+    <script th:src="@{/js/common/header.js}"></script>
+
+    <script th:src="@{/js/myPage/myActivity.js}"></script>
+</body>
+
+</html>

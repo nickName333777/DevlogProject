@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <title>ITnews상세페이지</title>
+  <link rel="stylesheet" th:href="@{/css/board/ITnews/ITnewsDetail.css}">
+  <link rel="stylesheet" th:href="@{/css/board/ITnews/ITnewsComment.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+  <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+  <link rel="stylesheet" th:href="@{/css/board/ITnews/ITnewsComment.css}">
+  <link rel="stylesheet" th:href="@{/css/common/report.css}">
+
+</head>
+<div th:replace="common/header :: header"></div>
+<script th:src="@{/js/common/header.js}"></script>
+
+
+<body>
+  <main>
+
+    <div class="news-header">
+      <img th:src="${news.imgPath.startsWith('http') ? 
+                news.imgPath : 
+                (news.imgRename != null ? news.imgPath + news.imgRename : '/images/common/devlog.svg')}"
+        alt="뉴스 헤더 이미지">
+    </div>
+
+    <button id="goToListBtn" type="button" onclick="location.href='/ITnews'">
+      목록으로
+    </button>
+
+
+    <div class="news-area">
+      <div class="news-title" th:text="${news.boardTitle}">
+      </div>
+      <div class="news-info">
+        <p>
+          <span>기자명 : </span>
+          <span th:text="${news.newsReporter}">기자명</span>
+        </p>
+        <p>
+          <span>기사 날짜 : </span>
+          <span th:text="${news.bCreateDate}">2025-09-29</span>
+        </p>
+        <p>
+          <span>조회수 : </span>
+          <span th:text="${news.boardCount}">2789</span>
+        </p>
+
+        <!-- 좋아요 -->
+        <p>
+          <span class="like-area">
+            <i class="fa-heart" th:classappend="${likeCheck} ? fa-solid : fa-regular" id="boardLike"></i>
+            <span id="likeCount" th:text="${likeCount}">0</span> </span>
+        </p>
+
+        <!-- 스크랩 -->
+        <p>
+          <span class="scrap-area" style="cursor: pointer; display: flex; align-items: center; gap: 5px;"
+            th:onclick="|toggleScrap(this, ${news.boardNo})|">
+
+            <img th:src="${scrapCheck > 0} ? @{/images/common/scrap-filled.png} : @{/images/common/scrap-empty.png}"
+              id="scrapIcon" alt="스크랩" style="width: 20px; height: 20px;">
+
+            <span id="scrapText">스크랩</span>
+          </span>
+        </p>
+        <!-- 신고하기 -->
+        <p>
+          <span class="report-area" style="cursor: pointer; display: flex; align-items: center; gap: 5px;"
+            th:onclick="|openReportModal(${news.memberNo}, ${news.boardNo})|">
+            <img th:src="@{/images/report_icon.png}" alt="신고" style="width: 20px; height: 20px;">
+            <span>신고하기</span>
+          </span>
+        </p>
+
+
+      </div>
+      <div class="news-content">
+        <div class="news-content-image">
+          <img th:src="${news.imgPath.startsWith('http') ? 
+                news.imgPath : 
+                (news.imgRename != null ? news.imgPath + news.imgRename : '/images/common/devlog.svg')}"
+            alt="뉴스 컨텐츠 이미지">
+        </div>
+      </div>
+      <div class="news-content-text" th:text="${news.boardContent}">
+        본문 내용
+      </div>
+    </div>
+
+
+    <div class="button-area" th:if="${session.loginMember != null and session.loginMember.memberAdmin.name()=='Y'}">
+      <button type="button" class="delete-btn" id="delete-btn">삭제</button>
+      <button type="button" class="update-btn" id="update-btn">수정하기</button>
+    </div>
+
+
+
+    <div id="commentContainer" th:replace="~{board/ITnews/ITnewsComment}"></div>
+
+
+
+  </main>
+
+  <div th:replace="common/footer :: footer"></div>
+  <script th:inline="javascript">
+    const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ 0;
+
+    const memberNickname = /*[[${session.loginMember?.memberNickname}]]*/ "";
+
+    const boardNo = /*[[${news?.boardNo}]]*/ 0;
+
+    const boardTitle = /*[[${news?.boardTitle}]]*/ "";
+
+    const isAdmin = /*[[${session.loginMember?.memberAdmin?.toString() == 'Y'}]]*/ false;
+  </script>
+
+  <div id="modal-root"></div>
+  <script th:src="@{/js/common/report.js}"></script>
+
+
+
+
+  <script th:src="@{/js/notification/noti.js}"></script>
+  <script th:src="@{/js/board/ITnews/ITnewsDetail.js}"></script>
+  <script th:src="@{/js/board/ITnews/ITnewsComment.js}"></script>
+
+
+</body>
+
+</html>

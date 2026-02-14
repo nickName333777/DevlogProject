@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A 게시판</title>
+
+   
+    <link rel="stylesheet" href="../../../static/css/board/Qna/qnaDetail.css">
+    <link rel="stylesheet" href="../../../static/css/common/font.css">
+    <link rel="stylesheet" href="../../../static/css/common/main.css">
+
+
+</head>
+
+<body>
+    
+    
+  <header class="hd">
+
+  <div class="hd-in">
+    <!-- 왼쪽 영역 -->
+    <div class="hd-l">
+      <!-- 메뉴 버튼 -->
+      <button class="menu-btn" id="menuBtn" aria-label="menu">
+        <img src="../../../static/images/common/menu.svg" alt="menu" />
+      </button>
+
+      <!-- 사이드바!!! -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <img src="../../../static/images/common/devlog.svg" alt="logo" class="sidebar-logo" />
+          <span class="sidebar-title">DevLog</span>
+        </div>
+
+        <nav class="sidebar-menu">
+          <ul>
+            <li><img src="../../../static/images/common/home.svg" alt="home" /> Home</li>
+            <li><img src="../../../static/images/common/dashboard.svg" alt="dashboard" /> Dashboard</li>
+
+            <h4>Community</h4>
+            <li><img src="../../../static/images/common/blog.svg" alt="blog" /> 블로그</li>
+            <li><img src="../../../static/images/common/board.svg" alt="board" /> 자유게시판</li>
+            <li><img src="../../../static/images/common/news.svg" alt="news" /> 지식 뉴스</li>
+            <li><img src="../../../static/images/common/qa.svg" alt="qa" /> Q&A</li>
+            <li><img src="../../../static/images/common/job.svg" alt="job" /> 채용 정보</li>
+
+            <h4>Recommend</h4>
+            <li><img src="../../../static/images/common/cafe.svg" alt="cafe" /> 주변 카페</li>
+            <li><img src="../../../static/images/common/book.svg" alt="book" /> 관련 서적</li>
+
+            <hr />
+
+            <li><img src="../../../static/images/common/mode.svg" alt="mode" /> Mode</li>
+            <li><img src="../../../static/images/common/settings.svg" alt="settings" /> Settings</li>
+            <li><img src="../../../static/images/common/logout.svg" alt="logout" /> Logout</li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- 사이드바 나타났을 때 배경 회색으로 만들기 -->
+      <div class="overlay" id="overlay"></div>
+
+      <!-- 로고 -->
+      <div class="logo">
+        <img src="../../../static/images/common/devlog.svg" alt="logo" class="logo-ico" />
+        <div class="logo-text">
+          <span class="logo-sub">상상하는 모든 것을 기록하는 공간</span>
+          <span class="logo-t">DevLog</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽 영역 -->
+    <div class="hd-r">
+      <!-- 검색창 -->
+      <div class="search">
+        <input type="text" placeholder="여기에 검색어를 입력하세요." />
+        <button aria-label="search">
+          <img src="../../../static/images/common/search.svg" alt="search" />
+        </button>
+      </div>
+
+      <!-- 알림 -->
+      <button class="btn-ico" aria-label="notification">
+        <img src="../../../static/images/common/notifications.svg" alt="notification" />
+      </button>
+
+      <!-- 프로필 -->
+      <div class="profile" id="profile">
+        <img src="../../../static/images/common/d1.png" alt="profile" />
+        <span>My</span>
+
+        <!-- 드롭다운 메뉴 -->
+        <ul class="dropdown" id="dropdown">
+          <li>My Dev</li>
+          <li>Coffee Beans</li>
+          <li>DevTalk</li>
+          <li>Logout</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  const profile = document.getElementById('profile');
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+
+  profile.addEventListener('click', () => {
+    profile.classList.toggle('active');
+  });
+
+  window.addEventListener('click', (e) => {
+    if (!profile.contains(e.target)) {
+      profile.classList.remove('active');
+    }
+  });
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+</script>
+ 
+
+
+<main>
+
+
+          
+            <div class="table-wrap">
+
+              
+              
+             <br><br>
+            <table class="table">    
+              
+              <tr><td>
+
+
+                     <h1 class="board-name">Q&A 게시판</h1>
+
+                   </td></tr>
+
+      
+              <tr><td>
+
+                  <!-- qna-detail-table : start -->
+                  <table class="qna-detail-table">
+                                   
+                    <tr>
+                      <td rowspan="5" class="col-profile-img"><img src="../../../static/images/board/qna/dog3.jpg"></td>
+                      <td colspan="5" class="col-title">애드센스 수익이 어떻게 되나요?</td></tr>
+
+                    <tr><td colspan="5"></td></tr>
+
+                    <tr><td colspan="5">
+
+                          <table>
+                          <tr>
+                      <td class="col-writer">작성자 : 기록하는 개발자</td>
+                      <td class="col-date">2025/12/15</td>
+                      <td class="col-spacer"></td>
+                      <td class="col-viewcount">조회수:35</td>
+                      <td class="col-comment">댓글:2</td>
+                          </tr>
+                        
+                          </table>
+
+                    </td></tr>
+
+                   <tr><td class="col-content" colspan="5">
+                                <br><br>
+                        달 바뀌고 수익만 확인했는데요.
+어느순간부터 정말 몇달을 1원한푼 안 오르고 제자리더군요. <br>
+카카오 광고사건? 이후로 애드센스 수익 떨어져서 정떨어져서 등한시 했더니... <br>
+역시 저만 손해군요.... 참 ...씁쓸합니다..어쩔수 없겠지요... <br> <br>
+
+
+재작년부터 GeekNews를 비롯하여, 내가 구독하는 피드들에  <br>
+새로운 글이 올라오면 어김없이 읽어보는 주제가 있다.  <br> <br>
+
+그것은 바로 ‘AI가 개발자라는 직업을 대체할 것인가’에 관한 글들이다. <br> <br>
+
+ 당연히 나의 생계와도 밀접한 연관이 있거니와, 십수 년간 나의 터전이었던 <br>
+
+ 이 바닥이 우리(정확히는 우리와 비슷한 사람들)가 만들어낸 기술들로  <br>
+대체된다는 것이 참으로 오묘하여 관심을 두지 않을 수 없었다. <br>
+지금까지 읽었던 대부분의 글은 “근본적인 역할이 바뀐다”,  <br>
+“이런 능력이 더 중요해진다”처럼 AI가 뱉어낼 법한 낙관적인 논점 흐리기로  <br>
+일관되어 왔던 것 같다. 이런 뻔한 주장들에 동의하지 못하는 것은 아니지만,  <br>
+내가 정말로 궁금한 것은 ‘내가 몇 년도쯤 대체될 것인가’에 대한 추정치였다. 
+
+
+
+                     </td></tr>
+
+                     <tr><td colspan="5">
+
+                             <br><br>
+                            <table class="table-detail-img">
+                            <tr><td><img src="../../../static/images/board/qna/cat1.jpg"></td>
+                                <td><img src="../../../static/images/board/qna/cat2.jpg"></td>
+                                <td><img src="../../../static/images/board/qna/cat3.jpg"></td>
+                            </tr>
+                            </table>
+
+                     </td></tr>
+
+                     <tr><td colspan="6" style="text-align: left;">
+
+                          <!-- comment : start --> 
+                           <table width="600px">
+
+                            <tr><td colspan="2" style="height: 20px;"></td></tr>
+
+                            <tr><td colspan="2"><hr></td></tr>
+
+                            <tr><td colspan="2" style="height: 20px;"></td></tr>
+                            <tr><td class="col-profile-img2" rowspan="2"><img src="../../../static/images/board/qna/dog1.jpg"></td>
+                          
+                                <td>
+                                 개발자    2025.12.3     
+
+                                </td></tr>
+
+                            <tr><td> 
+                                ssgoi라는 페이지 전환 라이브러리를 만들고 있었다.<br>
+                                 Spring 물리 기반으로 페이지가 부드럽게 전환되는 게 핵심 기능이었다.<br><br>
+
+데스크톱 Chrome에서는 만족스러웠다. 60fps로 부드럽게 동작했다. <br>
+그런데 아이폰 13에서 테스트해보니 뭔가 미세하게 끊기는 느낌이 들었다.<br><br>
+
+"기분 탓인가?" 싶어서 Chrome DevTools에서 CPU 성능을 6배 느리게 설정하고 다시 테스트해봤다.
+
+                            
+                               </td></tr>
+
+
+                                  <tr><td colspan="2" style="height: 20px;"></td></tr>
+
+                            <tr><td colspan="2"><hr></td></tr>
+
+                            <tr><td colspan="2" style="height: 20px;"></td></tr>
+                            <tr><td class="col-profile-img2" rowspan="2"><img src="../../../static/images/board/qna/dog2.jpg"></td>
+                          
+                                <td>
+                                 Mr. Lee   2025.12.3     
+
+                                </td></tr>
+
+                            <tr><td> 
+                               프론트엔드 개발을 하다 보면 성능 최적화를 피할 수 없는 순간이 온다. <br>
+                               특히 애니메이션은 성능 문제가 눈에 바로 보이기 때문에 더 신경 쓰이는 영역이기도 하다.<br><br>
+
+최근에 페이지 전환 라이브러리(https://ssgoi.dev)
+를 만들면서 흥미로운 문제를 만났고, <br>
+해결하는 과정에서 브라우저 렌더링에 대해 더 깊이 이해하게 됐다. 그 경험을 공유해보려 한다.
+                                
+                            
+                               </td></tr>
+
+                           <tr><td colspan="2" style="height: 20px;"></td></tr>
+                           <tr><td colspan="2"><hr></td></tr>
+                           <tr><td colspan="2" style="height: 10px;"></td></tr>
+
+                           <tr><td colspan="2">
+                               
+                              <div>
+                               <textarea>
+
+
+                               </textarea>
+
+                               </div>
+
+                               <div style="text-align: right; margin-top: 5px; margin-bottom: 10px;">
+                                 <button class="btn-type">답변등록</button>
+
+                               </div>
+
+
+                          
+
+                           </td></tr>
+
+
+
+                           <tr><td colspan="2">
+                               <!-- 버튼 영역 -->
+                              
+                             <div style="display:flex; width: 100%;">
+                                 <div style="text-align: left; width: 50%;">
+
+                                  <button class="btn-type">이전글</button>
+                                  <button class="btn-type">다음글</button>
+
+                                 </div>
+
+                                 <div style="text-align: right; width: 50%;">
+                        
+
+        <!-- 수정 -->
+        <a th:href="@{/board/qna_edit/{id}(
+                id=${qna.id},
+                page=${page},
+                type=${type},
+                keyword=${keyword}
+            )}">
+            <button class="btn-type">수정</button>
+        </a>
+
+        <!-- 삭제 -->
+        <a th:href="@{/board/qna_delete/{id}(
+                id=${qna.id},
+                page=${page},
+                type=${type},
+                keyword=${keyword}
+            )}"
+           onclick="return confirm('삭제하시겠습니까?');">
+            <button class="btn-type">삭제</button>
+        </a>
+
+            <!-- 🔹 목록으로 (page/type/keyword 유지) -->
+                        <a th:href="@{/board/qnaList(
+                                page=${page},
+                                type=${type},
+                                keyword=${keyword}
+                                  )}">
+                                  <button class="btn-type">목록</button>
+                        </a>
+    
+                        </div>
+
+                      </div>
+
+                  </td></tr>
+                  </table>
+
+                     <!-- comment : end --> 
+
+                </td></tr>
+
+
+
+                 </table>
+
+                   <!-- qna-detail-table : start -->
+            
+            </td></tr>
+
+        
+
+            </table>
+
+
+
+</main>
+
+   
+    <!-- ===== Footer ===== -->
+    <footer class="ft">
+      <div class="ft-in">
+        <!-- 상단 로고/소개 -->
+        <div class="ft-top">
+          <div class="ft-logo">
+            <img src="../../../static/images/common/devlog.svg" alt="DevLog Logo" class="ft-logo-img" />
+            <p class="ft-desc">
+              개발자의 감성과 지식을 잇는 새로운 블로그 커뮤니티<br />
+              <strong>Devlog</strong> 가 만들어갑니다.
+            </p>
+          </div>
+  
+          <ul class="ft-menu">
+            <li><a href="#">SHOP</a></li>
+            <li><a href="#">REVIEW</a></li>
+            <li><a href="#">COMMUNITY</a></li>
+            <li><a href="#">ABOUT</a></li>
+          </ul>
+        </div>
+  
+        <!-- 하단 정보 -->
+        <div class="ft-bottom">
+          <p>
+            상호 : (주)디블로그 | 대표 팀 : ZeroBoost<br />
+            사업자등록번호 : 000-00-00000 | 문의처 : dev-logs2@gmail.com<br />
+            주소 : 서울특별시 용산구 우정국로21 9층 903호
+          </p>
+  
+          <p class="ft-links">
+            <a href="#">이용약관</a> |
+            <a href="#">개인정보처리방침</a>
+          </p>
+  
+          <p class="ft-copy">Copyright © 제로부스트</p>
+        </div>
+      </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mybeans</title>
+  <link rel="stylesheet" th:href="@{/css/coffeebeans/mybeans.css}">
+  <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+  <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+
+</head>
+
+<div th:replace="common/header :: header"></div>
+<script th:src="@{/js/common/header.js}"></script>
+
+<body>
+  <div class="mybeans-container">
+    <div class="main-beans">
+      <div class="title-group">
+        <img th:src="@{/images/common/coffebean.png}" alt="커피콩">
+        <h2 class="mybeans">내 커피콩</h2>
+      </div>
+      <div class="beans-count">
+        <span th:text="|${#numbers.formatInteger(myBeans.beansAmount, 0, 'COMMA')} 콩|">12,450 콩</span>
+        <span th:text="|약 ${#numbers.formatInteger(myBeans.beansAmount, 0, 'COMMA')}원 상당|">12,450 콩</span>
+
+        <div class="btn-group">
+          <button class="charge-btn" id="charge-btn">
+            충전하기
+          </button>
+          <button class="exchange-btn" id="exchange-btn">
+            환전하기
+          </button>
+        </div>
+      </div>
+
+
+      <div class="info-cards">
+        <div class="beans-info">
+          <div class="info-title-group">
+            <img th:src="@{/images/common/1bean.png}" alt="단가">
+            <h3 class="info-title">커피콩 단가 안내</h3>
+          </div>
+          <ul class="info-list">
+            <li>1 커피콩 = 1원</li>
+            <li>1,000 커피콩 = 1,000원</li>
+            <li>10,000 커피콩 = 10,000원</li>
+          </ul>
+        </div>
+
+        <div class="beans-info">
+          <div class="info-title-group">
+            <img th:src="@{/images/common/2bean.png}" alt="환전">
+            <h3 class="info-title">커피콩 환전 정책</h3>
+          </div>
+          <ul class="info-list">
+            <li>최소 환전 가능 : 5,000 커피콩 이상</li>
+            <li>환전 시 10% 수수료가 부과됩니다.</li>
+            <li>커피콩을 사용하지 않았을 시 결제 취소 요청이 가능합니다.</li>
+          </ul>
+          <p class="example-text"><strong>예시)</strong><br>환전 요청 : 10,000 커피콩 → 수수료: 1,000</p>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+    <div class="history-section">
+      <h3 class="history-title">내 커피콩 내역</h3>
+
+      <div class="filter-tab-container">
+        <button class="filter-btn active" data-type="all">전체</button>
+        <button class="filter-btn" data-type="charge">충전</button>
+        <button class="filter-btn" data-type="use">사용</button>
+        <button class="filter-btn" data-type="exchange">환전</button>
+        <button class="filter-btn" data-type="cancel">취소</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>유형</th>
+              <th>내역</th>
+              <th>금액</th>
+              <th>일시</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr th:each="history : ${historyList}" th:data-type="${(history.contentType == 'POST' or history.contentType == 'SUBSCRIBE' or history.contentType == 'CHATBOT') ? 'use' : 
+                              (history.contentType == '충전' ? 'charge' : 
+                              (history.contentType == '환전' ? 'exchange' : 
+                              (history.contentType == '취소' ? 'cancel' : 'all')))}" th:data-id="${history.paymentId}"
+              th:data-no="${history.beansPayNo}" th:data-used="${history.usedAmount}"
+              th:data-price="${history.displayPrice}">
+
+              <td>
+                <span
+                  th:if="${history.contentType == 'POST' or history.contentType == 'SUBSCRIBE' or history.contentType == 'CHATBOT'}"
+                  th:text="'사용'"></span>
+                <span th:if="${history.contentType == '충전'}" th:text="'충전'"></span>
+                <span th:if="${history.contentType == '환전'}" th:text="'환전'"></span>
+                <span th:if="${history.contentType == '취소'}" th:text="'취소'"></span>
+                <span
+                  th:unless="${history.contentType == 'POST' or history.contentType == 'SUBSCRIBE' or history.contentType == 'CHATBOT' or history.contentType == '충전' or history.contentType == '환전' or history.contentType == '취소'}"
+                  th:text="${history.contentType}"></span>
+              </td>
+
+              <td>
+                <th:block th:switch="${history.contentType}">
+                  <span th:case="'POST'" th:text="|유료 콘텐츠 구매|"></span>
+                  <span th:case="'SUBSCRIBE'" th:text="'구독 서비스 이용'"></span>
+                  <span th:case="'CHATBOT'" th:text="'챗봇 이용권 구매'"></span>
+                  <span th:case="'충전'" th:text="'커피콩 충전'"></span>
+                  <span th:case="'환전'" th:text="'커피콩 환전 신청'"></span>
+                  <span th:case="'취소'" th:text="'커피콩 결제 취소'"></span>
+                  <span th:case="*" th:text="${history.contentType}">기타 내역</span>
+                </th:block>
+              </td>
+
+              <td th:class="${history.payAmount > 0 ? 'plus' : 'minus'}" th:text="${history.payAmount > 0 ? 
+                            '+' + #numbers.formatInteger(history.displayPrice, 0, 'COMMA') : 
+                            '-' + #numbers.formatInteger(history.displayPrice, 0, 'COMMA')}">
+              </td>
+
+              <td th:text="${history.payDate}">일시</td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(historyList)}">
+              <td colspan="4" style="text-align: center;">내역이 존재하지 않습니다.</td>
+            </tr>
+          </tbody>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="charge-modal">
+    <div class="charge-modal-content">
+      <img th:src="@{/images/common/coffebean.png}" alt="커피콩" class="modal-icon">
+      <h2>커피콩 충전</h2>
+      <div class="input-wrapper">
+        <input type="text" id="charge-amount-input" placeholder="금액을 입력하세요" value="10000">
+        <span>원</span>
+      </div>
+      <div class="amount-options">
+        <button>1,000</button>
+        <button class="selected">10,000</button>
+        <button>30,000</button>
+        <button>50,000</button>
+      </div>
+      <button class="charge-submit-btn" id="final-charge-submit">충전하기</button>
+    </div>
+  </div>
+
+  <div class="modal" id="exchange-modal">
+    <div class="exchange-modal-content">
+      <div class="modal-header-section">
+        <img th:src="@{/images/common/coffebean.png}" alt="커피콩" class="modal-icon">
+        <h2>커피콩 환전</h2>
+      </div>
+
+      <div class="exchange-content">
+        <h3 class="beans-label">내 보유 커피콩</h3>
+        <span class="mybeans-val" id="currentBeansVal"
+          th:text="|${#numbers.formatInteger(myBeans.beansAmount, 0, 'COMMA')} 콩|">12,450 콩</span>
+
+        <ul class="exchange-info-list">
+          <li>환전 시 계좌에 환급은 1~3일이 소요됩니다.</li>
+          <li>환전 시 <strong>10% 수수료</strong>가 자동 차감됩니다.</li>
+        </ul>
+      </div>
+
+      <div class="calculation-section">
+        <div class="calc-row">
+          <span>신청 커피콩</span>
+          <span class="val" id="calcOrigin">0 콩</span>
+        </div>
+        <div class="calc-row">
+          <span>수수료 (10%)</span>
+          <span class="val minus" id="calcFee">-0 콩</span>
+        </div>
+        <div class="calc-total-row">
+          <span>최종 입금 예정액</span>
+          <span class="total-val" id="calcFinal">0 원</span>
+        </div>
+      </div>
+
+      <div class="account-section">
+        <p class="section-label">계좌 입력 <span class="required">*</span></p>
+        <div class="account-form-table">
+          <div class="form-row">
+            <div class="form-label">은행</div>
+            <div class="form-input">
+              <select id="returnBank">
+                <option value="">은행을 선택하세요</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-label">계좌번호</div>
+            <div class="form-input">
+              <input type="text" id="exchangeAccount" placeholder="'-' 제외 숫자만 입력">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-label">예금주명</div>
+            <div class="form-input">
+              <input type="text" id="exchangeHolder" placeholder="예금주 성함">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="exchange-submit-btn" id="final-exchange-submit">환전하기</button>
+    </div>
+  </div>
+  </div>
+  <div class="modal" id="exchange-complete-modal">
+    <div class="complete-modal-content">
+      <img th:src="@{/images/common/coffebean.png}" alt="커피콩" class="complete-icon">
+      <div class="complete-text">
+        <p class="main-msg">회원님의 환전 요청이 관리자에게 정상적으로 전송되었습니다!</p>
+        <p class="sub-msg">해당 요청 처리 건은 1~3일 정도 소요됩니다.</p>
+      </div>
+      <button class="complete-confirm-btn" id="complete-confirm-btn">확인</button>
+    </div>
+  </div>
+</body>
+
+
+<div class="modal" id="cancel-modal">
+  <div class="cancel-modal-content">
+    <div class="modal-header-section">
+      <img th:src="@{/images/common/coffebean.png}" alt="커피콩" class="modal-icon">
+      <h2>커피콩 결제 취소</h2>
+    </div>
+    <div class="calculation-section">
+      <div class="calc-row">
+        <span>커피콩</span>
+        <span class="val">30,000콩</span>
+      </div>
+      <div class="calc-row">
+        <span>취소 금액</span>
+        <span class="val minus">-30,000원</span>
+      </div>
+      <div class="calc-total-row">
+        <span>총 금액</span>
+        <span class="total-val">0원</span>
+      </div>
+    </div>
+    <button class="cancel-submit-btn">결제 취소하기</button>
+  </div>
+</div>
+
+<div class="modal" id="cancel-success-modal">
+  <div class="complete-modal-content">
+    <img th:src="@{/images/common/coffebean.png}" alt="커피콩" class="complete-icon">
+    <div class="complete-text">
+      <p class="main-msg">결제 취소가 정상적으로 처리되었습니다!</p>
+    </div>
+    <button class="complete-confirm-btn" id="cancel-success-confirm">확인</button>
+  </div>
+</div>
+
+<div class="modal" id="cancel-fail-modal">
+  <div class="complete-modal-content">
+    <img th:src="@{/images/common/coffebean.png}" alt="커피콩" class="complete-icon">
+    <div class="complete-text">
+      <p class="main-msg">회원님은 이미 커피콩 사용 내역이 있습니다.<br>취소가 불가능합니다.</p>
+    </div>
+    <button class="complete-confirm-btn" id="cancel-fail-back">돌아가기</button>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  const portoneConfig = {
+    storeId: [[${ storeId }]],
+    channelKey: [[${ channelKey }]]
+  };
+</script>
+
+
+
+
+<div th:replace="common/footer :: footer"></div>
+<script th:src="@{/js/notification/noti.js}"></script>
+<script th:src="@{/js/coffeebeans/mybeans.js}"></script>
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+
+
+
+</html>

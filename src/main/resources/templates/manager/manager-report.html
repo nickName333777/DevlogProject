@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>신고 관리</title>
+
+  <link rel="stylesheet" th:href="@{/css/manager/manager-report.css}">
+</head>
+
+<body>
+
+  <div th:replace="manager/common/manager-header :: header"></div>
+    <div class="layout">
+
+      <!-- 사이드바 -->
+      <div th:replace="manager/common/manager-sidebar :: sidebar('report')"></div>
+
+    <main class="main">
+      <h2>신고 관리</h2>
+      
+      <form th:action="@{/manager/dashboard/report}" method="get" class="search-filter">
+
+        <div class="search-box">
+          <label>통합 검색</label>
+          <input type="text"
+                name="query"
+                placeholder="신고 내용 / 신고자 / 대상자"
+                th:value="${param.query}" />
+          <button type="submit">
+            <img th:src="@{/images/manager/search.svg}" alt="search" />
+          </button>
+        </div>
+
+        <div class="filter">
+          <span>필터</span>
+
+          <!-- 신고 사유 -->
+          <select name="reportType">
+            <option value="">전체</option>
+            <option th:each="type : ${reportTypes}"
+                    th:value="${type}"
+                    th:selected="${param.reportType == type}"
+                    th:text="${type}">
+            </option>
+          </select>
+
+          <!-- 처리 상태 -->
+          <select name="status">
+            <option value="">전체</option>
+            <option value="PENDING" th:selected="${param.status == 'PENDING'}">처리전</option>
+            <option value="RESOLVED" th:selected="${param.status == 'RESOLVED'}">처리완료</option>
+            <option value="REJECTED" th:selected="${param.status == 'REJECTED'}">반려</option>
+          </select>
+
+          <!-- 대상 타입 -->
+          <select name="targetType">
+            <option value="">전체</option>
+            <option value="BOARD" th:selected="${param.targetType == 'BOARD'}">게시글</option>
+            <option value="MESSAGE" th:selected="${param.targetType == 'MESSAGE'}">메시지</option>
+          </select>
+
+        </div>
+      </form>
+
+
+      <!-- ===== 신고 목록 ===== -->
+      <button class="complete-btn" onclick="confirmBatchResolve()">
+        선택 처리
+      </button>
+      <div class="table-scroll-wrapper">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>
+                <input type="checkbox" id="checkAll">
+              </th>
+              <th>번호</th>
+              <th>유형</th>
+              <th>종류</th>
+              <th>내용</th>
+              <th>신고자</th>
+              <th>대상자</th>
+              <th>신고일</th>
+              <th>처리일</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+
+        <tbody>
+          <tr th:each="report : ${reportList}"
+              th:data-report-no="${report.reportId}"
+              th:data-target-id="${report.targetId}"
+              th:data-message-no="${report.messageNo}"
+              th:data-target-type="${report.targetType}"
+              th:data-target-url="${report.targetUrl}"
+              th:data-report-type="${report.reportType}"
+              th:data-report-reason="${report.reportReason}"
+              th:data-reporter="${report.reporterNickname}"
+              th:data-target="${report.targetNickname}"
+              th:data-report-date="${#temporals.format(report.reportDate, 'yyyy.MM.dd')}"
+              th:data-message-content="${report.messageContent}"
+              onclick="openModal(this)">
+
+            <!-- 체크박스 , 조회시점에 이미 처리완료된거랑 메세지의 경우에는 체크박스 활성화 안함 -->
+            <td onclick="event.stopPropagation()">
+            <input type="checkbox"
+              class="row-check"
+              th:classappend="${report.targetType.name() != 'BOARD' or report.status.name() != 'PENDING'} 
+                              ? ' row-check--disabled' 
+                              : ''"
+              th:value="${report.reportId}" />
+            </td>
+
+
+            <!-- 번호 -->
+            <td th:text="${report.reportId}">1</td>
+
+            <td th:text="${report.reportType}">스팸/광고</td>
+            <td th:text="${report.targetType}">BOARD</td>
+            <td th:text="${report.reportReason}">내용</td>
+            <td th:text="${report.reporterNickname}">신고자</td>
+            <td th:text="${report.targetNickname}">대상자</td>
+
+            <td th:text="${#temporals.format(report.reportDate, 'yyyy.MM.dd')}">
+              2025.01.12
+            </td>
+
+            <td th:text="${report.processDate != null 
+                ? #temporals.format(report.processDate, 'yyyy.MM.dd') 
+                : '-'}">
+              -
+            </td>
+
+            <!-- 상태 -->
+            <td>
+              <div class="status-wrapper" onclick="event.stopPropagation()">
+                <select class="status-select"
+                        th:disabled="${report.status.name() != 'PENDING'}"
+                        onchange="confirmSingleResolve(this)">
+                  <option value="PENDING"
+                          th:selected="${report.status.name() == 'PENDING'}">
+                    처리전
+                  </option>
+
+                  <option value="RESOLVED"
+                          th:selected="${report.status.name() == 'RESOLVED'}">
+                    처리완료
+                  </option>
+
+                  <option value="REJECTED"
+                          th:selected="${report.status.name() == 'REJECTED'}">
+                    반려
+                  </option>
+                </select>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+
+        </table>
+        <div id="loadingSpinner" class="loading-spinner" style="display:none;">
+          불러오는 중...
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== 신고 상세 모달 ===== -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+
+      <h3 class="modal-title">신고내역</h3>
+
+      <div class="modal-profile">
+        <p class="profile-name" id="modalTargetName"></p>
+        <div class="profile-circle"></div>
+      </div>
+
+      <div class="modal-info">
+        <div class="info-item">
+          <label>신고 번호</label>
+          <!-- <input type="text" value="01" readonly /> -->
+          <input type="text" id="modalReportNo" readonly />
+        </div>
+        <div class="info-item">
+          <label>신고 유형</label>
+          <!-- <input type="text" value="스팸/광고" readonly /> -->
+          <input type="text" id="modalReportType" readonly />
+        </div>
+        <div class="info-item">
+          <label>신고 날짜</label>
+          <!-- <input type="text" value="2025.01.12" readonly /> -->
+          <input type="text" id="modalReportDate" readonly />
+        </div>
+      </div>
+
+      <textarea class="modal-content" id="modalReason" readonly></textarea>
+      <!-- 신고된 채팅 메시지 -->
+      <div class="chat-preview" id="modalMessageContent"></div>
+      <div class="modal-footer">
+        <button class="move-btn" id="moveButton">해당 게시글 이동</button>
+
+        <!-- 채팅 신고일 때만 노출 -->
+        <button class="delete-btn" id="deleteMessageBtn" style="display:none;">
+          메시지 삭제
+        </button>
+      </div>
+
+      <p class="modal-notice">
+        ⓘ 허위 신고일 경우 신고자에게 불이익이 발생할 수 있습니다.
+      </p>
+    </div>
+  </div>
+
+<script th:src="@{/js/manager/manager-report.js}"></script>
+
+</body>
+</html>

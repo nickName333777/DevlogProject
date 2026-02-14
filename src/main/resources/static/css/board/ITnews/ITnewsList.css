@@ -1,0 +1,165 @@
+/* 전체 크기 조정 */
+.ITnews {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+  justify-self: center;
+  margin-top: 60px;
+}
+
+.ITnews h1 {
+  justify-self: center;
+}
+
+
+.ITnews-category {
+  margin-bottom: 12px;
+  justify-self: center;
+
+
+}
+
+
+
+.form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+
+.form-inline button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 100px;
+  height: 50px;
+  border-color: #BD83CE;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  background-color: white;
+
+}
+
+.ITnews-category button {
+  background-color: white;
+  border-radius: 10px;
+  width: 100px;
+  height: 50px;
+  border-color: #BD83CE;
+  cursor: pointer;
+  font-size: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+
+
+}
+
+
+
+
+.form-inline button:hover {
+  background-color: #BD83CE;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: white;
+
+
+}
+
+.form-inline button:hover img {
+  filter: invert(1) brightness(500%);
+  /* 흰색으로 반전 */
+}
+
+.filter-btn img {
+  width: 26px;
+  height: 26px;
+}
+
+
+/* 목록 리스트 */
+.news-list {
+  border-top: 2px solid #BD83CE;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+
+/* article 태그 */
+.news-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #BD83CE;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: space-between;
+
+}
+
+.thumbnail {
+  border-radius: 10px;
+  width: 110px;
+  height: 110px;
+  margin-top: 15px;
+}
+
+
+
+
+.summary {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* 보여줄 줄 수 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+.pagination-area {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  gap: 8px;
+}
+
+.pagination a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.pagination a:hover {
+  background-color: #f4f4f4;
+}
+
+.pagination a.current {
+  background-color: #6c5ce7;
+  color: white;
+  border-color: #6c5ce7;
+  font-weight: bold;
+}

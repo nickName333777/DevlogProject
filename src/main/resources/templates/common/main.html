@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevLog Main</title>
+  <link rel="stylesheet" th:href="@{/css/common/main.css}" />
+  <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+  <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+</head>
+
+<body>
+  <!-- header -->
+  <div th:replace="common/header :: header"></div>
+  <script th:src="@{/js/common/header.js}"></script>
+  <script th:src="@{/js/notification/noti.js}"></script>
+
+  <!-- main -->
+  <main class="main-container">
+    <!-- 인기글 + 활동중인 친구들 -->
+    <section class="main-top">
+      <div class="popular-posts">
+        <h2 class="section-title">🔥 실시간 핫 게시글</h2>
+        <div class="post-grid" id="postGrid">
+          <!-- 여기에 스프링부트..로 목록 조회 해서 카드 여러 개를 넣음 -->
+        </div>
+      </div>
+      <div class="divider"></div>
+      <!-- 활동중인 친구 -->
+      <div class="active-friends">
+        <div class="greeting">
+
+          <!-- 회원 -->
+          <p th:if="${session.loginMember != null}">
+            <strong th:text="${session.loginMember.memberNickname}"></strong> 님,<br>
+            오늘은 어떤 하루였나요?
+          </p>
+
+          <!-- 비회원 -->
+          <p th:if="${session.loginMember == null}">
+            오늘의 생각을 기록하기 좋은 순간이에요.
+          </p>
+
+          <button class="write-btn" th:onclick="|location.href='@{/blog/write}'|">
+            글 작성
+          </button>
+
+        </div>
+
+
+        <div class="friends-section">
+
+          <!-- 회원일 시 -->
+          <div th:if="${session.loginMember != null}">
+            <h4>지금 활동중인 친구들</h4>
+            <div class="friends-list" id="friendsList">
+              <!-- 주연아 부탁한다 이곳을 활동중인 친구들로 채워줘 -->
+            </div>
+          </div>
+
+          <!-- 비회원일 시 - devlog 이용하고싶게 만드는 가이드!!~ -->
+          <div th:if="${session.loginMember == null}">
+            <h4>DevLog에서는 이런 걸 할 수 있어요</h4>
+            <ul class="guest-guide">
+              <li>📝 개발 기록부터 일상까지, 나만의 성장 히스토리</li>
+              <li>💬 DevTalk · 다른 개발자와의 소통</li>
+              <li>⭐ 유용한 글은 스크랩! 나만의 아카이브</li>
+              <li>🏆 활동량에 따른 레벨 증가 시스템</li>
+              <li>💎 유료 멤버십만의 특별한 게시물도 놓치지 마세요!</li>
+            </ul>
+          </div>
+
+        </div>
+
+    </section>
+
+    <!-- 최신 피드 -->
+    <section class="latest-feed">
+      <div class="section-header">
+        <h2 class="section-title">최신 피드</h2>
+        <a th:href="@{/blog/list}" class="more-link">더보기 &gt;</a>
+      </div>
+
+      <div class="post-grid" id="latestFeedGrid">
+        <!-- 여기도 카드 10개~ -->
+      </div>
+    </section>
+
+    <!-- 지식 뉴스 -->
+    <section class="news-section">
+      <div class="news-header">
+        <h2>지식을 더하는 뉴스</h2>
+        <a th:href="@{/ITnews}" class="more-link">더보기 &gt;</a>
+      </div>
+
+      <div class="news-grid">
+        <div class="news-card" th:each="news, stat : ${itnews}" th:if="${stat.index < 4}"
+          th:onclick="|location.href='/ITnews/${news.boardNo}'|" style="cursor:pointer;">
+
+          <div class="news-text">
+            <h3 class="news-title" th:text="${news.boardTitle}"></h3>
+            <p class="news-desc" th:text="${#strings.abbreviate(news.boardContent, 80)}">
+            </p>
+          </div>
+
+          <div class="news-thumb">
+            <img th:src="${
+                news.imgPath != null and news.imgPath.startsWith('http')
+                  ? news.imgPath
+                  : (news.imgPath != null and news.imgRename != null
+                      ? news.imgPath + news.imgRename
+                      : '/images/common/devlog.svg')
+              }"
+              alt="뉴스 썸네일">
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- 카페 추천 -->
+    <section class="cafe-section">
+      <div class="cafe-header">
+        <h2>개발하기 좋은 카페를 추천해요.</h2>
+        <p class="cafe-sub">분위기 좋은 카페에서 작업하면 버그가 도망간다는 소문이 있어요 ☕</p>
+        <a th:href="@{/cafe/list}" class="cafe-more">더 많은 카페 추천받기 &gt;</a>
+      </div>
+
+      <div class="cafe-list" id="cafeList">
+        <!-- JS에서 데이터 렌더링 -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- footer -->
+  <div th:replace="common/footer :: footer"></div>
+
+  <script th:src="@{/js/common/main.js}"></script>
+  <script th:src="@{/js/common/theme.js}"></script>
+
+  <!-- 알림창 띄우기 -->
+  <script th:inline="javascript">
+    const message = /*[[${message}]]*/ "전달 받은 message";
+    if (message != null) alert(message); // message12가 없으면 null값
+    const memberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
+  </script>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>회원 관리</title>
+
+  <link rel="stylesheet" th:href="@{/css/manager/manager-layout.css}">
+  <link rel="stylesheet" th:href="@{/css/manager/manager-customer.css}">
+</head>
+
+<body>
+  
+  <div th:replace="manager/common/manager-header :: header"></div>
+    <div class="layout">
+
+      <!-- 사이드바 -->
+      <div th:replace="manager/common/manager-sidebar :: sidebar('customer')"></div>
+
+  <main class="main">
+    <h2>회원 관리</h2>
+
+    <section class="table-section">
+
+      <div class="table-header">
+        <h3>회원 검색</h3>
+
+        <div class="search-box">
+          <input
+            type="text"
+            placeholder="이메일로 회원 검색"
+          />
+          <button>
+            <img th:src="@{/images/manager/search.svg}" />
+          </button>
+        </div>
+      </div>
+
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>연락처</th>
+            <th>가입일</th>
+            <th>상태</th>
+          </tr>
+        </thead>
+
+        <tbody id="memberTableBody">
+          <!-- 전체 회원 목록 (서버에서 최초 렌더링) -->
+          <tr th:each="member : ${memberList}">
+            <td th:text="${member.memberNo}"></td>
+            <td th:text="${member.memberId}"></td>
+            <td th:text="${member.memberName}"></td>
+            <td th:text="${member.memberEmail}"></td>
+            <td th:text="${member.memberPhone}"></td>
+            <td th:text="${#temporals.format(member.enrollDate,'yyyy.MM.dd')}"></td>
+            <td>
+              <span th:text="${member.status}"
+                    th:classappend="
+                      ${member.status == 'ACTIVE'} ? 'status-active' :
+                      ${member.status == 'BLOCKED'} ? 'status-blocked' : ''">
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+  </main>
+
+</div>
+
+<script th:src="@{/js/manager/manager-customer.js}"></script>
+
+</body>
+</html>

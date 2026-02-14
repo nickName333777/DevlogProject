@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판</title>
+
+    <link rel="stylesheet" th:href="@{/css/board/freeboard/freeboardList.css}">
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+  	<link rel="stylesheet" th:href="@{/css/common/common.css}" />    
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+
+</head>
+
+
+
+<body>
+
+    <!-- <p th:text="${map.pagination}"></p>    
+    <p th:text="${map.freeboardList}"></p>     -->
+    <main th:with="pagination=${map.pagination}, freeboardList=${map.freeboardList}">
+        <!-- 헤더 -->
+        <!--<header class="main-header">header</header> -->
+        <!-- header.html (fragment) 추가 -->
+        <!-- <th:block th:replace="~{/common/header}">header.html</th:block> -->
+        <!-- 또는 -->
+        <!-- <div th:replace="common/header :: header"></div> -->
+
+		<div th:replace="common/header :: header"></div>
+		<script th:src="@{/js/common/header.js}"></script>
+
+
+        <!-- 네비게이션 -->
+        <nav class="main-nav"></nav>
+        <!--  ###################################################### -->
+
+        <div class="container-wrapper"> 
+			<div class="top-space-bw-header"> </div>
+            <h2 class="title-main fw-800">자유게시판</h2>   
+
+            <div class="container">
+
+                <!-- 글쓰기 버튼 -->
+                <!-- <p th:text="${session.loginMember}"></p>  -->
+                <div class="write-btn-box">
+                    <button th:if="${session.loginMember}" class="write-btn" id="fbWriteBtn">글쓰기</button>
+                </div>
+
+                <!-- 게시글 리스트 -->
+                <div class="card-list">
+
+                    <!-- 게시글이 없을 때 -->
+                    <div th:if="${#lists.size(freeboardList) == 0}" style="text-align: center; padding: 50px">
+                        <p>작성된 게시글이 없습니다.</p>
+                    </div>
+
+                    <!-- 카드 1 -->
+                    <th:block th:unless="${#lists.size(freeboardList) == 0}"></th:block>  
+                        <div class="fbList-card" th:each="freeboard : ${freeboardList}">
+                            <!-- thumbnail -->
+                            <img th:if="${freeboard.thumbnail}" th:src="${freeboard.thumbnail}" class="fbList-card-img" th:alt="${freeboard.boardTitle}">
+                            <img th:unless="${freeboard.thumbnail}" th:src="@{/images/logo.png}" class="fbList-card-img" alt="기본 이미지">
+                            <div class="fbList-content">
+                                <h3 class="fbList-title">
+                                    <!-- 게시글 상세 링크 -->
+                                    <a class="fbList-title-link"
+                                        th:href="@{/board/freeboard/{no}(no=${freeboard.boardNo}, cp=${pagination.currentPage})}"
+                                        th:text="${freeboard.boardTitle}">제목</a>
+                                </h3>
+                                <p class="fbList-text" th:text="${freeboard.boardContent}">내용</p>
+                            </div>
+                        </div>
+                    </th:block>
+
+                    
+
+                <!-- 페이지네이션 -->
+                <div class="pagination">
+
+                    <ul th:unless ="${param.query}" class="pagination">
+                        <li><a th:href="@{/board/freeboard(cp=1) }" class="arr left">&lt;&lt;</a></li>
+                        <li><a th:href="@{/board/freeboard(cp=${pagination.prevPage} ) }" class="page-btn previous">&lt;</a></li>
+                        <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage, 1)}">
+                            <!-- 현재 보고있는 페이지 -->
+                            <li th:if="${pagination.currentPage == i}">
+                                <a class="page-btn active" th:text="${i}">현재 페이지</a>
+                            </li>
+                             
+                            <!-- 현재 페이지를 제외한 나머지 -->
+                            <li th:unless="${pagination.currentPage == i}">
+                                <a th:href="@{/board/freeboard( cp=${i}) }" class="page-btn" th:text="${i}"></a>
+                            </li>
+                        </th:block>
+                        <li><a th:href="@{/board/freeboard( cp=${pagination.nextPage} ) }" class="page-btn next">&gt;</a></li>
+                        <li><a th:href="@{/board/freeboard( cp=${pagination.maxPage} ) }" class="arr right">&gt;&gt;</a></li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!--  ###################################################### -->
+        <!--  <footer class="main-footer">footer</footer> -->
+        <!-- footer.html 추가 -->
+        <!-- <th:block th:replace="~{common/footer}">footer.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/footer :: footer"></div>
+		
+    </main>
+
+    <!-- 알림창 띄우기 -->
+    <script th:inline="javascript"> 
+        const message = /*[[${message}]]*/ "전달 받은 message";
+        if(message != null) alert(message); // message12가 없으면 null값
+    </script>
+    
+	<script th:src="@{/js/notification/noti.js}"></script>
+    <!-- freeboardList.js 추가 -->
+    <script th:src="@{/js/board/freeboard/freeboardList.js}"></script>
+</body>
+</html>

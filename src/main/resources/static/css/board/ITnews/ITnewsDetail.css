@@ -1,0 +1,120 @@
+.news-header {
+  width: 100%;
+  height: 400px;
+}
+
+.news-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+}
+
+
+.news-area {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.news-title {
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+
+}
+
+.news-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+p {
+  margin: 5px;
+}
+
+.news-content-image {
+  display: flex;
+  justify-content: center;
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.news-content-text {
+  max-width: 550px;
+  margin: 0 auto;
+  margin-top: 20px;
+  padding: 0 20px;
+  white-space: pre-wrap;
+  margin-bottom: 20px;
+}
+
+#goToListBtn {
+  display: flex;
+  margin-top: 10px;
+  background-color: #9C9C9C;
+  border-radius: 20px;
+  color: white;
+  border: none;
+  width: 80px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+/* 수정/삭제버튼 */
+/* 하단 버튼 영역 */
+.button-area {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 40px;
+  margin-right: 250px;
+}
+
+
+#delete-btn #update-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+
+}
+
+
+/* 삭제 버튼 */
+.delete-btn {
+  background-color: #eee;
+  color: #888;
+  border: none;
+  box-shadow: 0 4px 10px rgba(209, 163, 255, 0.3);
+  width: 100px;
+  height: 30px;
+  font-size: 15px;
+}
+
+.delete-btn:hover {
+  background-color: #e5e5e5;
+}
+
+/* 수정하기 버튼 (보라색 포인트) */
+.update-btn {
+  background-color: #d1a3ff;
+  color: white;
+  box-shadow: 0 4px 10px rgba(209, 163, 255, 0.3);
+  border: none;
+  width: 100px;
+  height: 30px;
+  font-size: 15px;
+}
+
+.update-btn:hover {
+  background-color: #ba85ff;
+}

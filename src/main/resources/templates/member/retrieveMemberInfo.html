@@ -1,0 +1,73 @@
+<!DOCTYPE html> 
+<html lang="ko" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 회원 정보 조회</title>
+
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />    
+
+</head>
+<body>
+
+    <main>
+
+        <!-- header.html 추가(포함): 경로 = "common/header" -->
+        <div th:replace="common/header :: header"></div>
+        <script th:src="@{/js/common/header.js}"></script>
+
+        <section class="content">
+            <div class="top-space-bw-header"> </div>
+            <section class="content-1">
+
+                <div class="select-wrapper">
+
+                    <div class="sel-method1">
+                        <h3>이메일을 입력 받아 일치하는 회원의 정보 조회</h3>
+                        이메일 : <input type="text" id="inputMemberEmail">
+                        <button id="btn1">조회</button>
+                    </div>
+                    
+                    <div class="sel-method2">
+                        <h3>닉네임을 입력 받아 일치하는 회원의 정보 조회</h3>
+                        닉네임 : <input type="text" id="inputMemberNickname">
+                        <button id="btn2">조회</button>
+                    </div>
+    
+                    <div class="sel-method3">
+                        <h3>회원 번호를 입력 받아 일치하는 회원의 정보 조회</h3>
+                        회원번호 : <input type="text" id="inputMemberNo">
+                        <button id="btn3">조회</button>
+                    </div>      
+                    
+
+                </div>
+
+                <ul id="resultArea"></ul>
+
+
+
+            </section>
+        </section>
+        
+        
+    </main>
+
+    <!-- footer.html 추가 -->
+    <div th:replace="common/footer :: footer"></div>
+
+    <!-- 알림창 띄우기 -->
+    <script th:inline="javascript"> 
+        let message = /*[[${message}]]*/ null;
+        if(message != null) alert(message); // message12가 없으면 null값
+    </script>
+
+
+    <!-- main.js 추가 -->
+    <script th:src="@{/js/member/retrieveMemberInfo.js}"></script>
+
+</body>
+</html>

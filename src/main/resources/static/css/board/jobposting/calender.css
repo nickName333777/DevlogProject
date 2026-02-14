@@ -1,0 +1,198 @@
+    .calendar-body {
+      font-family: 'Pretendard', sans-serif;
+      display: block;
+    }
+
+
+    .calendar-container {
+      width: 1200px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 30px;
+      margin-top: 100px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      padding: 40px;
+    }
+
+    .calendar-header {
+      margin-bottom: 20px;
+    }
+
+    .calendar-header h1 {
+      font-size: 28px;
+      margin: 0;
+      color: #000;
+    }
+
+    .calendar-header p {
+      color: #888;
+      margin: 5px 0 20px 0;
+    }
+
+    /* FullCalendar 기본 스타일 커스텀 */
+    .fc-col-header-cell {
+      background-color: #F3E8F5 !important;
+      padding: 12px 0 !important;
+      font-weight: 700;
+      color: #333;
+      border: none !important;
+
+    }
+
+    .fc-theme-standard .fc-scrollgrid {
+      border: none !important;
+    }
+
+    .fc-daygrid-day {
+      border: 1px solid #eee !important;
+    }
+
+    .fc-event {
+      border-radius: 8px !important;
+      border: none !important;
+      padding: 3px 8px !important;
+      font-size: 11px !important;
+      margin-bottom: 2px !important;
+      cursor: pointer;
+      color: black;
+    }
+
+    .fc-h-event .fc-event-title {
+      color: black !important;
+    }
+
+    /* 오늘 등록 */
+    .event-purple {
+      background-color: #E6E0FF !important;
+      color: #E0CAFF !important;
+    }
+
+    /* 오늘 마감 */
+    .event-pink {
+      background-color: #FFE5F0 !important;
+      color: #FF61A6 !important;
+    }
+
+    .fc-day-sun a {
+      color: #ff4d4d !important;
+    }
+
+    .fc-daygrid-today {
+      background-color: transparent !important;
+    }
+
+    .fc .fc-more-popover .fc-popover-body {
+      overflow-y: auto !important;
+    }
+
+    .fc .fc-more-popover .fc-popover-body {
+      max-width: 500px;
+      padding: 10px;
+      max-height: 250px !important;
+    }
+
+    /* 팝업 전체 배경 */
+    .custom-popup {
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 팝업 박스 */
+    .popup-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 25px;
+      width: 250px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .popup-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .close-btn {
+      cursor: pointer;
+      font-size: 20px;
+      color: #aaa;
+    }
+
+    .popup-body {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    /* 팝업 내 아이템 스타일 */
+    .popup-item {
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* FullCalendar 기본 "+more" 링크 스타일 수정 */
+    .fc-daygrid-more-link {
+      color: #888 !important;
+      font-size: 11px !important;
+      font-weight: bold !important;
+      text-decoration: none !important;
+      margin-left: 5px;
+    }
+
+    .purple,
+    .pink {
+      border-radius: 20px;
+      width: 90px;
+      height: 30px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .purple {
+      background-color: #E6E0FF;
+    }
+
+    .pink {
+      background-color: #FFE5F0;
+    }
+
+    .fc .fc-button-primary {
+      background-color: #BD83C3;
+      border: none;
+    }

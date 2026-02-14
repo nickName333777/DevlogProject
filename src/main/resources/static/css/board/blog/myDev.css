@@ -1,0 +1,854 @@
+:root {
+    --primary: #9b5de5;
+    --primary-light: #f3ebff;
+    --border: #eeeeee;
+    --text-main: #333;
+    --text-sub: #888;
+}
+
+body {
+    margin: 0;
+    font-family: 'Pretendard', sans-serif;
+    color: var(--text-main);
+}
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 140px 20px 40px;
+    box-sizing: border-box;
+}
+
+/* 본인 계정 여부에 따른 가시성 제어 */
+body[data-user-type="visitor"] .owner-only {
+    display: none !important;
+}
+
+body[data-user-type="owner"] .visitor-only {
+    display: none !important;
+}
+
+/* [헤더] 3단 레이아웃 (겹침 해결) */
+.blog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+    margin-bottom: 35px;
+}
+
+/* 1. 왼쪽 프로필 */
+.header-left {
+    flex: 1.2;
+    display: flex;
+    gap: 25px;
+}
+
+.profile-main-img img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.nickname-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.nickname-area h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+/* 드롭다운 메뉴 */
+.dropdown-owner {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--text-sub);
+}
+
+.dropdown-box {
+    display: none;
+    position: absolute;
+
+    /* 버튼 바로 아래에 붙도록 설정 */
+    top: 100%;
+    left: 0;
+    margin-top: 5px;
+    /* 버튼이랑 살짝 띄우기 */
+
+    background: #fff;
+    /* ... 아래는 기존 코드 유지 ... */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-width: 150px;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-box.active {
+    display: block;
+}
+
+.dropdown-box a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+.dropdown-box a:hover {
+    background: var(--primary-light);
+}
+
+.lv-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.exp-info {
+    position: absolute;
+    left: 50%;
+    top: 140%;
+    transform: translateX(-50%);
+    background: rgba(139, 92, 246, 0.95);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.user-name {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: #6d28d9;
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.25);
+    user-select: none;
+}
+
+.lv-row:hover .exp-info {
+    opacity: 1;
+    top: 120%;
+}
+
+.exp-container {
+    position: relative;
+    width: 150px;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+}
+
+.exp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #d8b4fe, var(--primary));
+    border-radius: 4px;
+}
+
+.lv-text {
+    position: absolute;
+    right: -40px;
+    top: -5px;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.social-links {
+    font-size: 22px;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.bio {
+    font-size: 14px;
+    color: var(--text-sub);
+    line-height: 1.5;
+}
+
+/* 2. 중앙 통계/버튼 */
+.header-center {
+    flex: 1;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 0 40px;
+}
+
+.top-stat-row {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.stat-btn {
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.stat-btn strong {
+    display: block;
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+.action-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.action-row button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-purple {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+}
+
+
+.btn-purple.active {
+    background-color: #fff;
+    /* 배경을 흰색으로 */
+    color: var(--primary);
+    /* 글자색을 보라색으로 */
+    border: 1px solid var(--primary);
+    /* 테두리 추가 */
+}
+
+/* (선택사항) 마우스 올렸을 때 조금 더 진하게 */
+.btn-purple.active:hover {
+    background-color: var(--primary-light);
+}
+
+.btn-white {
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+}
+
+.visit-summary {
+    font-size: 14px;
+    color: var(--text-sub);
+}
+
+.visit-summary strong {
+    color: var(--text-main);
+    font-size: 16px;
+}
+
+.purple-txt {
+    color: var(--primary) !important;
+}
+
+.visit-today {
+    text-align: right;
+}
+
+/* 3. 오른쪽 유저PICK */
+.header-right {
+    width: 220px;
+}
+
+.pick-card-title {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pick-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.pick-card-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.pick-card-item img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+}
+
+.pick-card-item:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(155, 93, 229, 0.2);
+}
+
+.pick-info {
+    padding: 10px;
+}
+
+.pick-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-sub);
+}
+
+/* 탭 바 */
+.main-tabs {
+    display: flex;
+    gap: 40px;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+    padding: 15px 5px;
+    cursor: pointer;
+    font-size: 22px;
+    color: #ccc;
+    transition: 0.2s;
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    border-bottom: 3px solid var(--primary);
+}
+
+.bean-icon {
+    width: 24px;
+    height: 24px;
+    filter: grayscale(1);
+    opacity: 0.5;
+}
+
+.tab-btn.active .bean-icon {
+    filter: none;
+    opacity: 1;
+}
+
+/* 본문 레이아웃 */
+.content-body {
+    display: flex;
+    gap: 50px;
+    padding-top: 30px;
+}
+
+.post-area {
+    flex: 3;
+}
+
+.side-area {
+    flex: 1;
+    border-left: 1px solid var(--border);
+    padding-left: 40px;
+}
+
+/* 태그 디자인 (보라색 알약) */
+.tag-pill {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+    /* 호버 효과 제거 */
+}
+
+/* 글 목록 */
+.post-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.post-main {
+    flex: 1;
+    padding-right: 25px;
+}
+
+.post-main h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.post-main h2 .fa-crown {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+.post-content {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+    height: 4.8em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    margin-bottom: 12px;
+}
+
+.post-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-bottom: 12px;
+}
+
+.post-thumb-img {
+    width: 170px;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* 1. 최상단 이동 버튼 */
+#goTopBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 45px;
+    height: 45px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    /* 스크롤 전에는 숨김 */
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+#goTopBtn:hover {
+    transform: translateY(-5px);
+}
+
+/* 기존 CSS 아래에 추가 혹은 덮어쓰기 */
+
+/* 3. 리스트 컨트롤 CSS 추가 */
+.list-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.search-bar {
+    position: relative;
+    width: 250px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.search-bar i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-sub);
+    cursor: pointer;
+}
+
+.filter-options {
+    display: flex;
+    gap: 15px;
+}
+
+.filter-item {
+    font-size: 14px;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.filter-item.active {
+    color: var(--text-main);
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* 5. 태그 카테고리 (보라색 원형 디자인) */
+.tag-cat-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-item {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.tag-item.selected {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.tag-item:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+.tag-item small {
+    margin-left: 4px;
+    opacity: 0.7;
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #fff;
+    width: 350px;
+    border-radius: 15px;
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.close-modal {
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-sub);
+}
+
+.user-list {
+    list-style: none;
+    padding: 0;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.user-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-item-info {
+    flex: 1;
+}
+
+.user-item-info .u-nick {
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+}
+
+.user-item-info .u-bio {
+    font-size: 12px;
+    color: var(--text-sub);
+}
+
+/* 필터바 스타일 */
+.active-filter-bar {
+    background: var(--primary-light);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+#clear-filter {
+    cursor: pointer;
+}
+
+/* 모달 내부 팔로우 버튼 */
+.modal-follow-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+    /* 기본 회색 테두리 */
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: var(--text-sub);
+    /* 기본 회색 글씨 */
+}
+
+.modal-follow-btn:hover {
+    background: #f9f9f9;
+    border-color: #ccc;
+}
+
+/* 팔로잉 상태 (Active) - 보라색 */
+.modal-follow-btn.active {
+    background: #fff;
+    border-color: var(--primary);
+    /* 보라색 테두리 */
+    color: var(--primary);
+    /* 보라색 글씨 */
+    font-weight: bold;
+}
+
+/* 무한 스크롤 센서 높이 확보 (감지 잘 되도록) */
+.scroll-loader {
+    height: 50px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+
+
+/*구독*/
+/* 모달 전체 배경 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    /* 기본은 숨김 */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+/* 모달 컨텐츠 박스 */
+.sub-modal-content {
+    background-color: #fff;
+    width: 500px;
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 헤더 부분 */
+.sub-modal-header {
+    margin-bottom: 25px;
+}
+
+.crown-icon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.sub-modal-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+}
+
+.close-sub-modal {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #aaa;
+}
+
+/* 커피콩 잔액 카드 (이미지의 보라색 박스) */
+.bean-balance-card {
+    background-color: #E6E1F9;
+    /* 연보라색 배경 */
+    border-radius: 15px;
+    padding: 40px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.bean-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.bean-title img {
+    width: 60px;
+    /* 커피콩 이미지 크기 */
+    height: auto;
+}
+
+.bean-title span {
+    color: #888;
+    font-size: 14px;
+}
+
+.bean-amount {
+    font-size: 24px;
+    color: #333;
+    margin-top: 10px;
+}
+
+.bean-amount strong {
+    font-weight: 800;
+    color: #7B57F3;
+    /* 포인트 보라색 */
+}
+
+/* 체크박스 영역 */
+.check-area {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #555;
+}
+
+.check-area input[type="checkbox"] {
+    accent-color: #7B57F3;
+    /* 체크박스 색상 변경 */
+    width: 16px;
+    height: 16px;
+}
+
+/* 구매 정보 요약 */
+.sub-body-right h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.sub-desc {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 15px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+
+
+.info-row strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* 구매하기 버튼 */
+.btn-subscribe-confirm {
+    width: 100%;
+    padding: 15px;
+    background-color: #9B51E0;
+    /* 진보라색 */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.2s;
+}
+
+.btn-subscribe-confirm:hover {
+    background-color: #7B57F3;
+}

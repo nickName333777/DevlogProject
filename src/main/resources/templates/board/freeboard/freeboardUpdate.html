@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+    <link rel="stylesheet" th:href="@{/css/board/freeboard/freeboardUpdate.css}">
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+        
+</head>
+
+<body>
+    <!-- <p th:text="${freeboard}" th:if="${freeboard != null}"></p>    -->
+    <main>
+        
+        <!-- 헤더 -->
+        <!-- <header class="main-header">header</header> -->
+        <!-- header.html (fragment) 추가 -->
+        <!-- <th:block th:replace="~{/common/header}">header.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/header :: header"></div>
+        <script th:src="@{/js/common/header.js}"></script>
+        
+        <!-- 네비게이션 -->
+        <nav class="main-nav"></nav>
+        <!--  ###################################################### -->  
+        
+        <div class="top-space-bw-header"> </div>
+        
+        <!-- <p th:text="${freeboard}" th:if="${freeboard != null}"></p>    -->
+
+        <!-- 상단 타이틀 바 -->
+        <h2 class="title-main fw-800">자유게시판</h2>
+        <div class="container">
+
+            <!-- 글작성 도우미 -->
+            <div class="helper-box">
+                <button class="helper-btn" onclick="openHelper()">글수정 도우미</button>
+
+                <div class="select-box">
+                    <select class="ai-select" id="helperType">
+                        <!-- <option class="sel-ai" value="ai">AI</option> -->
+                        <option class="sel-chatbot" value="chatbot">챗봇</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <!-- 작성 폼 -->  
+            <form th:action="@{update}" method="post" enctype="multipart/form-data"
+                    class="board-write" id="boardWriteFrm">     
+
+                <!-- 제목 입력 -->
+                <p id="updateText">게시글 제목 수정</p>
+                <input type="text" id="titleInput" name="boardTitle" class="title-input" th:value="${freeboard.boardTitle}" maxlength="300" required>
+
+                <!-- 사진 등록 -->
+                <div class="photo-header">
+                    <!-- <span class="photo-title-spaceholder"></span> -->
+                    <span class="photo-title">등록 사진 수정 <p>썸네일(대표) 이미지는 첫 사진입니다.</p></span>
+                    <span class="photo-max">최대 5장</span>
+                </div>
+
+                <!-- 미리보기 이미지 + 업로드 박스 -->
+                <!-- <div class="photo-row"> -->
+                <div class="photo-section">      
+                    <div class="photo-upload-area">
+                        <!-- 미리보기 영역 -->
+                        <div id="photoPreview" class="photo-preview">
+                            <th:block th:if="${#lists.size(freeboard.imageList) > 0 }"> 
+                                <!--                                     start,        end,                     step -->
+                                <th:block th:each="i : ${#numbers.sequence(0, #lists.size(freeboard.imageList)-1, 1)}">
+                                        <div class="preview-img-container"  th:with="path=|${freeboard.imageList[i].imgPath}${freeboard.imageList[i].imgRename}|"
+                                                                            th:data-img-no="${freeboard.imageList[i].imgNo}" > 
+                                                                            <!-- 변수에 담아두고 div태그 안에서 쓴다; data-img-no는 기존이미지 인지 판별의 핵심  -->
+                                            <img th:src="${path}" class="preview-img" alt="사진 미리보기">
+                                            <button type="button" class="preview-remove">&times;</button>
+                                        </div>
+                                </th:block>
+                            </th:block>
+                        </div>
+                        <!-- + 버튼 -->
+                        <label for="photoInput" class="photo-upload">
+                            <span class="plus">+</span>
+                        </label>
+                        <!-- 실제 파일 input (숨김) -->
+                        <input type="file" id="photoInput" name="images" multiple accept="image/*" hidden />
+                    </div>
+                </div>
+
+                <p class="image-warning">
+                    본 사이트 약관/정책을 위반하는 이미지는 안내 없이 삭제 될 수 있습니다.
+                </p>
+
+                <!-- 내용 입력 -->
+                <p id="updateText">게시글 내용 수정</p>
+                <textarea id="contentInput" name="boardContent" minlength="10" maxlength="4000" 
+                        class="content-box" th:text="${freeboard.boardContent}">수정할 게시글 내용
+                </textarea>
+
+                <div class="text-limit">최소 10자, 최대 4000자 (<span id="charCount">0</span> / 4000자)</div>
+
+                <!-- 버튼 -->
+                <div class="button-box">
+                    <button type="submit" id="submitBtn" class="submit-btn">수정 완료</button>
+                    <button type="button" class="cancel-btn"
+                    th:onclick="|location.href='@{/board/freeboard/}${boardNo}'|">취소</button>
+                </div>
+
+
+                 <input type="hidden" name="deleteList" value=""> 
+                <!-- <input type="hidden" name="deleteList" value="1,2,3" if used> -->                
+
+                <input type="hidden" name="cp" th:value="${param.cp}">                
+            </form>
+
+        </div>
+
+        <!--  ###################################################### -->
+        <!-- <footer class="main-footer">footer</footer> -->
+        <!-- footer.html 추가 -->
+        <!-- <th:block th:replace="~{common/footer}">footer.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/footer :: footer"></div>
+
+    </main>
+
+    <script th:inline="javascript"> // freeboardDetail.js처럼 JS에서 사용할 전역 변수들을 선언~~
+
+        let loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null; 
+        let memberNickname = /*[[${session.loginMember?.memberNickname}]]*/ null;
+        if(loginMemberNo === null) loginMemberNo = ""; // 들어가는 값이 없으면 대신 빈칸을 넣어준다 (아래 boardDetail.js, comment.js에서 ""로 받아서 처리)
+        
+        // 명시적으로 전역 등록
+        window.loginMemberNo = loginMemberNo;
+        window.memberNickname = memberNickname;        
+        window.boardNo = /*[[${freeboard?.boardNo}]]*/ null;
+        window.boardCode = /*[[${freeboard?.boardCode}]]*/ null;
+        window.boardTitle = /*[[${freeboard?.boardTitle}]]*/ null;
+        
+        console.log("window.boardNo = ", window.boardNo);
+    </script>    
+
+    <!-- 알림창 띄우기 -->
+    <script th:inline="javascript"> 
+        const message = /*[[${message}]]*/ "전달 받은 message";
+        if(message != null) alert(message); // message12가 없으면 null값
+    </script>
+        
+    <!-- freeboardUpdate.js 추가 -->
+    <script th:src="@{/js/board/freeboard/freeboardUpdate.js}"></script>    
+
+</body>
+
+</html>

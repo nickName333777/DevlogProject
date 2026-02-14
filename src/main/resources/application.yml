@@ -1,0 +1,51 @@
+spring :
+   application :
+      name : Devlog 
+   jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    
+   elasticsearch :
+      uris: http://localhost:9200 # 연결할 Elasticsearch 주소
+   jackson:
+      property-naming-strategy: SNAKE_CASE
+   
+   mail : 
+      host : smtp.gmail.com
+      port : 587
+      username : kyusik0207@gmail.com
+      password : jifuncjeeuzapznk
+      properties : 
+         mail : 
+            smtp : 
+               auth : true
+               starttls : 
+                  enable : true
+   config :
+      import : 
+      - config.properties 
+      properties :
+         encoding : UTF-8
+   ai:
+      openai:
+         api-key: ${OPENAI_API_KEY:}
+         chat:
+            options:
+               model: gpt-4o-mini
+
+kakao:
+  client-id: ${KAKAO_REST_API_KEY}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT_URI} 
+
+
+     
+logging:
+  level:
+     org.elasticsearch.client : TRACE # Elasticsearch 쿼리 로그 출력 
+     com.devlog.project.common.filter.LoggingFilter : Trace # 필터 로그     
+     org.springframework.security: debug # 로그인 안 될 때 원인 추적
+     
+server:
+   port: 8880

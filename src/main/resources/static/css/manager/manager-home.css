@@ -1,0 +1,157 @@
+/* 구글에서 noto sans 불러오면 body 에서 바로 사용 가능함... */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&display=swap");
+
+body {
+  margin: 0;
+  font-family: "Noto Sans KR", sans-serif;
+  background: #fafafa;
+  color: #333;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 관리자 페이지 헤더 */
+.header {
+  height: 85px;
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.left-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+}
+
+.welcome {
+  font-weight: 500;
+  color: #333;
+}
+
+.dashboard-info {
+  text-align: right;
+  font-size: 13px;
+  color: #666;
+}
+
+/* 레이아웃 */
+.layout {
+  display: flex;
+  height: calc(100vh - 70px);
+  overflow: hidden;
+}
+
+/* 사이드바 */
+.sidebar {
+  width: 220px;
+  background: #fff;
+  border-right: 1px solid #e6e6e6;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.menu h4 {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 12px 6px;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #333;
+  font-size: 15px;
+}
+
+.menu li img {
+  width: 18px;
+  height: 18px;
+}
+
+.menu li.active {
+  background-color: #f3e6f9;
+  color: #8d59b4;
+}
+
+.menu li:hover {
+  background-color: #f6effb;
+}
+
+.logout {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 50px 12px;
+  border-radius: 6px;
+  color: #555;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout img {
+  width: 18px;
+  height: 18px;
+}
+
+.logout:hover {
+  background-color: #f9f5fc;
+  color: #8d59b4;
+}
+
+/* 메인 공통 */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+
+.main h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.dashboard-box {
+  width: 100%;
+  height: calc(100vh - 180px);
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.kibana-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}

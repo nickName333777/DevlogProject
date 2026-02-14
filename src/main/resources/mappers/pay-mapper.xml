@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.devlog.project.pay.mapper.PayMapper">
+
+
+	<!-- 내 커피콩 조회-->
+	<select id="selectMyBeans" resultType="PayDTO">
+		SELECT MEMBER_NO, BEANS_AMOUNT 
+		FROM MEMBER
+		WHERE MEMBER_NO = #{memberNo}
+	</select>
+	
+	
+	<!-- 내 커피콩 내역 조회-->
+	<select id="selectBeansHistory" resultType="PayDTO">
+		SELECT 
+		    H.BEANS_HISTORY,
+		    H.PAY_AMOUNT AS payAmount,
+		    ABS(H.PAY_AMOUNT) AS displayPrice,
+		    TO_CHAR(H.REG_DATE, 'YYYY-MM-DD HH24:MI') AS payDate,
+		    P.PAYMENT_ID AS paymentId,
+		    P.BEANS_PAY_NO AS beansPayNo,
+		    P.USED_AMOUNT AS usedAmount,
+		    H.TRADE_NO AS tradeNo,
+		    T.CONTENT_ID AS contentId,
+		    E.EXCHANGE_NO AS exchangeNo,
+		    CASE 
+			      /* 1. 거래 내역(TRADE_NO)이 있으면 무조건 그 타입을 따름 (SUBSCRIBE, POST 등) */
+	            WHEN T.TRADE_NO IS NOT NULL THEN T.CONTENT_TYPE
+	            
+	            /* 2. 환전 신청 내역인 경우 */
+	            WHEN E.EXCHANGE_NO IS NOT NULL THEN '환전'
+	            
+	            /* 3. 거래/환전이 아니고 음수면 그제서야 '취소' */
+	            WHEN H.PAY_AMOUNT <![CDATA[ < ]]> 0 THEN '취소'
+	            
+	            /* 4. 양수면 충전 */
+	            WHEN H.PAY_AMOUNT > 0 THEN '충전'
+	            ELSE '기타'
+	        END AS contentType
+		FROM COFFEE_BEANS_HISTORY H
+		-- 거래 JOIN
+		LEFT JOIN COFFEE_BEANS_TRADE T ON (H.TRADE_NO = T.TRADE_NO)
+		
+		-- 환전 JOIN (컬럼명 오류 방지를 위해 MEMBER_NO와 금액으로만 JOIN)
+		LEFT JOIN COFFEE_BEANS_EXCHANGE E ON (
+		    H.MEMBER_NO = E.MEMBER_NO
+		    AND ABS(H.PAY_AMOUNT * 0.9) = E.REQUEST_AMOUNT
+		    AND TO_CHAR(H.REG_DATE, 'YYYYMMDDHH24MI') = TO_CHAR(E.EXCHANGE_REQ_DATE, 'YYYYMMDDHH24MI')
+		)
+		
+		-- 충전 JOIN (이미 환전이나 거래가 아닌 경우에만 붙도록 처리)
+		LEFT JOIN COFFEE_BEANS_PAY P ON (
+		    H.MEMBER_NO = P.MEMBER_NO 
+		    AND H.TRADE_NO IS NULL 
+		    AND ABS(H.PAY_AMOUNT) = P.PRICE
+		    AND TO_CHAR(H.REG_DATE, 'YYYYMMDDHH24MI') = TO_CHAR(P.PAY_DATE, 'YYYYMMDDHH24MI')
+		)
+		WHERE H.MEMBER_NO = #{memberNo}
+		ORDER BY H.BEANS_HISTORY DESC
+	</select>
+
+	
+	<!-- 결제 정보 저장 -->	
+	<insert id="insertPayment" parameterType="PayDTO">
+	    <selectKey keyProperty="beansPayNo" resultType="_int" order="BEFORE">
+	        SELECT SEQ_PAY_NO.NEXTVAL FROM DUAL
+	    </selectKey>
+	    
+	    INSERT INTO COFFEE_BEANS_PAY (
+	        BEANS_PAY_NO, 
+	        MEMBER_NO, 
+	        PAYMENT_ID, 
+	        PAY_METHOD, 
+	        PRICE, 
+	        PAY_DATE, 
+	        USED_AMOUNT, 
+	        PAY_STATUS
+	    ) VALUES (
+	        #{beansPayNo}, 
+	        #{memberNo}, 
+	        #{paymentId}, 
+	        #{payMethod}, 
+	        #{price}, 
+	        SYSDATE, 
+	        0, 
+	        1
+	    )
+	</insert>
+		
+		<insert id="insertHistory">
+		    INSERT INTO COFFEE_BEANS_HISTORY (
+		        BEANS_HISTORY, MEMBER_NO, PAY_AMOUNT, TRADE_NO
+		    ) VALUES (
+		        SEQ_HISTORY_NO.NEXTVAL, 
+		        #{memberNo}, 
+		        #{payAmount}, 
+		        <choose>
+		            <when test="tradeNo != 0">#{tradeNo}</when>
+		            <otherwise>NULL</otherwise>
+		        </choose>
+		    )
+		</insert>
+	
+	<update id="updateMemberBeans">
+	    UPDATE MEMBER 
+	    SET BEANS_AMOUNT = BEANS_AMOUNT + #{price}
+	    WHERE MEMBER_NO = #{memberNo}
+	</update>
+	
+	
+	<select id="selectPaymentByNo" resultType="PayDTO">
+	    SELECT * FROM COFFEE_BEANS_PAY WHERE BEANS_PAY_NO = #{beansPayNo}
+	</select>
+	
+	<update id="updatePayStatusCancel">
+	    UPDATE COFFEE_BEANS_PAY 
+	    SET PAY_STATUS = 2
+	    WHERE BEANS_PAY_NO = #{beansPayNo}
+	      AND PAY_STATUS != 2
+	</update>
+	
+	
+	<!-- 환전 -->
+	<insert id="insertExchange" parameterType="PayDTO">
+			INSERT INTO COFFEE_BEANS_EXCHANGE (
+				EXCHANGE_NO,
+				MEMBER_NO,
+				RETURN_BANK,      REQUEST_AMOUNT,   EXCHANGE_HOLDER,
+				EXCHANGE_ACCOUNT,
+				EXCHANGE_REQ_DATE
+			) VALUES (
+				SEQ_EXCHANGE_NO.NEXTVAL,
+				#{memberNo},
+				#{returnBank},
+				#{requestAmount},
+				#{exchangeHolder},
+				#{exchangeAccount},
+				CURRENT_TIMESTAMP
+			)
+	</insert>
+		
+		
+		
+	<!-- 은행코드 -->
+	<select id="selectBankList" resultType="map">
+	    SELECT 
+	        RETURN_BANK AS "bankCode", 
+	        BANK_NAME AS "bankName"
+	    FROM BANK_INFO
+	    ORDER BY BANK_NAME ASC
+	</select>
+
+
+
+	<!-- 환전 ok -->
+	<update id="okExchange">
+	UPDATE "COFFEE_BEANS_EXCHANGE" 
+		SET EXCHANGE_OK_DATE = SYSDATE 
+		WHERE EXCHANGE_NO = #{exchangeNo}
+	</update>
+	
+	
+	
+	<!-- 관리자용 -->
+	<select id="selectAllBeansHistory" resultType="PayDTO">
+	    SELECT * FROM (
+	        SELECT 
+	            H.BEANS_HISTORY,
+	            H.PAY_AMOUNT AS payAmount,
+	            CASE 
+	                WHEN E.EXCHANGE_NO IS NOT NULL THEN (E.REQUEST_AMOUNT * -1) 
+	                ELSE H.PAY_AMOUNT 
+	            END AS displayPrice,
+	            TO_CHAR(H.REG_DATE, 'YYYY-MM-DD HH24:MI') AS payDate,
+	            M.MEMBER_NICKNAME,
+	            E.EXCHANGE_NO,
+	            BI.BANK_NAME AS returnBankName,
+	            E.EXCHANGE_ACCOUNT,
+	            E.EXCHANGE_HOLDER,
+	            TO_CHAR(E.EXCHANGE_OK_DATE, 'YYYY-MM-DD HH24:MI') AS exchangeOkDate,
+	            CASE 
+	                WHEN T.TRADE_NO IS NOT NULL THEN T.CONTENT_TYPE
+	                WHEN E.EXCHANGE_NO IS NOT NULL THEN '환전'
+	                WHEN H.PAY_AMOUNT <![CDATA[ < ]]> 0 AND H.TRADE_NO IS NULL THEN '취소'
+	                WHEN H.PAY_AMOUNT > 0 AND H.TRADE_NO IS NULL THEN '충전'
+	                ELSE '사용' 
+	            END AS contentType,
+	            CASE
+	                WHEN E.EXCHANGE_NO IS NOT NULL AND E.EXCHANGE_OK_DATE IS NULL THEN '요청'
+	                ELSE '완료' 
+	            END AS status
+	        FROM COFFEE_BEANS_HISTORY H
+	        JOIN "MEMBER" M ON (H.MEMBER_NO = M.MEMBER_NO)
+	        LEFT JOIN COFFEE_BEANS_TRADE T ON (H.TRADE_NO = T.TRADE_NO)
+	        LEFT JOIN COFFEE_BEANS_EXCHANGE E ON (
+	            H.MEMBER_NO = E.MEMBER_NO
+	            AND TO_CHAR(H.REG_DATE, 'YYYYMMDDHH24MI') = TO_CHAR(E.EXCHANGE_REQ_DATE, 'YYYYMMDDHH24MI')
+	        )
+	        LEFT JOIN BANK_INFO BI ON (E.RETURN_BANK = BI.RETURN_BANK)
+	    )
+	    <where>
+	        <if test="query != null and query != ''">
+	            AND (
+	                MEMBER_NICKNAME LIKE '%' || #{query} || '%' OR
+	                EXCHANGE_ACCOUNT LIKE '%' || #{query} || '%' OR
+	                EXCHANGE_HOLDER LIKE '%' || #{query} || '%' OR
+	                contentType LIKE '%' || #{query} || '%'
+	            )
+	        </if>
+	        
+	        <if test="type != null and type != ''">
+	            <choose>
+	                <when test="type == '사용'">
+	                    AND contentType IN ('POST', 'SUBSCRIBE', 'CHATBOT', '사용')
+	                </when>
+	                <otherwise>
+	                    AND contentType = #{type}
+	                </otherwise>
+	            </choose>
+	        </if>
+	    </where>
+	    ORDER BY BEANS_HISTORY DESC
+	</select>
+	
+	
+	<insert id="insertBeansTrade" parameterType="PayDTO">
+	    <selectKey keyProperty="tradeNo" resultType="_int" order="BEFORE">
+	        SELECT SEQ_TRADE_NO.NEXTVAL FROM DUAL
+	    </selectKey>
+	
+	    INSERT INTO COFFEE_BEANS_TRADE (
+	        TRADE_NO, 
+	        BUYER_NO, 
+	        SELLER_NO, 
+	        CONTENT_TYPE, 
+	        CONTENT_ID, 
+	        PRICE, 
+	        TRADE_AT
+	    ) VALUES (
+	        #{tradeNo}, #{buyerNo}, 
+	        #{sellerNo}, 
+	        #{contentType}, 
+	        #{contentId}, 
+	        #{price}, 
+	        SYSDATE
+	    )
+	</insert>
+
+	<!-- 구독 -->
+	<insert id="insertSubscriptionRecord" parameterType="PayDTO">
+	    INSERT INTO "SUBSCRIBE" (
+	        SUBSCRIBE_NO, 
+	        SUBSCRIBER_ID, 
+	        CREATOR_ID, 
+	        START_AT
+	    ) VALUES (
+	        SEQ_SUB_NO.NEXTVAL, 
+	        #{buyerNo},   -- SUBSCRIBER_ID
+	        #{sellerNo},  -- CREATOR_ID
+	        SYSDATE
+	    )
+	</insert>
+	<!-- 구독 30일 -->
+	<select id="selectExpiringSubscriptions" resultType="PayDTO">
+    SELECT 
+        SUBSCRIBER_ID AS buyerNo,
+        CREATOR_ID AS sellerNo,
+        PRICE AS price
+    FROM "SUBSCRIBE"
+    WHERE TRUNC(START_AT + 30) = TRUNC(SYSDATE)
+</select>
+
+		
+</mapper>

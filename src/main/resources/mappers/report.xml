@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.devlog.project.report.model.mapper.ReportMapper">
+
+		<select id="checkReportExist" resultType="_int">
+		    SELECT COUNT(*) 
+		    FROM "REPORT"
+		    WHERE REPORTER_NO = #{memberNo}
+		      AND TARGET_TYPE = #{targetType}
+		      AND TARGET_ID = #{targetNo}
+		</select>
+		
+		<insert id="insertBoardReport">
+		    INSERT INTO "REPORT" (
+		        REPORT_ID, 
+		        TARGET_TYPE, 
+		        CONTENT, 
+		        TARGET_ID, 
+		        CREATED_AT, 
+		        STATUS, 
+		        REPORTER_NO, 
+		        REPORTED_NO, 
+		        REPORT_CODE
+		    ) VALUES (
+		        SEQ_REPORT_NO.NEXTVAL, 
+		        #{targetType},    #{reportReason},  #{targetNo},      SYSDATE, 
+		        'PENDING',        #{memberNo},      #{targetMemberNo},#{reportCode}     )
+		</insert>
+	
+</mapper>

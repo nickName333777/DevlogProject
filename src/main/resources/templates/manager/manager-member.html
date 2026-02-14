@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>회원 관리</title>
+
+  <link rel="stylesheet" th:href="@{/css/manager/manager-layout.css}">
+  <link rel="stylesheet" th:href="@{/css/manager/manager-member.css}">
+</head>
+
+<body>
+
+  <div th:replace="manager/common/manager-header :: header"></div>
+    <div class="layout">
+
+      <!-- 사이드바 -->
+      <div th:replace="manager/common/manager-sidebar :: sidebar('member')"></div>
+
+    <main class="main scrollable">
+      <h2>회원 관리</h2>
+
+      <section class="member-summary">
+
+        <div class="chart-box">
+          <h3>이용자 통계</h3>
+          <img th:src="@{/images/manager/sample-chart.png}"
+               alt="회원 통계 차트"
+               class="chart-img" />
+        </div>
+
+        <div class="info-box">
+          <h3>회원 정보</h3>
+
+          <div class="profile">
+            <img th:src="@{/images/manager/sample-profile.jpg}"
+                 alt="회원 사진"
+                 class="profile-img" />
+
+            <div class="profile-info">
+              <p class="name">
+                김소연 <span class="id">soyeon03</span>
+              </p>
+              <ul>
+                <li>성별: 여성</li>
+                <li>생년월일: 1999-05-17</li>
+                <li>연락처: 010-1234-5678</li>
+                <li>관심분야: 백엔드 개발</li>
+                <li>가입일: 2024-03-22</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 회원 목록 ===== -->
+      <section class="member-list">
+
+        <div class="list-header">
+          <h3>전체 회원 목록</h3>
+
+          <div class="search-filter">
+            <div class="search-box">
+              <input type="text" placeholder="회원명으로 검색하세요." />
+              <button>
+                <img th:src="@{/images/common/search.svg}" alt="search" />
+              </button>
+            </div>
+
+            <select class="status-filter">
+              <option>전체</option>
+              <option>정상</option>
+              <option>정지</option>
+              <option>탈퇴</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="member-table">
+          <thead>
+            <tr>
+              <th>아이디</th>
+              <th>이름</th>
+              <th>비밀번호</th>
+              <th>닉네임</th>
+              <th>경력사항</th>
+              <th>주소</th>
+              <th>이메일</th>
+              <th>연락처</th>
+              <th>생년월일</th>
+              <th>신고 누적횟수</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- 추후 서버 연동 시 th:each로 교체 -->
+            <tr>
+              <td>dominicY</td>
+              <td>허영도</td>
+              <td>1234</td>
+              <td>백엔맨지</td>
+              <td>백엔드 3년차</td>
+              <td>서울 독립문</td>
+              <td>dominicY@naver.com</td>
+              <td>01038949293</td>
+              <td>1992-07-20</td>
+              <td>1</td>
+            </tr>
+
+            <tr>
+              <td>ljt</td>
+              <td>이진태</td>
+              <td>1234</td>
+              <td>진태이</td>
+              <td>프론트엔드 2년차</td>
+              <td>경기 비트동</td>
+              <td>ljt@naver.com</td>
+              <td>01023456789</td>
+              <td>1993-01-05</td>
+              <td>3</td>
+            </tr>
+
+            <tr>
+              <td>pjw</td>
+              <td>박정원</td>
+              <td>1234</td>
+              <td>장발</td>
+              <td>백엔드 5년차</td>
+              <td>서울 연희동</td>
+              <td>pjw@naver.com</td>
+              <td>01056364705</td>
+              <td>1992-12-05</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </section>
+    </main>
+  </div>
+
+</body>
+</html>

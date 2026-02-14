@@ -1,0 +1,601 @@
+.mybeans-container {
+  display: flex;
+  padding: 50px 20px;
+  max-width: 1440px;
+  margin: 0 auto;
+  margin-top: 60px;
+}
+
+/* ======== 내 커피콩 내역 ========*/
+.main-beans {
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  border: 3px solid #F7E8F6;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.main-beans img {
+  width: 50px;
+}
+
+.mybeans {
+  font-size: 28px;
+  margin: 0;
+  font-weight: bold;
+}
+
+/* 숫자 표시 부분 */
+.beans-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.beans-count span:first-child {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.beans-count span:nth-child(2) {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* 버튼 가로 배치 */
+.charge-btn,
+.exchange-btn {
+  width: 140px;
+  height: 45px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.charge-btn:hover,
+.exchange-btn:hover {
+  background: #f5f5f5;
+}
+
+
+/* ============ 커피콩 정보 카드 ========== */
+.info-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.beans-info {
+  flex: 1;
+  background-color: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #eee;
+  text-align: left;
+  margin-top: 20px;
+}
+
+.info-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.info-title-group img {
+  width: 40px;
+  height: 40px;
+}
+
+.info-title {
+  font-size: 18px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.info-list li {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 15px;
+}
+
+.info-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #888;
+}
+
+.example-text {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #eee;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+
+
+
+
+
+
+/* ======== 내역========== */
+
+.history-section {
+  flex: 1;
+  padding: 30px;
+  margin-left: 30px;
+  border-radius: 20px;
+  border: 3px solid #F7E8F6;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  max-height: 600px;
+
+}
+
+.filter-tab-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 70px;
+}
+
+.filter-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+}
+
+.filter-btn.active {
+  background-color: #BD83CE;
+  color: white;
+  border-color: #BD83CE;
+}
+
+
+.type-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #f1f1f1;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+
+.history-table thead th {
+  padding: 14px 10px;
+  text-align: center;
+  font-weight: 700;
+  color: #444;
+  border-bottom: 2px solid #333;
+}
+
+.history-table tbody td {
+  padding: 16px 10px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+}
+
+
+.history-table tbody td:nth-child(2) {
+  text-align: left;
+  padding-left: 17px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+/* 금액 색상 */
+.history-table td.plus {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.history-table td.minus {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+
+.history-table tbody tr:hover {
+  background-color: #faf7fb;
+}
+
+
+
+/* ======== 모달 ======== */
+/* 모달 전체 배경 */
+.modal {
+  display: none;
+  /* 기본적으로 숨김 */
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+/* 모달 창 본체 */
+.charge-modal-content {
+  background: white;
+  padding: 40px;
+  border-radius: 25px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-icon {
+  width: 60px;
+}
+
+/* 금액 입력창 박스 */
+.input-wrapper {
+  border: 2px solid #BD83CE;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fdfbff;
+}
+
+.input-wrapper input {
+  border: none;
+  outline: none;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  width: 80%;
+  background: transparent;
+}
+
+.input-wrapper span {
+  font-weight: bold;
+  color: #555;
+}
+
+/*금액 선택 버튼들 */
+.amount-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.amount-options button {
+  padding: 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.amount-options button:hover {
+  background-color: #f8f0fa;
+  border-color: #BD83CE;
+}
+
+.amount-options button.selected {
+  border-color: #BD83CE;
+  background-color: #BD83CE;
+  color: white;
+}
+
+
+/* 환전 모달 */
+.exchange-modal-content {
+  background: white;
+  padding: 35px;
+  border-radius: 25px;
+  width: 440px;
+  text-align: left;
+}
+
+.exchange-content .mybeans {
+  display: block;
+  font-size: 26px;
+  font-weight: 800;
+  margin: 5px 0;
+}
+
+.exchange-info {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 25px 0;
+  font-size: 13px;
+  color: #888;
+}
+
+.exchange-info li::before {
+  content: "• ";
+}
+
+/* 계산 내역 */
+.calculation-section {
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  padding: 15px 0;
+  margin-bottom: 25px;
+}
+
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* 수수료 빨간색 */
+.calc-row .minus {
+  color: #ff4d4d;
+}
+
+.calc-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  font-weight: bold;
+}
+
+.total-val {
+  font-size: 22px;
+}
+
+/* 계좌 입력 테이블 스타일 */
+.account-section {
+  margin-bottom: 30px;
+}
+
+.section-label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.required {
+  color: #ff4d4d;
+}
+
+.account-form-table {
+  border: 2px solid #BD83CE;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.form-row {
+  display: flex;
+  border-bottom: 1px solid #BD83CE;
+}
+
+.form-row:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  width: 90px;
+  padding: 12px;
+  background-color: #fff;
+  border-right: 1px solid #BD83CE;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-input {
+  flex: 1;
+  display: flex;
+  padding: 3px;
+}
+
+.form-input input {
+  width: 100%;
+  /* padding: 14px; */
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #555;
+}
+
+.exchange-submit-btn,
+.charge-submit-btn {
+  width: auto;
+  min-width: 120px;
+  margin: 0 auto;
+  display: block;
+  background-color: #fff;
+  color: #333;
+  border: 2px solid #BD83CE;
+  padding: 10px 25px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exchange-submit-btn:hover,
+.charge-submit-btn:hover {
+  background-color: #BD83CE;
+  color: #fff;
+}
+
+
+.exchange-modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 25px;
+  width: 460px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 완료 모달 전용 스타일 */
+.complete-modal-content {
+  background: white;
+  padding: 50px 30px;
+  border-radius: 25px;
+  width: 420px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.complete-icon {
+  width: 60px;
+  margin-bottom: 20px;
+}
+
+.complete-text {
+  margin-bottom: 30px;
+}
+
+.main-msg {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.sub-msg {
+  font-size: 14px;
+  color: #888;
+}
+
+/* 확인 버튼 스타일 */
+.complete-confirm-btn {
+  background: white;
+  border: 2px solid #BD83CE;
+  color: #333;
+  padding: 10px 40px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.complete-confirm-btn:hover {
+  background: #BD83CE;
+  color: white;
+}
+
+
+
+/* 취소 모달 컨텐츠 */
+.cancel-modal-content {
+  background: white;
+  padding: 35px;
+  border-radius: 25px;
+  width: 440px;
+  text-align: left;
+}
+
+/* 취소하기 & 돌아가기*/
+.cancel-submit-btn,
+.complete-confirm-btn {
+  margin: 20px auto 0;
+  display: block;
+  background: white;
+  border: 2px solid #BD83CE;
+  padding: 10px 30px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cancel-submit-btn:hover,
+.complete-confirm-btn:hover {
+  background: #BD83CE;
+  color: white;
+}
+
+/* 불가 알림 줄바꿈 처리 */
+.main-msg {
+  line-height: 1.5;
+  word-break: keep-all;
+}

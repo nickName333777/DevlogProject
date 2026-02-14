@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.devlog.project.chatbotTemplate.mapper.CbSessionMapper">
+
+    <!-- 챗봇 세션 생성 -->
+    <insert id="insertCbSession" parameterType="CbSession">
+        <selectKey keyProperty="cbSessionId" resultType="long" order="BEFORE">
+            SELECT SEQ_CB_SESSION_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        
+        INSERT INTO CB_SESSION (
+            CB_SESSION_ID,
+            STARTED_AT,
+            CB_SESSION_TYPE,
+            CB_BOARD_TYPE,
+            MEMBER_NO,
+            BOARD_NO
+        ) VALUES (
+            #{cbSessionId},
+            SYSDATE,
+            #{cbSessionType},
+            #{cbBoardType},
+            #{memberNo},
+            #{boardNo}
+        )
+    </insert>
+    
+    <!-- 챗봇 세션 종료 시간 업데이트 -->
+    <update id="updateCbSessionEndTime" parameterType="long">
+        UPDATE CB_SESSION
+        SET ENDED_AT = SYSDATE
+        WHERE CB_SESSION_ID = #{cbSessionId}
+    </update>
+    
+    <!-- 챗봇 세션 조회 -->
+    <select id="selectCbSessionById" parameterType="long" resultType="CbSession">
+        SELECT 
+            CB_SESSION_ID,
+            STARTED_AT,
+            ENDED_AT,
+            CB_SESSION_TYPE,
+            CB_BOARD_TYPE,
+            MEMBER_NO,
+            BOARD_NO
+        FROM CB_SESSION
+        WHERE CB_SESSION_ID = #{cbSessionId}
+    </select>
+    
+    <!-- 회원의 활성 세션 조회 (종료되지 않은 세션) -->
+    <select id="selectActiveSessions" parameterType="long" resultType="CbSession">
+        SELECT 
+            CB_SESSION_ID,
+            STARTED_AT,
+            ENDED_AT,
+            CB_SESSION_TYPE,
+            CB_BOARD_TYPE,
+            MEMBER_NO,
+            BOARD_NO
+        FROM CB_SESSION
+        WHERE MEMBER_NO = #{memberNo}
+          AND ENDED_AT IS NULL
+        ORDER BY STARTED_AT DESC
+    </select>
+    
+    <!-- 회원의 모든 세션 조회 -->
+    <select id="selectSessionsByMemberNo" parameterType="long" resultType="CbSession">
+        SELECT 
+            CB_SESSION_ID,
+            STARTED_AT,
+            ENDED_AT,
+            CB_SESSION_TYPE,
+            CB_BOARD_TYPE,
+            MEMBER_NO,
+            BOARD_NO
+        FROM CB_SESSION
+        WHERE MEMBER_NO = #{memberNo}
+        ORDER BY STARTED_AT DESC
+    </select>
+    
+    <!-- 세션 삭제 (필요시) -->
+    <delete id="deleteCbSession" parameterType="long">
+        DELETE FROM CB_SESSION
+        WHERE CB_SESSION_ID = #{cbSessionId}
+    </delete>
+</mapper>

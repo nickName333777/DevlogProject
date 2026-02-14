@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="sidebar" th:fragment="sidebar(activeMenu)">
+  <nav class="menu">
+    <h4>Management</h4>
+    <ul>
+      <li th:classappend="${activeMenu == 'home'} ? 'active'"
+          th:onclick="|location.href='@{/manager/dashboard}'|">
+        <img th:src="@{/images/manager/home.svg}" />
+        <span>Home</span>
+      </li>
+
+      <li th:classappend="${activeMenu == 'customer'} ? 'active'"
+          th:onclick="|location.href='@{/manager/dashboard/customer}'|">
+        <img th:src="@{/images/manager/customer.svg}" />
+        <span>Customers</span>
+      </li>
+
+      <li th:classappend="${activeMenu == 'report'} ? 'active'"
+          th:onclick="|location.href='@{/manager/dashboard/report}'|">
+        <img th:src="@{/images/manager/report.svg}" />
+        <span>Report</span>
+      </li>
+
+      <li th:classappend="${activeMenu == 'pay'} ? 'active'"
+          th:onclick="|location.href='@{/manager/dashboard/pay}'|">
+        <img th:src="@{/images/manager/pay.svg}" />
+        <span>Pay</span>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="logout" th:onclick="|location.href='@{/member/logout}'|">
+    <img th:src="@{/images/common/logout.svg}" />
+    <span>Logout</span>
+  </div>
+</aside>
+</body>
+</html>

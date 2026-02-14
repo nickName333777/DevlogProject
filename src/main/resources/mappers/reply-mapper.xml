@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.devlog.project.board.blog.mapper.ReplyMapper">
+
+    <insert id="insertReply" parameterType="com.devlog.project.board.blog.dto.ReplyDto">
+        <selectKey keyProperty="commentNo" resultType="long" order="BEFORE">
+       		 SELECT SEQ_COMMENT_NO.NEXTVAL FROM DUAL
+   		 </selectKey>
+	    INSERT INTO "COMMENT" (
+	        COMMENT_NO, 
+	        BOARD_NO, 
+	        MEMBER_NO, 
+	        COMMENT_CONTENT, 
+	        PARENTS_COMMENT_NO, 
+	        C_CREATE_DATE, 
+	        COMMENT_DEL_FL, 
+	        SECRET_YN, 
+	        MODIFY_YN
+	    ) VALUES (
+	        ${commentNo},
+	        #{boardNo},
+	        #{memberNo},
+	        #{commentContent}, 
+	        <choose>
+	            <when test="parentCommentNo == null or parentCommentNo == 0">NULL</when>
+	            <otherwise>#{parentCommentNo}</otherwise>
+	        </choose>, 
+	        SYSDATE, 'N', 'N', 'N'
+	    )
+	</insert>
+	
+    
+    <select id="selectReplyList" parameterType="map" resultType="com.devlog.project.board.blog.dto.ReplyDto">
+    SELECT 
+        C.COMMENT_NO AS commentNo,
+        C.BOARD_NO AS boardNo,
+        C.PARENTS_COMMENT_NO AS parentCommentNo,
+        C.COMMENT_CONTENT AS commentContent,
+        TO_CHAR(C.C_CREATE_DATE, 'YYYY-MM-DD HH24:MI') AS cCreateDate,
+        C.SECRET_YN AS secretYn,
+        C.COMMENT_DEL_FL AS commentDelFl,
+        M.MEMBER_NO AS memberNo,
+        M.MEMBER_NICKNAME AS memberNickname,
+        M.PROFILE_IMG AS profileImg,
+        
+        (SELECT COUNT(*) FROM "COMMENT_LIKE" L WHERE L.COMMENT_NO = C.COMMENT_NO) AS likeCount,
+        
+        <choose>
+            <when test="memberNo != null">
+                (SELECT COUNT(*) FROM "COMMENT_LIKE" CL 
+                 WHERE CL.COMMENT_NO = C.COMMENT_NO AND CL.MEMBER_NO = #{memberNo})
+            </when>
+            <otherwise>0</otherwise>
+        </choose> AS isLiked
+    FROM "COMMENT" C
+    JOIN "MEMBER" M ON C.MEMBER_NO = M.MEMBER_NO
+    WHERE C.BOARD_NO = #{boardNo}
+      AND C.COMMENT_DEL_FL = 'N'
+    /* 계층형 댓글 순서 정렬 */
+    ORDER BY COALESCE(C.PARENTS_COMMENT_NO, C.COMMENT_NO), 
+             C.PARENTS_COMMENT_NO NULLS FIRST, 
+             C.COMMENT_NO
+</select>
+    
+    <update id="deleteReply">
+        UPDATE "COMMENT" SET COMMENT_DEL_FL = 'Y' WHERE COMMENT_NO = #{commentNo}
+    </update>
+    
+    <update id="updateReply">
+        UPDATE "COMMENT" SET COMMENT_CONTENT = #{commentContent}, MODIFY_YN = 'Y' 
+        WHERE COMMENT_NO = #{commentNo}
+    </update>
+    
+    <select id="checkCommentLike" resultType="_int">
+        SELECT COUNT(*) FROM "COMMENT_LIKE" WHERE COMMENT_NO = #{commentNo} AND MEMBER_NO = #{memberNo}
+    </select>
+    
+    <insert id="insertCommentLike">
+	    INSERT INTO "COMMENT_LIKE" (COMMENT_NO, MEMBER_NO, STATUS)
+	    VALUES (#{commentNo}, #{memberNo}, 1)
+	</insert>
+    
+    <delete id="deleteCommentLike">
+        DELETE FROM "COMMENT_LIKE" WHERE COMMENT_NO = #{commentNo} AND MEMBER_NO = #{memberNo}
+    </delete>
+    
+    
+
+    <select id="checkPurchaseHistory" resultType="_int">
+        SELECT COUNT(*) 
+        FROM COFFEE_BEANS_TRADE
+        WHERE CONTENT_ID = #{boardNo}       AND BUYER_NO = #{memberNo}        AND CONTENT_TYPE = 'POST'         </select>
+
+    <insert id="insertTrade" parameterType="map">
+        <selectKey keyProperty="tradeNo" resultType="int" order="BEFORE">
+            SELECT SEQ_TRADE_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO COFFEE_BEANS_TRADE (
+            TRADE_NO, 
+            BUYER_NO, 
+            SELLER_NO, 
+            CONTENT_TYPE, 
+            TRADE_AT, 
+            CONTENT_ID, 
+            PRICE
+        ) VALUES (
+            #{tradeNo}, 
+            #{buyerNo}, 
+            #{sellerNo}, 
+            'POST', 
+            SYSDATE, 
+            #{contentId}, 
+            #{price}
+        )
+    </insert>
+
+    <insert id="insertBeansHistory" parameterType="map">
+        INSERT INTO COFFEE_BEANS_HISTORY (
+            BEANS_HISTORY, 
+            MEMBER_NO, 
+            PAY_AMOUNT, 
+            TRADE_NO, 
+            REG_DATE
+        ) VALUES (
+            SEQ_HISTORY_NO.NEXTVAL, #{memberNo}, 
+            #{payAmount}, 
+            #{tradeNo}, 
+            SYSDATE
+        )
+    </insert>
+    
+    <select id="selectBoardWriter" resultType="long">
+        SELECT MEMBER_NO FROM "BOARD" WHERE BOARD_NO = #{boardNo}
+    </select>
+    
+    
+   	<select id="getBoardMemberNo" resultType="_int">
+		
+		SELECT MEMBER_NO
+		FROM BOARD
+		WHERE BOARD_NO = ${boardNo}
+		
+	</select>
+	
+	<select id="selectMemberNickname" resultType="string">
+		
+		SELECT MEMBER_NICKNAME
+		FROM MEMBER
+		WHERE MEMBER_NO = ${memberNo}
+	</select>
+	
+	<select id="getParentMemberNo" resultType="_int">
+		
+		SELECT MEMBER_NO
+		FROM "COMMENT"
+		WHERE "COMMENT_NO" = ${parentCommentNo}
+		
+	</select>
+
+</mapper>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DevLog - 프로필 설정</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+
+    <link rel="stylesheet" th:href="@{/css/myPage/mySetting.css}">
+</head>
+
+<body>
+
+    <div th:replace="~{common/header :: header}"></div>
+
+    <main class="settings-container">
+        <div class="settings-inner">
+            <aside class="settings-sidebar">
+                <div class="profile-img-wrapper">
+                    <div class="img-box">
+                        <img th:src="${member.profileImg != null ? member.profileImg : '/images/member/user.png'}"
+                            id="profileDisplay" alt="프로필 이미지">
+
+                        <button class="gear-btn" onclick="document.getElementById('fileInput').click()">
+                            <i class="fa-solid fa-gear"></i>
+                        </button>
+                        <button class="delete-img-btn" id="deleteImgBtn" title="이미지 삭제">×</button>
+                    </div>
+                    <input type="file" id="fileInput" hidden accept="image/*">
+                </div>
+
+                <nav class="settings-menu">
+                    <ul>
+                        <li class="menu-item active" data-target="info-change">내 정보 변경</li>
+                        <li class="menu-item" data-target="sub-setting">구독 설정</li>
+                        <li class="menu-item" data-target="pw-change">비밀번호 변경</li>
+                        <li class="menu-item" data-target="withdraw">회원 탈퇴</li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <section class="settings-content">
+                <div id="info-change" class="profile-section active">
+                    <h2>내 정보 변경</h2>
+                    <div class="input-group">
+                        <label>닉네임</label>
+                        <div class="nickname-area">
+                            <input type="text" id="memberNickname" th:value="${member.memberNickname}"
+                                placeholder="닉네임을 입력하세요">
+                            <button type="button" id="btnCheckNickname" class="check-btn">중복 확인</button>
+                        </div>
+
+                        <p id="nicknameMessage" class="form-msg"></p>
+                        <input type="hidden" id="originNickname" th:value="${member.memberNickname}">
+                        <input type="hidden" id="nicknameChecked" value="true">
+
+                        <div class="input-group">
+                            <label>이름</label>
+                            <input type="text" id="memberName" th:value="${member.memberName}" readonly
+                                style="background:#f5f5f5; color:#999;">
+                        </div>
+                        <div class="input-group">
+                            <label>경력사항</label>
+                            <input type="text" id="memberCareer" th:value="${member.memberCareer}"
+                                placeholder="예: 백엔드 3년차">
+                        </div>
+                        <div class="input-group">
+                            <label>소개글</label>
+                            <textarea id="myInfoIntro" rows="3" th:text="${member.myInfoIntro}"
+                                placeholder="자신을 소개해 주세요."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label>전화번호</label>
+                            <input type="text" id="memberTel" th:value="${member.memberTel}">
+                        </div>
+                        <div class="input-group">
+                            <label>이메일</label>
+                            <input type="email" th:value="${member.memberEmail}" readonly
+                                style="background:#f5f5f5; color:#999;">
+                        </div>
+
+                        <div class="social-info">
+                            <div class="social-input">
+                                <span><i class="fa-brands fa-github"></i> 깃허브 주소</span>
+                                <input type="text" id="myInfoGit" th:value="${member.myInfoGit}"
+                                    placeholder="https://github.com/">
+                            </div>
+                            <div class="social-input">
+                                <span><i class="fa-solid fa-house"></i> 홈페이지 주소</span>
+                                <input type="text" id="myInfoHomepage" th:value="${member.myInfoHomepage}"
+                                    placeholder="https://blog.com/">
+                            </div>
+                        </div>
+                        <div class="btn-area">
+                            <button class="submit-btn" onclick="handleUpdate('info')">수정하기</button>
+                        </div>
+                    </div>
+
+                    <div id="sub-setting" class="profile-section">
+                        <h2>구독 설정</h2>
+                        <div class="sub-badge">
+                            <i class="fa-solid fa-crown"></i>
+                            <span>유료 정기구독 전용</span>
+                        </div>
+                        <div class="input-group">
+                            <label>구독 금액</label>
+                            <div class="bean-input-wrapper">
+                                <img th:src="@{/images/common/2bean.png}" class="bean-icon-img" alt="커피콩">
+                                <input type="number" id="subscriptionPrice" th:value="${member.subscriptionPrice}">
+                                <span class="unit">콩</span>
+                            </div>
+                        </div>
+                        <div class="btn-area">
+                            <button class="submit-btn" onclick="handleUpdate('sub')">적용하기</button>
+                        </div>
+                    </div>
+
+                    <div id="pw-change" class="profile-section">
+                        <h2>비밀번호 변경</h2>
+                        <div class="input-group">
+                            <label>현재 비밀번호</label>
+                            <input type="password" id="currentPw" placeholder="현재 비밀번호 입력">
+                        </div>
+                        <div class="input-group">
+                            <label>변경할 비밀번호</label>
+                            <input type="password" id="newPw" placeholder="변경할 비밀번호 (영문,숫자,특수문자 6~20자)"
+                                autocomplete="new-password">
+                            <p id="pwMsg" class="form-msg"></p>
+                        </div>
+                        <div class="input-group">
+                            <label>변경할 비밀번호 확인</label>
+                            <input type="password" id="newPwConfirm" placeholder="변경할 비밀번호 재입력"
+                                autocomplete="new-password">
+                            <p id="pwConfirmMsg" class="form-msg"></p>
+                        </div>
+                        <div class="btn-area">
+                            <button class="submit-btn" onclick="handleUpdate('pw')">수정하기</button>
+                        </div>
+                    </div>
+
+                    <div id="withdraw" class="profile-section">
+                        <h2>회원 탈퇴</h2>
+                        <div class="terms-box">
+                            <h4>제1조 (목적 및 효력)</h4>
+                            <p>본 약관은 회원이 <strong>DevLog</strong>(이하 "서비스") 이용 계약을 해지하고 회원 탈퇴를 신청함에 있어, 회원과 회사 간의 권리, 의무
+                                및 책임
+                                사항을 규정함을 목적으로 합니다. 회원은 본 내용을 숙지하고 동의함으로써 탈퇴 절차를 진행할 수 있습니다.</p>
+
+                            <h4>제2조 (계정 및 개인정보 파기)</h4>
+                            <p>1. 탈퇴 신청 즉시 회원의 계정은 로그인이 불가능한 상태로 전환되며, 회원의 개인정보는 '개인정보 보호법' 및 '정보통신망법' 등 관련 법령과 회사의
+                                개인정보처리방침에 따라 파기되거나 법정 기간 동안 분리 보관됩니다.</p>
+                            <p>2. 탈퇴 후에는 동일한 아이디로 복구할 수 없으며, 기존 계정의 정보(팔로우, 스크랩, 활동 내역 등)는 모두 삭제됩니다.</p>
+
+                            <h4>제3조 (디지털 자산의 소멸) <span style="color:#d32f2f;">[중요]</span></h4>
+                            <p>1. 회원이 보유하고 있는 <strong>'커피콩(Beans)' 및 기타 적립금, 포인트</strong> 등 서비스 내의 모든 디지털 자산은 탈퇴 시 즉시
+                                <strong>전액 소멸</strong>됩니다.
+                            </p>
+                            <p>2. 소멸된 디지털 자산은 탈퇴 후 재가입하더라도 <strong>복구되지 않으며</strong>, 이에 대해 회사는 현금 환불이나 보상을 제공하지 않습니다.
+                            </p>
+                            <p>3. 탈퇴 전 보유 중인 커피콩을 모두 소진하거나 확인하시기 바랍니다.</p>
+
+                            <h4>제4조 (유료 구독 및 결제 서비스 환불 불가) <span style="color:#d32f2f;">[중요]</span></h4>
+                            <p>1. 회원이 이용 중인 크리에이터 정기 구독 서비스는 탈퇴와 동시에 자동 해지 처리됩니다.</p>
+                            <p>2. 단, 이미 결제되어 이용 기간이 남아있는 구독료에 대해서는 <strong>일할 계산되거나 부분 환불되지 않습니다.</strong></p>
+                            <p>3. 구독 서비스의 혜택(유료 글 열람 등)은 탈퇴 즉시 중단되므로 신중하게 결정해 주시기 바랍니다.</p>
+
+                            <h4>제5조 (게시물에 대한 조치)</h4>
+                            <p>1. 회원이 작성한 <strong>공개 게시물(블로그 포스트, 댓글, 답글 등)</strong>은 탈퇴 후에도 삭제되지 않고 서비스에 그대로 유지됩니다.</p>
+                            <p>2. 탈퇴 후에는 회원 정보가 삭제되어 작성자 본인 확인이 불가능하므로, <strong>게시물의 수정 및 삭제 조치가 불가능합니다.</strong></p>
+                            <p>3. 삭제를 원하는 게시물이 있다면 반드시 <strong>탈퇴 신청 전</strong>에 직접 삭제하시기 바랍니다.</p>
+
+                            <h4>제6조 (재가입 제한)</h4>
+                            <p>부정 이용 방지 및 건전한 서비스 환경 조성을 위하여, 탈퇴 후 일정 기간 동안 동일한 이메일 또는 본인인증 정보로의 재가입이 제한될 수 있습니다.</p>
+
+                            <br>
+                            <hr style="border: 0; border-top: 1px dashed #ccc;">
+                            <br>
+                            <p style="color:#e74c3c; font-weight:700; text-align: center; font-size: 1.05rem;">
+                                위 유의사항을 모두 확인하였으며, 이에 따른 모든 불이익을 감수하고 탈퇴에 동의합니다.
+                            </p>
+                        </div>
+                        <div class="check-group">
+                            <input type="checkbox" id="agreeTerm">
+                            <label for="agreeTerm">약관에 동의하십니까?</label>
+                        </div>
+                        <div class="input-group">
+                            <label>비밀번호 확인</label>
+                            <input type="password" id="withdrawPw" placeholder="비밀번호를 입력해 주세요">
+                        </div>
+                        <div class="btn-area">
+                            <button class="withdraw-btn" onclick="handleWithdraw()">탈퇴하기</button>
+                        </div>
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <div th:replace="~{common/footer :: footer}"></div>
+    <script th:src="@{/js/notification/noti.js}"></script>
+    <script th:src="@{/js/common/header.js}"></script>
+
+    <script th:src="@{/js/myPage/mySetting.js}"></script>
+
+    <script th:inline="javascript">
+        const memberNo = [[${ member.memberNo }]];
+    </script>
+</body>
+
+</html>

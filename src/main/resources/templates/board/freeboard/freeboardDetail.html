@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판 - 상세보기</title>
+
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+    <link rel="stylesheet" th:href="@{/css/board/freeboard/freeboardDetail.css}">
+    <link rel="stylesheet" th:href="@{/css/board/freeboard/comments.css}">
+    <link rel="stylesheet" th:href="@{/css/common/report.css}">
+</head>
+<body>
+    <!-- <p th:text="${freeboard}" th:if="${freeboard != null}"></p>     -->
+    <!-- <p th:text="${session.loginMember}"></p>  -->
+    <main>
+
+        <!-- 헤더 -->
+        <!-- <header class="main-header">header</header> -->
+        <!-- header.html (fragment) 추가 -->
+        <!-- <th:block th:replace="~{/common/header}">header.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/header :: header"></div>
+        <script th:src="@{/js/common/header.js}"></script>
+
+        <!-- 네비게이션 -->
+        <nav class="main-nav"></nav>
+        <!--  ###################################################### -->        
+
+        <div class="container-wrapper">
+            <div class="top-space-bw-header"> </div>
+            <!-- 상단 제목 -->
+            <h2 class="title-main fw-800">자유게시판</h2>
+            <div class="container">
+
+                <!-- 글 제목 -->
+                <div class="post-title" th:text="${freeboard.boardTitle}">상세 게시글 제목</div>
+
+                <!-- 작성정보 -->
+                <div class="post-info-area">
+                    <!-- 대표 이미지 -->
+                    <div class="main-image-box">
+                        <img th:if="${freeboard.thumbnail}" th:src="${freeboard.thumbnail}" class="main-img" th:alt="${freeboard.boardTitle}">
+                        <img th:unless="${freeboard.thumbnail}" th:src="@{/images/logo.png}" class="main-img" alt="기본 이미지">
+                    </div>
+
+                    <div class="post-info-box">
+                        <div class="info-text">
+                            <div class="info-text-row"><span>작성일</span> <span class="info-text-row span"><p th:text="${freeboard.bCreateDate}" th:if="${freeboard.bCreateDate != null}">작성일</p></span></div>
+                            <div class="info-text-row"><span>조회수</span> <span class="info-text-row span"><p th:text="${freeboard.boardCount}" th:if="${freeboard.boardCount != null}">조회수</p></span></div>
+                            <div class="info-text-row"><span>작성자</span> <span class="info-text-row span"><p th:text="${freeboard.memberNickname}" th:if="${freeboard.memberNickname != null}">작성자</p></span></div>
+                            <div class="heart info-text-row">
+                                <span class="heart-like-img">
+
+                                    <i class="like-icon" th:data-board-id="${freeboard.boardNo}" data-liked="false" th:unless="${likeCheck}">
+                                        <img th:src="@{/images/board/freeboard/iconfy_red-heart_empty.png}" class="heart-like" alt="#">
+                                    </i>
+                                    <i class="like-icon" th:data-board-id="${freeboard.boardNo}" data-liked="true" th:if="${likeCheck}">
+                                        <img th:src="@{/images/board/freeboard/iconfy_twemoji_red-heart_filled.png}" class="heart-like" alt="#">
+                                    </i>
+
+                                </span> 
+                                <span class="info-text-row span"><p id="pTagLikeCount" th:text="${freeboard.likeCount}" >좋아요 수</p></span>
+                            </div>
+                            <div></div>
+                        </div>
+                    </div>
+            
+                    <!-- 신고 버튼 -->
+                    <div class="report-box">
+                        <th:block th:if="${session.loginMember != null}">          
+                            <div  class="report-btn" id="reportBtn"
+                                    th:onclick="|openReportModal(${freeboard.memberNo}, ${freeboard.boardNo})|">
+                                <div>게시글신고</div>
+                                <img th:src="@{/images/board/freeboard/report_icon.png}" class="report-img" alt="#">
+                            </div>
+                        </th:block>
+                    </div>
+            
+
+                </div>
+
+                <!-- 이미지가 1개 이상 있을 경우 -->
+                <th:block th:if="${#lists.size(freeboard.imageList) > 1 }">
+                    <!-- 작은 이미지들 : imageList에서 thumbnail 이외의 것들 여기에 출력-->
+                    <div class="sub-image-box" >
+                        <!--                                     start,        end,                   step -->
+                        <th:block th:each="i : ${#numbers.sequence(1, #lists.size(freeboard.imageList)-1, 1)}">
+                            <div class="boardImg" th:with="path=|${freeboard.imageList[i].imgPath}${freeboard.imageList[i].imgRename}|"> 
+                                <img th:src="${path}" class="sub-img" alt="#">
+                            </div>
+                        </th:block>
+                    </div>
+
+                </th:block>
+
+                <!-- 본문 내용 -->
+                <div class="content" th:text="${freeboard.boardContent}">상세 게시글 내용
+                </div>
+
+                <!-- 하단 버튼 -->
+                <div class="bottom-btn-box">
+                    <!-- <th:block th:if="${session.loginMember?.memberAdmin == T(com.devlog.project.member.enums.Status).Y
+                                        or session.loginMember?.memberNo == freeboard.memberNo}"> -->
+                    <th:block th:if="${session.loginMember != null 
+                                        and (session.loginMember.memberNo == freeboard.memberNo 
+                                            or session.loginMember.role == 'ROLE_ADMIN')}">
+                        <button class="bottom-btn" id="updateBtn">수정</button>
+                        <button class="bottom-btn" id="deleteBtn">삭제</button>
+                    </th:block>
+                    
+                    <button class="bottom-btn" id="goToListBtn">목록으로</button>
+                </div>
+
+            </div>
+
+        </div>
+        
+		<th:block th:replace="~{board/freeboard/comments}"></th:block>  
+		   
+        <!--  ###################################################### -->
+        <!-- <footer class="main-footer">footer</footer> -->
+        <!-- footer.html 추가 -->
+        <!-- <th:block th:replace="~{common/footer}">footer.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/footer :: footer"></div>
+        
+    </main>
+
+    <script th:inline="javascript"> // freeboardDetail.js처럼 JS에서 사용할 전역 변수들을 선언~~
+
+        let loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null; 
+        let memberNickname = /*[[${session.loginMember?.memberNickname}]]*/ null;
+        if(loginMemberNo === null) loginMemberNo = ""; // 들어가는 값이 없으면 대신 빈칸을 넣어준다 (아래 boardDetail.js, comment.js에서 ""로 받아서 처리)
+        
+        // 명시적으로 전역 등록
+        window.loginMemberNo = loginMemberNo;
+        window.memberNickname = memberNickname;        
+        window.boardNo = /*[[${freeboard?.boardNo}]]*/ null;
+        window.boardCode = /*[[${freeboard?.boardCode}]]*/ null;
+        window.boardTitle = /*[[${freeboard?.boardTitle}]]*/ null;
+        
+    </script>
+    
+    <!-- 알림창 띄우기 -->
+    <script th:inline="javascript"> 
+        let message = /*[[${message}]]*/ null;
+        if(message != null) alert(message); // message12가 없으면 null값
+    </script>
+    
+    <!-- freeboardDetail.js 추가 -->
+    <script th:src="@{/js/board/freeboard/freeboardDetail.js}"></script>    
+    <!-- freeboardComment.js 추가 -->
+    <script th:src="@{/js/board/freeboard/freeboardComment.js}"></script>     
+    
+
+    <!-- 모달 for 게시글 신고: 2026/01/05 -->
+    <div id="modal-root"></div>
+    <script th:src="@{/js/common/report.js}"></script> 
+</body>
+</html>

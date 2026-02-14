@@ -1,0 +1,173 @@
+/* section, div{ border : 1px solid black;}  */
+
+/* === 전체 초기화 및 공통 설정 === */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    font-family: 'Pretendard Variable', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+/* 기본 설정 */
+body {
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Pretendard Variable', Arial, Helvetica, sans-serif;
+}
+
+/* 전체 컨테이너 */
+.container {
+    max-width: 1440px; /* 내용 길이 1440px */
+    margin: 30px auto;
+    padding: 0 10px;
+}
+
+/* 구분선 */
+/* <!-- <hr class="fb-line"> --> 일때 */
+/* .fb-line {
+    border: none;
+    border-top: 4px solid #000;
+    margin: 20px 0;
+} */
+
+/* <div class="fb-line"></div>  일때 */
+.fb-line {
+    border: none;
+    border-top: 4px solid #000;
+    margin: 20px 0;
+}
+
+/* 댓글 제목 */
+.title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0;
+}
+
+/* 댓글 아이템 */
+.comment-item {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 15px 0;
+}
+
+/* 프로필 이미지 */
+.profile-img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+/* 댓글 내용 */
+.comment-info {
+    flex-grow: 1;
+}
+
+.comment-nickname {
+    font-weight: 700;
+    font-size: 32px;
+}
+
+.comment-content {
+    font-size: 32px;
+    color: #000;
+}
+
+/* 수정/삭제 버튼 */
+.comment-actions {
+    text-align: right;
+    min-width: 80px;
+}
+
+.action-btn {
+    margin-left: 10px;
+    margin-right: 25px;
+    font-size: 25px;
+    color: #777;
+    cursor: pointer;
+    border: none;
+    background-color: white;
+}
+
+.action-btn:hover {
+    color: #BD83CE;
+}
+
+
+/* 입력 박스 영역 */
+/* textarea + 버튼 정렬 */
+.comment-write-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 댓글 입력 박스: 상세화면 댓글 textarea */
+.comment-input {
+    width:85%;
+    border: 2px solid #ccc;
+    padding: 18px;
+    font-size: 32px;
+    line-height: 1.7;
+    border-radius: 6px;
+    color: #000;
+    margin-top: 35px;
+}
+
+/* 댓글 수정 입력 박스: 수정버튼 클릭시 생성되는 수정 댓글 textarea */
+.update-textarea {
+    width:65%;
+    border: 2px solid #ccc;
+    padding: 9px;
+    font-size: 16px;
+    line-height: 1.7;
+    border-radius: 6px;
+    color: #000;
+}
+
+.submit-btn {
+    background: #BD83CE;
+    color: white;
+    padding: 10px 22px;
+    font-size: 35px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 10px;
+
+    flex-shrink: 0; 
+}
+
+.submit-btn:hover {
+    background: #E5B0EA;
+}
+
+.comment-date {
+    font-size: 20px;
+    color: #999;
+    margin-left: 8px;
+}
+
+.comment-info > div:first-child {
+    display: flex;
+    align-items: center;
+}
+
+.comment-row {
+    list-style: none;
+}

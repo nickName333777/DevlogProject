@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>신고하기</title>
+</head>
+
+<link rel="stylesheet" th:href="@{/css/common/font.css}">
+<link rel="stylesheet" th:href="@{/css/common/report.css}">
+
+<body>
+
+<div id="reportModal" class="re-overlay display-none">
+    <div class="re-modal">
+        <button class="report-close-btn" onclick="closeReportModal()">✖</button>
+    
+            <section id="section1">
+            
+                <div class="div-content" id="div1">신고하기 <img th:src="@{/images/report_icon.png}"></div>
+            
+                <div class="div-content" id="div2">
+            
+                    <div class="profile-image-area">
+            
+                        <img th:if="${targetMember.profilePath}" th:src="${targetMember.profilePath}" id="profileImage">
+                        <img th:unless="${targetMember.profilePath}" th:src="@{/images/logo.png}" id="profileImage">
+            
+                    </div>
+            
+                </div>
+            
+                <div class="div-content fw-600 fs-14" id="div3"  th:text="${targetMember.memberNickname}">게시글 올린 사람 닉네임</div>
+            
+            
+            </section>
+            
+            <section id="section2">
+
+                <div id="div5">신고유형</div>
+                
+                <div id="div5-1">
+                
+                    <fieldset>
+                
+                        <div class="report-select">
+                        <div class="selected bold-text"> 신고 유형을 선택해주세요 🚨</div>
+                        <div class="options">
+                            <div th:each="type : ${reportType}" class="option" th:data-report-code="${type.reportCode}" th:text="${type.reportType}"></div>
+                        </div>
+                        </div>
+                
+                    </fieldset>
+                
+                </div>
+                
+                <div class="div-content" id="div6">
+                
+                    <textarea rows="20" cols="70" name="reportReason" id="reportReason" placeholder="상세한 내용을 작성해주세요."></textarea>
+                
+                </div>
+                
+                <div class="div-content" id="div7">
+                    <button id="reportButton">신고하기</button>
+                
+                </div>
+                
+                <div id="div8">
+                    
+                    신고 전, 해당 사용자의 행위가 Devlog 서비스 운영 정책에 위반되는지<br>
+                    다시 한 번 신중히 확인해 주시기 바랍니다. <br><br>
+
+                    접수된 신고 내용은 운영 정책에 따라 검토되며,<br>
+                    사실 관계 확인 결과 양측 모두 책임이 있을 경우<br>
+                    신고자에게도 서비스 이용 제한 등의 조치가 적용될 수 있습니다.<br>
+                    이 회원이 신고대상에 해당되는지 다시 한번 확인하여 주시기 바랍니다.
+                    
+                </div>
+            
+            </section>
+            <input type="hidden" id="targetMemberNo" th:value="${targetMember.memberNo}">
+    </div>
+</div>
+
+
+
+<!-- <script th:src="@{/js/common/report.js}"></script> -->
+    
+</body>
+
+</html>

@@ -1,0 +1,139 @@
+.member-scroll {
+  flex: 1; 
+  overflow-y: auto !important; 
+}
+
+/* 상단 카드 영역 */
+.member-summary {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  gap: 20px;
+}
+
+.chart-box,
+.info-box {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px 25px;
+}
+
+.chart-box h3,
+.info-box h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chart-img {
+  width: 100%;
+  height: auto;
+}
+
+/* 회원 정보 */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.profile-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-info li {
+  font-size: 14px;
+  color: #555;
+  padding: 3px 0;
+}
+
+.profile-info .name {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+/* 전체 회원 목록 */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.search-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  width: 220px;
+  padding: 8px 32px 8px 12px;
+  border: 1.5px solid #d3bce8;
+  border-radius: 6px;
+  outline: none;
+}
+
+.search-box button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.search-box button img {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+.status-filter {
+  padding: 7px 10px;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* 테이블 */
+.member-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.member-table th,
+.member-table td {
+  padding: 12px 14px;
+  text-align: center;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.member-table th {
+  background: #f8f6fa;
+  color: #555;
+  font-weight: 600;
+}

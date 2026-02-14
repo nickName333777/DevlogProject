@@ -1,0 +1,205 @@
+.re-modal{
+  background: white;
+  border-radius: 16px;
+  width: 500px;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+  text-align: center;
+  animation: modalPop 0.25s ease-out;
+  position: relative;
+  border: 1px solid #BD83CE;
+
+
+}
+
+fieldset {
+  border: 2px solid #F1C6E7;
+  border-radius: 10px;
+  background-color: white;
+  margin-bottom: 20px;
+  text-align: center;
+  width: 400px;
+}
+
+#section1, #section2 {
+  width: 400px;
+  margin: 0 auto;
+}
+
+.div-content {
+  width: 400px;
+}
+
+#div1 {
+  margin-top: 20px;
+  font-size: 24pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#div2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#div3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#div4 {
+  width: 500px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#div5 {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+#div5-1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#div6 {
+  text-align: center;
+}
+
+#div7 {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+#div8 {
+  text-align: left;
+  font-size: 10pt;
+  color: gray;
+
+  margin-bottom: 20px;
+}
+
+hr {
+  width: 400px;
+}
+
+/* ************* 프로필 화면 ************* */
+.profile-image-area{
+  width: 75px;
+  height: 75px;
+  border: 3px solid #ccc;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+#profileImage{
+  height: 100%;
+}
+
+textarea {
+  border: 2px solid #F1C6E7;
+  border-radius: 10px;
+  width: 400px;
+  resize: none;
+}
+
+#reportButton {
+  border: 3px solid #F1C6E7;
+  border-radius: 10%;
+  background-color: #F1C6E7;
+  color: black;
+  height: 40px;
+}
+
+#reportButton:hover{
+  cursor: pointer;
+}
+
+
+.report-select {
+  width: 98%;
+  position: relative;
+  user-select: none;
+  cursor: pointer;
+  margin: 0 auto;
+  border: none;
+}
+
+.selected {
+  padding: 10px;
+  border: none;
+  background-color: white;
+}
+
+.options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: white;
+  display: none;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.options .option {
+  padding: 10px;
+}
+
+.options .option:hover {
+  background-color: #ddd;
+}
+
+.re-modal::-webkit-scrollbar {
+  display: none;
+}
+
+/* 오버레이 */
+.re-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(3px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 등장 애니메이션 */
+@keyframes modalPop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.display-none {
+  display: none;
+}
+
+
+.report-close-btn {
+    position:absolute;
+    top:15px;
+    right:15px;
+    border:none;
+    background:none;
+    font-size:20px;
+    cursor:pointer;
+}

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="hd">
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}">
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+    <div class="hd-in">
+      <!-- 왼쪽 영역 -->
+      <div class="hd-l">
+        <!-- 메뉴 버튼 -->
+        <button class="menu-btn" id="menuBtn" aria-label="menu">
+          <img th:src="@{/images/common/menu.svg}" class="theme-icon" alt="menu" />
+        </button>
+
+        <!-- 사이드바 -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <img th:src="@{/images/common/devlog.svg}" alt="logo" class="sidebar-logo theme-icon" />
+            <span class="sidebar-title">DevLog</span>
+          </div>
+
+          <nav class="sidebar-menu">
+            <ul>
+              <li>
+                <a th:href="@{/}" class="sidebar-link">
+                  <img th:src="@{/images/common/home.svg}" alt="home" />
+                  <span>Home</span>
+                </a>
+              </li>
+              <li th:if="${session.loginMember != null 
+                and session?.loginMember?.memberAdmin?.name() == 'Y'}"
+              onclick="location.href='/manager/dashboard'">
+                <img th:src="@{/images/common/dashboard.svg}" alt="dashboard" />
+                <span>Dashboard</span>
+              </li>
+
+              <h4>Community</h4>
+              <li onclick="location.href='/blog/list'"><img th:src="@{/images/common/blog.svg}" alt="blog" /> 블로그</li>
+              <li onclick="location.href='/board/freeboard'"><img th:src="@{/images/common/board.svg}" alt="board" /> 자유게시판</li>
+              <li onclick="location.href='/ITnews'"><img th:src="@{/images/common/news.svg}" alt="news" /> 지식 뉴스</li>
+              <li onclick="location.href='/board/qna/list'"><img th:src="@{/images/common/qa.svg}" alt="qa" /> Q&amp;A
+              </li>
+              <li onclick="location.href='/jobposting'"><img th:src="@{/images/common/job.svg}" alt="job" /> 채용
+                정보</li>
+
+              <h4>Recommend</h4>
+              <li><img th:src="@{/images/common/cafe.svg}" alt="cafe" /> 주변 카페</li>
+              <li><img th:src="@{/images/common/book.svg}" alt="book" /> 관련 서적</li>
+
+              <hr class="sidebar-divider" />
+
+              <!-- 다크모드로 전환 -->
+              <!-- <li class="mode-item">
+                <button class="mode-toggle" id="darkModeBtn" aria-label="dark mode toggle">
+                  <span class="icon sun">
+                    <img th:src="@{/images/common/sun.svg}" alt="light mode" />
+                  </span>
+                  <span class="icon moon">
+                    <img th:src="@{/images/common/moon.svg}" alt="dark mode" />
+                  </span>
+                  <span class="mode-text">Mode</span>
+                </button>
+              </li> -->
+              <li class="mode-item">
+                <button class="mode-toggle" id="darkModeBtn" aria-label="dark mode toggle">
+                  <span class="mode-icon">
+                    <span class="icon sun">
+                      <img th:src="@{/images/common/sun.svg}" alt="light mode" />
+                    </span>
+                    <span class="icon moon">
+                      <img th:src="@{/images/common/moon.svg}" alt="dark mode" />
+                    </span>
+                  </span>
+                  <span class="mode-text">Mode</span>
+                </button>
+              </li>
+              <li><img th:src="@{/images/common/settings.svg}" alt="settings" /> Settings</li>
+              <li id="sidebar-logout"><img th:src="@{/images/common/logout.svg}" alt="logout"/> Logout</li>
+            </ul>
+          </nav>
+        </aside>
+
+        <!-- 배경 오버레이 -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- 로고 -->
+        <a th:href="@{/}" class="logo">
+          <img th:src="@{/images/common/devlog.svg}" alt="logo" class="logo-ico theme-icon" />
+          <div class="logo-text">
+            <span class="logo-sub">상상하는 모든 것을 기록하는 공간</span>
+            <span class="logo-t">DevLog</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- 오른쪽 영역 -->
+      <div class="hd-r">
+        <!-- 검색창 -->
+        <form th:action="@{/search/blog}" method="get" class="search">
+          <input
+            type="text"
+            id="searchInput"
+            name="keyword"
+            placeholder="여기에 검색어를 입력하세요."
+            required
+          />
+          <button type="submit" aria-label="search">
+            <img th:src="@{/images/common/search.svg}" class="theme-icon" alt="search" />
+          </button>
+          
+          <!-- 연관검색어 -->
+          <ul id="suggestList" class="suggest-list"></ul>
+        </form>
+
+        <!-- 알림 -->
+        <button th:if="${session.loginMember}" class="btn-ico" id="noti-btn" aria-label="notification">
+          <img th:src="@{/images/common/notifications.svg}" class="theme-icon" alt="notification" />
+          <span id="notiUnread"></span>
+        </button>
+
+        <div class="alarm-panel display-none" >
+
+          <!-- 헤더 -->
+          <div class="alarm-header flex-between">
+            <h2>알림</h2>
+
+            <div class="alarm-menu">
+              <button class="noti-menu-btn">⋮</button>
+              <ul class="noti-menu-dropdown display-none">
+                <li id="allDeleteNoti" class="fw-600">전체 삭제</li>
+                <li id="allReadNoti" class="fw-600">전체 읽음</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 필터 탭 -->
+          <div class="alarm-filters flex gap-8">
+            <button class="filter is-active flex-center" id="allNoti" style="border: 1px solid #E0CAFF;">
+              <span class="fs-12 fw-600">⭐ 전체</span>
+              <span id="allUnread"></span>
+            </button>
+            <button class="filter  flex-center gap-4" id="likeNoti" style="border: 1px solid #E0CAFF;">
+              <img th:src="@{/images/notification/like.svg}">
+              <span class="fs-12 fw-600">좋아요</span>
+              <span id="likeUnread"></span>
+            </button>
+            <button class="filter flex-center gap-4" id="commentNoti" style="border: 1px solid #E0CAFF;">
+              <img th:src="@{/images/notification/comment.svg}">
+              <span class="fs-12 fw-600">댓글</span>
+              <span id="commentUnread"></span>
+            </button>
+            <button class="filter flex-center gap-4" id="followNoti" style="border: 1px solid #E0CAFF;">
+              <img th:src="@{/images/notification/follow.svg}" alt="">
+              <span class="fs-12 fw-600">팔로우</span>
+              <span id="followUnread"></span>
+            </button>
+            <button class="filter flex-center gap-4" id="mentionNoti" style="border: 1px solid #E0CAFF;">
+              <img th:src="@{/images/notification/@.svg}">
+              <span class="fs-12 fw-600">언급</span>
+              <span id="mentionUnread"></span>
+            </button>
+          </div>
+
+          <!-- 알림 리스트 -->
+          <div id="alarm-panel">
+            <!-- 알람이 없을 경우 -->
+            <div th:if="${#lists.isEmpty(notiList)}" class="noAlarm flex-center">
+              <span class="fw-600 fs-24">/notifications 응답: 204 No Content</span>
+            </div>
+            <!-- 알람이 있을 경우 -->
+            <ul th:if="${notiList != null and !#lists.isEmpty(notiList)}" class="alarm-list flex-col gap-12">
+              
+              <li th:each="list : ${notiList}" class="alarm-item flex-between"  th:data-id="${list.notiNo}" th:data-target-type="${list.targetType}"
+                th:classappend="${list.isRead == 'Y'} ? ' read-noti' : ''"
+              >
+                <div class="alarm-left flex gap-12">
+                  <div class="alarm-icon comment">
+                    <img th:if="${list.type == 'LIKE'}"
+                        th:src="@{/images/notification/like.svg}">
+
+                    <img th:if="${list.type == 'COMMENT'}"
+                        th:src="@{/images/notification/comment.svg}">
+
+                    <img th:if="${list.type == 'FOLLOW'}"
+                        th:src="@{/images/notification/follow.svg}">
+
+                    <img th:if="${list.type == 'MENTION'}"
+                        th:src="@{/images/notification/@.svg}">
+                  </div>
+                  
+                  <div class="alarm-text">
+                    <p th:text="${list.content}"></p>
+                    <span class="sub" th:if="${list.preview != null}" th:text="${list.preview}">
+                    </span>
+                  </div>
+                </div>
+                <div class="alarm-right">
+                  <span class="time" th:text="${list.formatTime}">5분전</span>
+                  <button class="close">✕</button>
+                </div>
+
+                <input type="hidden" class="targetId" th:value="${list.targetId}">
+              </li>
+
+            </ul>
+
+          </div>
+        </div>
+        <!-- 비회원일 시 -->
+        <button th:if="${session.loginMember == null}" id="signinBtn" class="signin-btn">
+          Sign in
+        </button>
+
+        <!-- 회원일 시 -->
+        <div th:if="${session.loginMember != null}" class="profile" id="profile">
+
+          <img th:src="${session.loginMember.profileImg != null 
+                        ? session.loginMember.profileImg 
+                        : '/images/user.png'}" alt="profile" />
+
+          <span th:text="${session.loginMember.memberNickname}">
+            My
+          </span>
+
+          <!-- 드롭다운 메뉴 -->
+          <ul class="dropdown" id="dropdown">
+            <li th:onclick="|location.href='@{/blog/{id}(id=${session.loginMember.memberEmail})}'|">My Dev</li>
+            <li onclick="location.href='/coffeebeans'">Coffee Beans</li>
+            <li id="devtalk">DevTalk</li>
+            <li id="logout">Logout</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+  
+      const loginCheck = [[${session.loginMember != null}]];
+  
+    </script>
+  
+    
+  </header>
+
+</body>
+
+</html>

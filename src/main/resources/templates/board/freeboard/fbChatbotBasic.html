@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>DevLog 챗봇</title>
+    <link rel="stylesheet" href="../../../static/css/board/freeboard/fbChatbot.css">
+    <link rel="stylesheet" href="../../../static/css/common/font.css">
+
+</head>
+<body>
+
+<div class="chatbot-container">
+
+    <!-- Header -->
+    <div class="header">
+        DevLog 자유게시판 챗봇
+    </div>
+
+    <!-- Option Bar -->
+    <div class="option-bar">
+        <button class="option-btn">챗봇 옵션</button>
+        <div class="select-box">
+            <select class="option-select">
+                <option class="cb-basic">기본형</option>
+                <option class="cb-bean">커피콩충전형</option>
+            </select>
+        </div>
+
+    </div>
+
+    <!-- Chat Box -->
+    <div class="chat-area-wrapper">
+        <div class="chat-box" id="chatBox">
+
+            <!-- User bubble -->
+            <div class="chat-row right">
+                <div class="bubble user">
+                    text
+                    <div class="time">2025.12.08. 오전 12:22</div>
+                    <div class="name">유저칠</div>
+                </div>
+            </div>
+
+            <!-- Bot bubble -->
+            <div class="chat-row left">
+                <img src="../../../static/images/board/freeboard/chatbot1.png" class="bot-img" alt="#">
+                <div>
+                    <div class="bubble bot">
+                        text<br>text
+                    </div>
+                    <div class="time">2025.12.08. 오전 12:22</div>
+                    <div class="name">DevLog 챗봇</div>
+                </div>
+            </div>
+
+            <!-- User bubble -->
+            <div class="chat-row right">
+                <div class="bubble user">
+                    text<br>text<br>text
+                    <div class="time">2025.12.08. 오전 12:22</div>
+                    <div class="name">유저칠</div>
+                </div>
+            </div>
+
+            <!-- Bot long bubble -->
+            <div class="chat-row left">
+                <img src="../../../static/images/board/freeboard/chatbot1.png" class="bot-img" th:alt="#">
+                <div>
+                    <div class="bubble bot big">
+                        text<br>text<br>text<br>text<br>text<br>text<br>text<br>
+                    </div>
+                    <div class="time">2025.12.08. 오전 12:22</div>
+                    <div class="name">DevLog 챗봇</div>
+                </div>
+            </div>
+
+        </div>
+    
+        <!-- Token usage info area-->
+        <div class="token-usage-info-area">
+            <div class="token-usage tu-row1">
+                <div><p class="token-info">무료</p></div>
+                <div><p class="token-info"></p></div>
+            </div>
+            <div class="token-usage tu-row2">
+                <div><p class="token-info"></p></div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <!-- <input type="text" id="chatInput" class="input-text" placeholder="여기에 내용을 입력"> -->
+            <textarea id="chatInput" class="input-textarea" placeholder="여기에 내용을 입력" 
+                    rows="3" cols="30" maxlength="4000"></textarea>
+            <button id="sendBtn" class="send-btn">
+                <img src="../../../static/images/board/freeboard/cb_send2.png" class="card-img" alt="#">
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ⭐ Pure JavaScript: 자동스크롤 + 메시지 전송 ⭐ -->
+<script>
+    const chatBox = document.getElementById("chatBox");
+    const chatInput = document.getElementById("chatInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function addMessage(msg) {
+        if (!msg.trim()) return;
+
+        const row = document.createElement("div");
+        row.className = "chat-row right";
+
+        row.innerHTML = `
+            <div class="bubble user">
+                ${msg}
+                <div class="time">${new Date().toLocaleString()}</div>
+                <div class="name">유저</div>
+            </div>
+        `;
+
+        chatBox.appendChild(row);
+        scrollToBottom();
+    }
+
+    sendBtn.addEventListener("click", () => {
+        addMessage(chatInput.value);
+        chatInput.value = "";
+    });
+
+    chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            addMessage(chatInput.value);
+            chatInput.value = "";
+        }
+    });
+
+    window.onload = scrollToBottom;
+</script>
+
+</body>
+</html>

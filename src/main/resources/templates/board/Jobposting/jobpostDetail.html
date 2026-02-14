@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>채용공고 상세페이지</title>
+  <link rel="stylesheet" th:href="@{/css/board/Jobposting/jobpostDetail.css}">
+  <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+  <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+</head>
+
+<div th:replace="common/header :: header"></div>
+<script th:src="@{/js/common/header.js}"></script>
+
+<body>
+
+  <div class="detail_container">
+    <header class="detail_header">
+      <div class="company_name" th:text="${job.companyName}"></div>
+      <div class="posting_title" th:text="${job.postingTitle}"></div>
+      <div class="header_utils">
+        <button type="button" class="btn_scrap" aria-label="스크랩" th:onclick="|toggleScrap(this, ${job.postingNo})|">
+          <img th:src="${scrapCheck > 0} ? @{/images/common/scrap-filled.png} : @{/images/common/scrap-empty.png}"
+            id="scrapIcon" alt="스크랩" style="width: 20px; height: 20px;">
+
+        </button>
+        <button type="button" class="kakao_share">
+          <img th:src="@{/images/board/Jobposting/kakao.png}" alt="icon" class="kakao_icon"> 공유하기
+        </button>
+        <button type="button" class="link_share">
+          <span class="icon">🔗</span> 링크복사
+        </button>
+      </div>
+
+
+    </header>
+
+    <main class="detail_main">
+      <section class="posting_content">
+        <h3>상세요강</h3>
+        <div class="content_view">
+          <th:block th:if="${not #lists.isEmpty(job.postingContent)}">
+            <img th:each="imgUrl : ${job.imageList}" th:src="${imgUrl}" alt="상세 이미지">
+          </th:block>
+
+          <img th:if="${#strings.isEmpty(job.postingContent)}" th:src="@{/images/common/devlog.svg}" alt="기본 로고">
+        </div>
+
+      </section>
+
+      <aside class="info_cards">
+
+        <article class="info_card purple_card">
+          <div class="card_title">모집요강</div>
+          <div class="card_content">
+            <div class="row"><strong>모집분야</strong><span class="rec_field" th:text="${job.recField}"></span></div>
+            <div class="row"><strong>모집인원</strong><span class="rec_count" th:text="${job.recCount}"></span></div>
+            <div class="row"><strong>고용형태</strong><span class="emp_type" th:text="${job.empType}"></span></div>
+            <div class="row"><strong>급여</strong><span class="salary" th:text="${job.salary}"></span></div>
+            <div class="row"><strong>근무지주소</strong><span class="work_addr" th:text="${job.workAddr}"></span></div>
+            <div class="row"><strong>인근지하철</strong><span class="nearby_sub" th:text="${job.nearbySub}"></span></div>
+          </div>
+        </article>
+
+        <article class="info_card blue_card">
+          <div class="card_title">지원자격</div>
+          <div class="card_content">
+            <div class="row"><strong>경력</strong><span class="req_career" th:text="${job.reqCareer}"></span></div>
+            <div class="row"><strong>학력</strong><span class="req_education" th:text="${job.reqEducation}"></span></div>
+          </div>
+        </article>
+
+        <article class="info_card green_card">
+          <div class="card_title">접수기간/방법</div>
+          <div class="card_content">
+            <div class="row"><strong>시작일</strong><span class="apply_start" th:text="${job.applyStart}"></span></div>
+            <div class="row"><strong>마감일</strong><span class="apply_end" th:text="${job.applyEnd}"></span></div>
+            <div class="row"><strong>접수방법</strong><span class="apply_method" th:text="${job.applyMethod}"></span></div>
+          </div>
+        </article>
+
+      </aside>
+
+
+
+    </main>
+  </div>
+
+  <script>
+
+    // 스크랩
+    function toggleScrap(element, targetNo) {
+      if (loginMemberNo == 0) {
+        alert("로그인 후 이용해주세요.");
+        return;
+      }
+
+      const data = {
+        "targetNo": targetNo,
+        "type": "2" // 
+      };
+
+      fetch("/ITnews/scrap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+        .then(resp => resp.text())
+        .then(result => {
+          const scrapIcon = document.getElementById("scrapIcon");
+
+          if (result == 1) {
+            scrapIcon.src = "/images/common/scrap-filled.png";
+            alert("스크랩 목록에 추가되었습니다.");
+          } else if (result == 0) {
+            scrapIcon.src = "/images/common/scrap-empty.png";
+            alert("스크랩이 취소되었습니다.");
+          }
+        })
+        .catch(err => console.log(err));
+    }
+  </script>
+
+  <script th:inline="javascript">
+    /* 타임리프를 이용해 세션 정보를 JS 전역 변수로 할당 */
+    const loginMemberNo = /*[[${session.loginMember?.memberNo ?: 0}]]*/ 0;
+
+    // 이 아래에 기존 toggleScrap 함수를 두세요.
+  </script>
+
+
+  <div th:replace="common/footer :: footer"></div>
+  <script th:src="@{/js/notification/noti.js}"></script>
+</body>
+
+</html>

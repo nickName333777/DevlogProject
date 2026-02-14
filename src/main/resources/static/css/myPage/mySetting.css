@@ -1,0 +1,434 @@
+/* 공통 스타일 적용 */
+body {
+    background-color: #fff;
+    font-family: "Pretendard", sans-serif;
+    color: #333;
+}
+
+.settings-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 140px; 
+    padding-bottom: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+
+.settings-inner {
+    display: flex;
+    gap: 60px;
+}
+
+/* 사이드바 */
+.settings-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+}
+
+.profile-img-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 40px;
+}
+
+.img-box {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #eee;
+}
+
+.gear-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    transition: transform 0.3s;
+}
+
+.gear-btn:hover {
+    transform: rotate(90deg);
+}
+
+.delete-img-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #ff4d4d;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.settings-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-item {
+    padding: 15px 0;
+    font-size: 16px;
+    color: #777;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.menu-item.active {
+    color: #57106c;
+    font-weight: 700;
+}
+
+/* 콘텐츠 영역 */
+.settings-content {
+    flex-grow: 1;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.profile-section {
+    display: none;
+    /* 기본 숨김 */
+    animation: fadeIn 0.4s ease;
+}
+
+.profile-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2 {
+    color: #57106c;
+    margin-bottom: 40px;
+    font-size: 24px;
+}
+/* 전체적인 입력창과 텍스트영역 디자인 */
+.input-group {
+    margin-bottom: 28px; /* 간격 확대 */
+    max-width: 550px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    color: #57106c; /* 더 짙은 보라색 */
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* 트렌디한 인풋 기본 스타일 */
+.input-group input, 
+.input-group textarea {
+    width: 100%;
+    padding: 14px 18px;
+    background-color: #f8f9fa; /* 아주 연한 회색 배경 */
+    border: 1.5px solid #f1f3f5;
+    border-radius: 12px; /* 둥근 모서리 강조 */
+    font-size: 15px;
+    color: #333;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* [핵심] 소개글 크기 및 크기 조절 방지 */
+.input-group textarea {
+    resize: none; /* 사용자가 임의로 늘리지 못하게 고정 */
+    height: 130px; /* 약 5줄 정도의 높이 */
+    line-height: 1.6;
+}
+
+/* 마우스 올렸을 때 */
+.input-group input:hover, 
+.input-group textarea:hover {
+    background-color: #fff;
+    border-color: #e5c2f1;
+}
+
+/* [핵심] 클릭(포커스) 시 트렌디한 효과 */
+.input-group input:focus, 
+.input-group textarea:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: #bd83ce;
+    /* 은은한 보라색 글로우 효과 */
+    box-shadow: 0 0 0 4px rgba(189, 131, 206, 0.15), 
+                0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px); /* 아주 살짝 떠오르는 느낌 */
+}
+
+/* Placeholder 스타일 */
+.input-group input::placeholder, 
+.input-group textarea::placeholder {
+    color: #adb5bd;
+    font-size: 14px;
+}
+
+/* 소셜 정보 섹션 전체 스타일 */
+.social-info {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #fcfaff;
+    /* 연한 배경색으로 섹션 분리 */
+    border-radius: 12px;
+    max-width: 650px;
+}
+
+.social-info p {
+    font-size: 15px;
+    color: #57106c;
+    /* 더 진한 보라색으로 강조 */
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 각 소셜 입력 줄 */
+.social-input {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* 라벨 역할의 span (아이콘 + 텍스트) */
+.social-input span {
+    width: 140px;
+    font-size: 14px;
+    color: #777;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-input span i {
+    font-size: 18px;
+    color: #bd83ce;
+    /* 아이콘 포인트 컬러 */
+    width: 20px;
+    text-align: center;
+}
+
+/* [핵심] 소셜 입력창 스타일링 */
+.social-input input {
+    flex-grow: 1;
+    max-width: 400px;
+    padding: 10px 15px;
+    border: 1px solid #e5c2f1;
+    /* 일반 입력창과 통일 */
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+/* 마우스 올렸을 때 */
+.social-input input:hover {
+    border-color: #bd83ce;
+}
+
+/* 클릭(포커스) 했을 때 */
+.social-input input:focus {
+    outline: none;
+    border-color: #57106c;
+    box-shadow: 0 0 0 3px rgba(189, 131, 206, 0.1);
+    /* 은은한 보라색 광채 */
+    background-color: #fff;
+}
+
+/* Placeholder 스타일 */
+.social-input input::placeholder {
+    color: #ccc;
+    font-size: 13px;
+}
+
+/* 커피콩 입력창 */
+/* 커피콩 입력창 컨테이너 */
+.bean-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 320px;
+}
+
+/* [수정] 커피콩 이미지 아이콘 스타일 */
+.bean-icon-img {
+    position: absolute;
+    left: 14px; /* 인풋창 왼쪽 끝에서의 거리 */
+    width: 20px; /* 아이콘 크기 적절히 조절 */
+    height: 20px;
+    object-fit: contain;
+    z-index: 5;
+    /* 약간의 그림자를 주면 더 입체적으로 보입니다 */
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); 
+}
+
+/* 인풋창 내부 여백 조정 (이미지가 들어갈 공간 확보) */
+.bean-input-wrapper input {
+    padding-left: 44px !important; /* 이미지 크기 + 여백만큼 왼쪽 패딩 부여 */
+    font-weight: 700;
+    color: #57106c;
+}
+
+/* '콩' 단위 텍스트 스타일 */
+.unit {
+    margin-left: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #888;
+}
+
+/* 왕관 배지 */
+.sub-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #57106c;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.sub-badge i {
+    color: #bd83ce;
+}
+
+/* 버튼 스타일 */
+.btn-area {
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #bd83ce 0%, #a663bc 100%);
+    color: white;
+    padding: 14px 40px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(189, 131, 206, 0.3);
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #57106c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(189, 131, 206, 0.4);
+    background: linear-gradient(135deg, #a663bc 0%, #57106c 100%);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.withdraw-btn {
+    background-color: #bd83ce;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+}
+
+/* 탈퇴 약관 */
+.terms-box {
+    height: 200px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.check-group {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+
+.form-msg {
+    font-size: 12px;
+    margin-top: 4px;
+}
+.success { color: #4CAF50; }
+.error { color: #FF5252; }
+
+/* 닉네임 입력창 + 버튼 가로 배치 */
+.nickname-area {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.nickname-area input {
+    flex-grow: 1; /* 남은 공간 다 차지 */
+}
+
+/* 중복 확인 버튼 스타일 */
+.check-btn {
+    white-space: nowrap; /* 줄바꿈 방지 */
+    background-color: #f1f3f5;
+    color: #57106c;
+    border: 1px solid #e5c2f1;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    height: 100%; /* 인풋창과 높이 맞춤 */
+}
+
+.check-btn:hover {
+    background-color: #e5c2f1;
+    color: #fff;
+}
+
+/* 메세지 스타일 (기존에 있으면 생략 가능) */
+.form-msg {
+    font-size: 13px;
+    margin-top: 6px;
+    font-weight: 500;
+}
+.form-msg.success { color: #2ecc71; } /* 초록색 */
+.form-msg.error { color: #e74c3c; }   /* 빨간색 */

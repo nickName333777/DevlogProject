@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.boardTitle}">DevLog Post Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/report.css}">
+
+    <link rel="stylesheet" th:href="@{/css/board/blog/blogDetail.css}">
+</head>
+
+<body>
+
+    <div th:replace="~{common/header :: header}"></div>
+
+    <input type="hidden" id="postId" th:value="${post.boardNo}">
+    <input type="hidden" id="loginUserId" th:value="${loginUser != null ? loginUser.memberNo : ''}">
+    <input type="hidden" id="userBalance" th:value="${loginUser != null ? loginUser.beansAmount : 0}"> <input
+        type="hidden" id="postPrice" th:value="${post.price}">
+
+    <div class="container">
+        <main class="main-content">
+            <header class="post-header">
+                <div class="post-title-wrap">
+                    <i class="fa-solid fa-crown crown-icon" th:if="${post.price > 0}"></i>
+                    <h1 class="post-title" th:text="${post.boardTitle}">제목 영역</h1>
+                </div>
+
+                <div class="post-meta">
+                    <div class="author-info">
+                        <a th:href="@{/blog/{email}(email=${post.memberEmail})}" class="author-link">
+                            <span class="author">by <strong th:text="${post.memberNickname}">작성자명</strong></span>
+                        </a>
+                        <button class="btn-follow"
+                            th:if="${loginUser != null and loginUser.memberEmail != post.memberEmail}"
+                            th:classappend="${isFollowed} ? 'active'" th:text="${isFollowed} ? '팔로잉' : '+ 팔로우'"
+                            onclick="toggleFollow(this)">
+                            + 팔로우
+                        </button>
+                    </div>
+
+                    <!-- 수정, 삭제 (유료 게시글 처리 서버단 로직 추가) -->
+                    <div class="meta-right-group">
+                        <div class="author-actions"
+                            th:if="${loginUser != null and loginUser.memberEmail == post.memberEmail}">
+
+                            <button class="btn-text" th:if="${post.price == 0}"
+                                th:onclick="|location.href='@{/blog/edit/{no}(no=${post.boardNo})}'|">수정</button>
+
+                            <span class="divider" th:if="${post.price == 0}">|</span>
+
+                            <button class="btn-text delete" th:onclick="|deletePost(${post.boardNo})|">삭제</button>
+                        </div>
+
+                        <div class="stats">
+
+                            <!-- 신고 -->
+                            <span class="report-btn" id="btnReport"
+                                th:onclick="|openBlogReportModal(${post.memberNo}, ${post.boardNo})|">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>신고</span>
+                            </span>
+
+                            <div id="modal-root"></div>
+
+                            <!-- 스크랩 -->
+                            <span class="scrap-btn" id="btnPostScrap" onclick="togglePostScrap()"
+                                th:classappend="${isScraped} ? 'active' : ''">
+                                <i th:class="${isScraped} ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'"
+                                    id="postScrapIcon"></i>
+                                <span>스크랩</span>
+                            </span>
+
+                            <!-- 좋아요 -->
+                            <span class="like-btn" id="btnPostLike" onclick="togglePostLike()"
+                                th:classappend="${isLiked} ? 'active'"> <i
+                                    th:class="${isLiked} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+                                    id="postHeartIcon"></i>
+
+                                <span id="postLikeCount" th:text="${post.likeCount}">0</span>
+                            </span>
+
+                            <!-- 댓글 수 -->
+                            <span><i class="fa-regular fa-comment-dots"></i> <span id="commentCount"
+                                    th:text="${post.commentCount}">0</span></span>
+                            <span><i class="fa-regular fa-eye"></i> <span th:text="${post.boardCount}">0</span></span>
+                        </div>
+                        <span class="date" th:text="${post.bCreateDate}">2025.01.01</span>
+                    </div>
+                </div>
+
+                <div class="tag-badges" th:if="${post.tagList != null}">
+                    <span class="badge" th:each="tag : ${post.tagList}" th:text="${tag}">Tag</span>
+                </div>
+            </header>
+
+            <div class="content-layout">
+                <article id="articleContent" class="post-body" th:classappend="${isLocked} ? 'locked' : ''">
+
+                    <div class="text-content" th:utext="${post.boardContent}">
+                        본문 내용
+                    </div>
+
+                    <div class="lock-overlay" th:if="${isLocked}">
+                        <div class="lock-card">
+                            <i class="fa-solid fa-lock"></i>
+                            <h3>유료 콘텐츠입니다</h3>
+                            <p>구매 후 전체 내용을 확인하실 수 있습니다.</p>
+                            <br>
+                            <button class="btn-primary" onclick="openPurchaseModal()">
+                                <i class="fa-solid fa-coins"></i>
+                                <span th:text="${post.price}">500</span>콩으로 구매하기
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <aside class="sidebar">
+                </aside>
+            </div>
+
+            <section class="comments-section">
+                <h3>댓글 <span id="commentTotalCount">0</span></h3>
+
+                <div class="comment-write-area">
+                    <div class="input-wrapper">
+                        <textarea id="mainCommentInput" placeholder="댓글을 작성하세요..."></textarea>
+                        <div class="input-footer">
+                            <button class="btn-submit-styled" onclick="addMainComment()">등록</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="commentList" class="comment-list">
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay hidden">
+
+        <div id="modalPurchase" class="modal-box small hidden">
+            <div class="modal-content-center">
+                <i class="fa-solid fa-cart-shopping purple-icon"></i>
+                <h3>이 글을 구매하시겠습니까?</h3>
+                <div class="bean-card">
+                    <span class="bean-info">차감될 콩: <strong th:text="${post.price}">0</strong></span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="processPayment()">구매확정</button>
+                    <button class="btn-secondary" onclick="closeAllModals()">취소</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalNoBalance" class="modal-box small hidden">
+            <div class="modal-content-center">
+                <i class="fa-solid fa-circle-exclamation"
+                    style="color:orange; font-size:2.5rem; margin-bottom:20px;"></i>
+                <h3>콩이 부족합니다!</h3>
+                <p>충전 페이지로 이동하시겠습니까?</p>
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="location.href='/coffeebeans'">충전하러 가기</button>
+                    <button class="btn-secondary" onclick="closeAllModals()">취소</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalSuccess" class="modal-box small hidden">
+            <div class="modal-content-center">
+                <i class="fa-regular fa-circle-check" style="color:green; font-size:2.5rem; margin-bottom:20px;"></i>
+                <h3>구매가 완료되었습니다!</h3>
+                <p>이제 전체 내용을 확인하실 수 있습니다.</p>
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="location.reload()">확인</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div th:replace="~{common/footer :: footer}"></div>
+
+    <script th:src="@{/js/common/header.js}"></script>
+    <script th:src="@{/js/notification/noti.js}"></script>
+    <script th:src="@{/js/common/report.js}"></script>
+
+    <script th:src="@{/js/board/blog/blogDetail.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>자유게시판 글쓰기</title>
+    <link rel="stylesheet" th:href="@{/css/board/freeboard/freeboardWrite.css}">
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+        
+</head>
+
+<body>
+    <!-- <p th:text="${freeboard}" th:if="${freeboard != null}"></p>     -->
+    <main>
+        
+        <!-- 헤더 -->
+        <!-- <header class="main-header">header</header> -->
+        <!-- header.html (fragment) 추가 -->
+        <!-- <th:block th:replace="~{/common/header}">header.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/header :: header"></div>
+        <script th:src="@{/js/common/header.js}"></script>
+
+        <!-- 네비게이션 -->
+        <nav class="main-nav"></nav>
+        <!--  ###################################################### -->  
+
+		<div class="top-space-bw-header"> </div>
+        <!-- 상단 타이틀 바 -->
+        <h2 class="title-main fw-800">자유게시판</h2>  
+        <div class="container">
+    
+            <!-- 글작성 도우미 -->
+            <div class="helper-box">
+                <button class="helper-btn" onclick="openHelper()">글작성 도우미</button>
+    
+                <div class="select-box">
+                    <select class="ai-select" id="helperType">
+                        <!--<option class="sel-ai" value="ai">AI</option> -->
+                        <option class="sel-chatbot" value="chatbot">챗봇</option>
+                    </select>
+                </div>
+            </div>
+    
+            <!-- 작성 폼 -->
+            <form th:action="@{/board2/freeboard/insert}" method="post" enctype="multipart/form-data"
+                    class="board-write" id="boardWriteFrm">            
+
+                <!-- 제목 입력 -->
+                <input type="text" id="titleInput" name="boardTitle" class="title-input" placeholder="   제목을 입력해주세요."  maxlength="300" required>
+        
+                <!-- 사진 등록 -->
+                <div class="photo-header">
+                    <span class="photo-title">사진 등록 <p>썸네일(대표) 이미지는 첫 사진입니다.</p></span>
+                    <span class="photo-max">최대 5장</span>
+                </div>
+        
+                <!-- 이미지 업로드 박스 -->
+                <div class="photo-section">
+                    <div class="photo-upload-area">
+                        <!-- 미리보기 영역 -->
+                        <div id="photoPreview" class="photo-preview"></div>
+                        <!-- + 버튼 -->
+                        <label for="photoInput" class="photo-upload">
+                            <span class="plus">+</span>
+                        </label>
+                        <!-- 실제 파일 input (숨김) -->
+                        <input type="file" id="photoInput" name="images" multiple accept="image/*" hidden />
+                    </div>
+                </div>
+
+                <p class="image-warning">
+                    본 사이트 약관/정책을 위반하는 이미지는 안내 없이 삭제 될 수 있습니다.
+                </p>
+        
+                <!-- 내용 입력 -->
+                <textarea id="contentInput" name="boardContent" minlength="10" maxlength="4000" 
+                        class="content-box" placeholder="내용을 입력해 주세요.
+        악의적인 비난/광고성 글은 검토 후 경고/삭제 조치될 수 있습니다." required></textarea>
+        
+                <div class="text-limit">최소 10자, 최대 4000자 (<span id="charCount">0</span> / 4000자)</div>
+                <!-- <div class="char-count">
+                    <span id="charCount">0</span> / 4000자
+                </div> -->
+                <!-- 버튼 -->
+                <div class="button-box">
+                    <button type="submit" id="submitBtn" class="submit-btn">새글 등록</button>
+                    <button type="button" class="cancel-btn"
+                    th:onclick="|location.href='@{/board/freeboard}'|">취소</button>
+                </div>
+
+            </form>
+
+        </div>
+
+        <!--  ###################################################### -->
+        <!-- <footer class="main-footer">footer</footer> -->
+        <!-- footer.html 추가 -->
+        <!-- <th:block th:replace="~{common/footer}">footer.html</th:block> -->
+        <!-- 또는 -->
+        <div th:replace="common/footer :: footer"></div>
+
+    </main>
+
+    <!-- 알림창 띄우기 -->
+    <script th:inline="javascript"> 
+        const message = /*[[${message}]]*/ "전달 받은 message";
+        if(message != null) alert(message); // message12가 없으면 null값
+    </script>
+
+    <!-- freeboardWrite.js 추가 -->
+    <script th:src="@{/js/board/freeboard/freeboardWrite.js}"></script>    
+
+</body>
+</html>

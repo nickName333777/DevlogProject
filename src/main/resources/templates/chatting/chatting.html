@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevTalk</title>
+
+    <link rel="stylesheet" th:href="@{/css/common/font.css}">
+    <link rel="stylesheet" th:href="@{/css/chatting/chatting.css}">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}">
+    <link rel="stylesheet" th:href="@{/css/common/report.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+</head>
+<body>
+    <!-- <th:block th:replace="~{common/header}">header.html</th:block> -->
+    <div th:replace="common/header :: header"></div>
+    <script th:src="@{/js/notification/noti.js}"></script>
+    <script th:src="@{/js/common/header.js}"></script>
+    <div id="modal-root"></div>
+    <script th:src="@{/js/common/report.js}"></script>
+    
+
+
+
+    <!-- 이미지 라이트박스 -->
+    <div id="imageViewer" class="image-viewer display-none flex-center">
+        <div class="image-viewer-backdrop"></div>
+        <img id="imageViewerImg" class="viewer-img">
+    </div>
+
+    <!-- 채팅 -->
+    <main style="margin-top: 150px;" class="flex" id="chatting">
+        
+        <!-- 채팅방 리스트 -->
+        <aside class="left flex-col gap-24" id="chatting-room-list">
+            <div class="room-list-header flex">
+                <input type="search" id="chatting-search-area" placeholder="Search">
+                <img id="chat-add-btn" th:src="@{/images/chatting/chat-add.svg}">
+                                
+                <!-- 채팅방 생성 -->
+                <div class="create-room flex-col gap-16 hide">
+                    <div>
+                        <h2>새 채팅방 만들기</h2>
+                    </div>
+
+                    <div class="flex-col chat-type gap-12">
+                        <span class="fw-600">채팅방 유형</span>
+
+                        <div class="flex">
+                            <div class="private flex-center fw-600 fs-16 gap-8 type-select">
+                                <img th:src="@{/images/chatting/private.svg}">
+                                개인
+                            </div>
+
+                            <div class="group flex-center fw-600 fs-16 gap-8">
+                                <img th:src="@{/images/chatting/group.svg}">
+                                그룹
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex-col gap-12  roomImageArea display-none">
+                        <label class="room-image-picker">
+                            <img id="roomImagePreview" th:src="@{/images/logo.png}" alt="채팅방 이미지">
+                            <div id="image-delete-btn">
+                                X
+                            </div>
+                            <!-- 버튼처럼 붙는 영역 -->
+                            <div class="image-edit-btn">
+                                <img th:src="@{/images/chatting/light-edit.svg}" alt="이미지 변경">
+                            </div>
+
+                            <input type="file" id="roomImageInput" accept="image/*" hidden>
+                        </label>
+                    </div>
+                    
+
+                    <div class="flex-col gap-12 display-none roomNameArea">
+                        <span class="fw-600" >채팅방 이름</span>
+                        <input type="text" name="roomName" id="roomName">
+                    </div>
+                    <div class="flex-col gap-12 add-user">
+                        <span class="fw-600">초대할 사람</span>
+                        <!-- <input id="search-memberName" name="memberName" placeholder="검색" type="search"> -->
+
+                        <ul class="follow-list flex-col gap-12 chatFollowList" id="chatFollowList">
+                            <li th:each="fwl : ${followList}">
+                                <label class="follow-item flex">
+                                    <div class="flex gap-12 left">
+                                        <img class="profile-img" th:src="${fwl.profileImg} ?: @{/images/user.png}">
+                                        <span class="name" th:text="${fwl.memberNickname}">회원 닉네임</span>
+                                    </div>
+                                    <input type="checkbox" name="invite" th:data-member-no ="${fwl.memberNo}">
+                                </label>
+                            </li>
+
+                        </ul> 
+                        
+                        <div class="select-user-list flex gap-8">
+                            
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div id="room-create-btn" class="flex-center fw-600">생성하기</div>
+                        <div id="room-cancle-btn" class="flex-center fw-600">취소</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="room-list-body" id="roomList">
+                <div th:if="${chatList == null or #lists.isEmpty(chatList)}" class="flex-center room-empty">
+                    <h1 class="fw-800" style="opacity: 0.5;">room == null</h1>
+                </div> 
+
+
+                <!-- 방이 있을 경우 -->
+                <ul class="room-list flex-col gap-16" >
+                    <!-- 채팅방 한 칸 -->
+                    <li th:each="crl : ${chatList}" th:data-room-no = ${crl.chattingRoomNo} class="room-item flex gap-12">
+                        <div class="room-img">
+                            <!-- 프로필 이미지 -->
+                            <img th:src="${crl.roomImg} ?: @{/images/user.png}">
+
+                        </div> 
+
+                        <div class="room-info flex">
+                            <div class="flex-col gap-8">
+                                <span class="fw-700 fs-24" th:text="${crl.displayName}">채팅방 이름</span>
+                                <span class="ellipsis last-message"
+                                    th:text="${crl.lastMessage != null ? crl.lastMessage : ''}">
+                                    &nbsp;
+                                </span>
+                            </div>
+
+                            <div class="flex-col gap-8">
+                                <span style="padding-left: 8px;" class="chat-time" th:text="${crl.formatTime}">마지막 메세지 보낸 시간</span>
+                                <div class="count-pin">
+                                    
+                                    <span th:if="${crl.unreadCount != 0}" class="unread-count fw-600 fs-14" th:text="${crl.unreadCount}">안 읽은 메세지 개수</span>
+                                    <img th:if="${crl.pinnedYn == 'Y'}" class="pinned" th:src="@{/images/chatting/pin.svg}">
+                                </div>
+                            </div>
+                        </div> 
+                    </li>
+
+                    
+                </ul>
+
+
+            </div>
+            
+        </aside>
+
+
+        <!-- 채팅 영역 -->
+        
+<!--         <div class="flex-col room-empty">
+            <img th:src="@{/images/logo.png}" >
+            <h1>대화가 시작되길 기다리고 있어요</h1>
+        </div>  --> 
+        <div class="right" id = "chatting-space">
+            
+
+            <section th:if="${roomInfo != null}" class="chatting-area" id="chattingArea">
+
+                <!-- 방이 있을 경우 -->
+                <div class="flex-col room-exist">
+
+                    <!-- 굿 -->
+                    <div class="overlay" id="chat-overlay"></div>
+
+                    <!-- 나갈거니 ? 확인 화면 -->
+                    <!-- 채팅방 나가기 확인 -->
+                    <div class="exit-check flex-col gap-12 display-none">
+                        <div class="flex gap-12">
+                            <span class="fw-600">채팅방을 나가시겠습니까 ?</span>
+
+                            <img th:src="@{/images/chatting/free-icon-exit-12370353.svg}">
+                        </div>
+
+                        <span class="fs-12">주의* 대화내용이 모두 삭제됩니다.</span>
+
+                        <div class="flex gap-24">
+                            <span id="yes">예</span>
+                            <span id="no">아니오</span>
+                        </div>
+                    </div>
+
+                    <!-- 메시지 삭제 확인 -->
+                    <div class="del-check flex-col gap-12 display-none">
+                        <div class="flex gap-12">
+                            <span class="fw-600">해당 메세지를 삭제하시겠습니까 ?</span>
+
+                            <!-- 휴지통 아이콘 -->
+                            <img th:src="@{/images/chatting/trashtong.svg}">
+                        </div>
+
+                        <div class="flex gap-24">
+                            <span id="msg-del-yes">예</span>
+                            <span id="msg-del-no">아니오</span>
+                        </div>
+                    </div>
+
+                    <!-- 유저 초대 창 -->
+                    <div id="user-invite-box" class="user-invite-box flex-col gap-16 display-none">
+
+                        <!-- 초대 아이콘 -->
+                        <img th:src="@{/images/chatting/invite.svg}"
+                            style="width: 30px; height: 30px;">
+
+                        <span class="fw-600">초대할 사람</span>
+
+                        <!-- <input id="room-invite-user"
+                            name="addUserName"
+                            placeholder="검색"
+                            type="search"> -->
+
+                        <ul class="invite-user-list flex-col gap-12" id="inviteUserList">
+                            <li th:each="fl : ${followList}">
+                                <label class="flex user-list">
+                                    <div class="flex gap-12">
+
+                                        <!-- 유저 프로필 이미지 -->
+                                        <img class="profile-img"
+                                            th:src="${fl.profileImg} ?: @{/images/user.png}">
+
+                                        <span class="user-name" th:text="${fl.memberNickname}">멤버 닉네임</span>
+                                    </div>
+
+                                    <input type="checkbox"
+                                        name="roomInvite"
+                                        class="roomInvite"
+                                        th:data-member-no ="${fl.memberNo}">
+                                </label>
+                            </li>
+
+                           
+                        </ul>
+
+                        <!-- 유저 선택 시 태그 영역 -->
+                        <div class="select-user-area flex gap-8">
+                            <!-- JS로 동적 추가 -->
+                        </div>
+
+                        <div class="flex gap-24">
+                            <div id="invite-user" class="flex-center fw-600">초대하기</div>
+                            <div id="invite-cancel" class="flex-center fw-600">취소</div>
+                        </div>
+                    </div>
+
+
+
+
+                    <!-- 채팅방 정보 -->
+                    <div class="flex chat-info">
+                        <div class="flex gap-12">
+
+                            <div class="group-profile">
+                                <img th:src="${roomInfo.roomProfile} ?: @{/images/logo.png}">
+                            </div>
+
+                            <div class="flex-col gap-8">
+                                <span class="fw-700 fs-24" th:text="${roomInfo.roomName}">팀명</span>
+
+                                <!-- 멤버 수 표시 -->
+                                <div class="flex gap-12" style="align-items: center;">
+
+                                    <img id="memberCounting" th:src="@{/images/chatting/member.svg}">
+                                    <span class="member-counting flex gap-12 fw-600" th:text="${roomInfo.participantCount}">
+                                        <!-- 멤버 아이콘 -->
+                                        참여 인원 수
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 상단 메뉴 (검색 / 메뉴) -->
+                        <div class="search-menu flex-center gap-8">
+                            <!-- 메시지 검색 버튼 -->
+                            <img id="text-search-btn"
+                                th:src="@{/images/chatting/Search.svg}">
+
+                            <!-- 채팅 메뉴 버튼 -->
+                            <img id="chat-menu-btn"
+                                th:src="@{/images/chatting/clarity_menu-line.svg}">
+                        </div>
+                    </div>
+
+                    <!-- 검색 패널 -->
+                    <div class="flex-col gap-16 chat-search-panel">
+
+                        <!-- 검색 입력 -->
+                        <div class="search-msg-input flex">
+                            <!-- 돋보기 아이콘 -->
+                            <img id="search-message" th:src="@{/images/chatting/돋보기.svg}">
+
+                            <input type="search"
+                                name="msgSearch"
+                                id="msgSearch"
+                                placeholder="검색어를 입력해주세요">
+                        </div>
+
+                        <!-- 검색 결과 영역 -->
+                        <ul class="search-msg-area flex-col gap-16" id="searchMsgArea">
+
+                            <li th:each="item : ${msgList}" class="search-msg-item flex" th:data-message-no="${item.messageNo}">
+                                <div>
+                                    <!-- 메시지 작성자 프로필 -->
+                                    <img  class="profile-img"
+                                        th:src="${item.profilePath != null ? item.profilePath : '/images/user.png'}">
+                                </div>
+
+                                <div class="flex-col gap-8">
+                                    <div class="user-info flex gap-12">
+                                        <span class="fw-600" th:text="${item.memberNickname}">닉네임</span>
+                                        <span class="fs-12" th:text="${item.formatTime}">보낸날</span>
+                                    </div>
+
+                                    <!-- 검색된 메시지 미리보기 -->
+                                    <div class="msg-info ellipsis" th:text="${item.messageContent}">
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+
+
+
+                    <!-- 채팅방 정보 메뉴 -->
+                    <div class="chat-menu-panel">
+
+                        <div class="member-panel-title">
+                            <span class="team-name" th:text="${roomInfo.roomName}">Zero-Boost</span>
+                            <img th:if="${isOwner}" class="edit-icon" id="team-name-change" th:src="@{/images/chatting/edit.svg}">
+                        </div>
+
+                        <div class="member-section">
+                            <div class="flex-between">
+                                <span class="member-label">멤버</span>
+
+                                <!-- 멤버 초대 버튼 -->
+                                <img th:if="${isOwner}" id="invite-btn"
+                                    th:src="@{/images/chatting/invite-user.svg}">
+                            </div>
+
+                            <ul class="member-list flex-col gap-16">
+
+                                <!-- 멤버 아이템 -->                                
+                                <li th:each="user : ${roomInfo.users}" class="member-item flex gap-12" th:data-chatuser-no="${user.memberNo}">
+                                    <img class="profile-img"
+                                        th:src="${user.profileImage != null ? user.profileImage : '/images/user.png'}">
+                                    <span class="fw-600" th:text="${user.nickname}">회원 이름</span>
+
+                                    <!-- 방장 표시 (왕관 아이콘) -->
+                                    <img th:if="${user.owner}" th:src="@{/images/chatting/crown.svg}">
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 나가기 / 고정 관련 버튼 -->
+                        <div class="flex gap-24" id="exit-pin">
+
+                            <!-- 채팅방 나가기 -->
+                            <img id="exit-btn"
+                                th:src="@{/images/chatting/exit.svg}">
+
+                            <!-- 고정 상태 -->
+                            <img id="pinned-btn"
+                                class="pinned display-none"
+                                th:src="@{/images/chatting/pin.svg}">
+
+                            <!-- 고정 해제 상태 -->
+                            <img id="unpinned-btn"
+                                class="unpinned"
+                                th:src="@{/images/chatting/pin-no.svg}">
+                        </div>
+
+                    </div>
+
+
+                    <!-- 메세지 -->
+                    <ul class="message-list flex-col gap-24">
+                        <!-- 상대방 메시지 -->
+                        <li th:each="msg : ${roomInfo.messageList}" 
+                            th:class="'message-item flex gap-12 ' 
+                            + (${msg.type == 'SYSTEM'} ? 'system' 
+                            : (${msg.mine} ? 'my' : 'other'))"
+                            th:data-member-no="${msg.memberNo}"
+                            th:data-message-no = "${msg.messageNo}">
+                            
+                            
+
+                            <img class="profile-img"
+                                th:if="${!msg.mine and msg.type != 'SYSTEM'}"
+                                th:src="${msg.senderProfile != null 
+                                    ? msg.senderProfile 
+                                    : '/images/user.png'}">
+
+
+                            <!-- 유저 프로필 카드 -->
+                            <div class="profile-card flex-col display-none">
+
+                                
+                            </div>
+
+                            <div th:if="${msg.type == 'SYSTEM'}" class="system-message flex-center">
+                                <span th:text="${msg.content}"></span>
+                            </div>
+
+                            <div th:if="${msg.type != 'SYSTEM'}" class="message-content flex-col gap-12">
+                                <span th:if="${!msg.mine}" class="fw-600" th:text="${msg.senderName}">메세지 작성자</span>
+                                <div class="bubble deleted"
+                                    th:if="${msg.status == 'DEL'}">
+                                    <span>삭제된 메세지입니다.</span>
+                                </div>
+                                <!-- type = text -->
+                                <th:block th:if="${msg.status != 'DEL'}">
+
+                                    <!-- text -->
+                                    <th:block th:if="${msg.type == 'TEXT'}">
+
+                                        <div class="bubble"
+                                            >
+                                            <span class="msg-content" th:text="${msg.content}">
+
+                                            </span>
+                                            <span class="edited fs-12"
+                                                th:if="${msg.status == 'MOD'}">
+                                                (수정됨)
+                                            </span>
+                                        </div>
+                                    </th:block>
+                                    <!-- type = img -->
+                                    <th:block th:if="${msg.type == 'IMG'}">
+                                        <div class="bubble image">
+                                            <img th:src="${msg.imgPath}" loading="lazy">
+                                        </div>
+
+                                        
+                                    </th:block>
+                                
+                                    <div class="reaction-badge"
+                                    th:if="${msg.status != 'DEL' and msg.reactions != null}">
+                                        <span class="flex-center gap-4" th:each="r : ${msg.reactions}">
+                                            <span th:text="${r.key}"></span>
+                                            <span th:text="${r.value}"></span>
+                                        </span>
+                                    </div>
+
+
+
+                                    <ul th:if="${msg.status != 'DELETE'}" class="list-none msg-option display-none">
+                                        <!-- 본인 + 텍스트만 수정 가능 -->
+                                        <li th:if="${msg.mine and msg.type == 'TEXT'}"
+                                            class="msg-edit-btn">
+                                            수정하기
+                                        </li>
+                                        <!-- 본인은 삭제 가능 -->
+                                        <li th:if="${msg.mine}"
+                                            class="msg-delete-btn">
+                                            삭제하기
+                                        </li>
+
+                                        <!-- 공통 -->
+                                        <li class="msg-reaction-btn">공감하기</li>
+
+                                        <!-- 상대방 -->
+                                        <li th:if="${!msg.mine}" class="msg-report-btn">신고하기</li>
+                                    </ul>
+
+                                    <div class="emoji-area flex display-none">
+                                        <span data-emoji-code="1">❤️</span>
+                                        <span data-emoji-code="2">👍</span>
+                                        <span data-emoji-code="3">😀</span>
+                                        <span data-emoji-code="4">😂</span>
+                                        <span data-emoji-code="5">😮</span>
+                                        <span data-emoji-code="6">😡</span>
+                                    </div>
+                                </th:block>
+
+                                <span class="unread-people fs-12"
+                                    th:if="${msg.unreadCount > 0 and msg.status != 'DELETE'}"
+                                    th:text="${msg.unreadCount}">
+                                    1
+                                </span>
+                                <span class="fs-12 send-time" th:if="${msg.type != 'SYSTEM'}" th:text="${#temporals.format(msg.sendTime, 'HH:mm')}"></span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="typing-box fs-12 fw-600 display-none"></div>
+
+                    <!-- 입력창 -->                    
+                    <div class="send-area flex">
+                        <div class="display-none send-image flex">
+                            <img id="send-image-preview" src="" alt="">
+                            <span id="send-image-delete" class="fw-600 fs-14">x</span>
+                        </div>
+
+                        <div id="mention-box" class="mention-box display-none"></div>
+
+                        
+                            
+                        <textarea id="send-message"
+                                name="messageContent"
+                                rows="1"
+                                placeholder="메시지를 입력하세요"></textarea>
+
+                        <div class="flex gap-12">
+                            <img id="send-btn" th:src="@{/images/chatting/send.svg}">
+
+                            <label for="chatImg">
+                                <img id="file-btn" th:src="@{/images/chatting/image-upload.svg}">
+                            </label>
+
+                            <input type="file"
+                                name="chatImg"
+                                id="chatImg"
+                                accept="image/*"
+                                hidden>
+                        </div>
+
+                    </div>
+
+                    <!-- 수정창 -->
+                    <div class="edit-area flex gap-24 display-none">
+                        <div class="flex-col gap-8">
+                            <div class="flex gap-8 message-edit">
+                                <img th:src="@{/images/chatting/light-edit.svg}">
+                                <span>메세지 수정하는 중 . . .</span>
+                                <span id="edit-cancle-btn">x</span>
+                            </div>
+
+                            <textarea id="edit-message"
+                                    name="messageContent"
+                                    rows="1"
+                                    placeholder="메시지를 입력하세요"></textarea>
+                        </div>
+
+                        <div class="flex gap-12">
+                            <img id="edit-btn" th:src="@{/images/chatting/edit.svg}">
+                        </div>
+
+                    </div>
+
+
+                    
+
+                </div>
+            </section>
+
+        </div>
+        
+        
+    </main>
+
+
+    <th:block th:replace="~{common/footer}">header.html</th:block>
+
+    <!-- ------------------------------------------- -->
+    <!-- 채팅에 필요한 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script th:inline="javascript">
+
+        // 로그인한 회원 번호
+        const myNo = /*[[${session.loginMember.memberNo}]]*/ "로그인한 회원 번호";
+        const myNick = /*[[${session.loginMember.memberNickname}]]*/ "본인 닉네임"
+    </script>
+
+    <script th:src="@{/js/chatting/chatting.js}"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+/* 기본 설정 */
+body {
+    font-family: 'Pretendard Variable', Arial, Helvetica, sans-serif;
+    /* background-color: #f6f6f6; */
+    background-color: #ffffff;    
+    margin: 0;
+}
+
+/* header와의 간격벌리기 */
+.top-space-bw-header{
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    margin-bottom: 150px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+/* 상단 타이틀 바 */
+.title-main {
+    background: linear-gradient(
+        to right,
+        rgba(241, 198, 231, 1) 0%,       /* #F1C6E7 불투명도 100% */
+        rgba(241, 198, 231, 0.75) 50%,   /* 50% 위치도 불투명도 75% */
+        rgba(241, 198, 231, 0.75) 50%,   /* 50% 위치 투명도 75% */
+        rgba(241, 198, 231, 0.5) 100%    /* 100% 위치 투명도 50% */
+    );    
+    padding: 22px 22px 22px 120px;
+    /*border-radius: 6px;*/
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    color: #000;
+    font-size: 36px;
+    font-weight: bolder;
+    margin-bottom: 25px;
+}
+
+.container {
+    width: 70%;
+    margin: 0 auto;
+    padding: 30px 0;
+}
+
+/* 글쓰기 버튼 */
+div.write-btn-box {
+    /* width: 100%; */
+    width: 1210px; /* 1210px 고정 */
+    text-align: right;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    
+}
+
+.write-btn {
+    width:180px; /* 180px 고정 */
+    background-color: #BD83CE;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-weight: regular;
+    border-radius: 6px;
+    font-size: 35px;
+    cursor: pointer;
+    margin-right: 100px;
+}
+
+.write-btn:hover {
+    background-color: #E5B0EA;
+}
+
+/* 카드 리스트 */
+.fbList-card {
+    width: 1210px; /* 1210px 고정 */
+    border: 1px solid #e6e6e6;
+
+    display: flex;
+    background-color: white;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.fbList-card-img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+.fbList-content {
+    margin-left: 15px;
+}
+
+.fbList-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+.fbList-title-link {
+    padding: 6px 0px;
+    /* border: 1px solid #ccc; */
+    margin: 0 2px;
+    /* border-radius: 6px; */
+    color: #000;
+    text-decoration: none;
+    font-size: 24px;
+}
+.fbList-title-link:hover{
+    color: #BD83CE;
+}
+
+.fbList-text {
+    margin-top: 8px;
+    font-size: 16px;
+    color: #757575;
+}
+
+/* 페이지네이션 */
+.pagination {
+    list-style: none;   /*  li 태그 dot 제거 */
+
+    width: 1210px; /* 1210px 고정 */
+    display: flex;
+    justify-content: center;
+    margin: 200px 0;
+    align-items: center;
+}
+
+.page-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    margin: 0 4px;
+    border-radius: 6px;
+    color: #000;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.page-btn:hover {
+    background-color: #F1C6E7;
+}
+
+.page-btn.previous {
+    border: 1px solid #fff;
+}
+
+.page-btn.next {
+    border: 1px solid #fff;
+}
+
+
+.active {
+    background-color: #BD83CE;
+    color: white !important;
+    border-color: #BD83CE;
+}
+
+
+.arr {
+    font-size: 24px;
+    text-decoration: none;
+    color: #000;
+}
+
+.arr:hover {
+    font-size: 24px;
+    color: #BD83CE;
+    cursor: pointer;
+}
+
+.next {
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.next:hover {
+    font-size: 24px;
+    color: #BD83CE;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.previous {
+    font-size: 24px;
+    text-decoration: none;    
+}
+
+.previous:hover {
+    font-size: 24px;
+    color: #BD83CE;
+    cursor: pointer;
+    background-color: #fff;    
+}
+

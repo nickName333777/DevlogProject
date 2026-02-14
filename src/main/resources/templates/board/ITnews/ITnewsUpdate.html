@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 뉴스 수정</title>
+  <link rel="stylesheet" th:href="@{/css/board/ITnews/ITnewsUpdate.css}">
+</head>
+
+<body>
+  <form th:action="@{/ITnews/{no}/update(no=${itnews.boardNo})}" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="boardNo" th:value="${itnews.boardNo}">
+
+    <div class="image-upload-box">
+      <label for="main-image">
+        <img th:src="${itnews.imgPath != null ? itnews.imgPath : '/images/common/devlog.svg'}" alt="대표 이미지" id="preview"
+          style="width:100%; object-fit:cover;">
+
+        <div class="upload-icon">+</div>
+        <span>대표 이미지 변경</span>
+      </label>
+
+      <input type="file" id="main-image" name="imageFile" hidden accept="image/*">
+
+      <input type="hidden" name="originImgPath" th:value="${itnews.imgPath}">
+      <input type="hidden" name="originImgRename" th:value="${itnews.imgRename}">
+    </div>
+
+    <section class="news-form">
+      <div class="category-wrapper">
+        <select name="boardCode" required>
+          <option value="21" th:selected="${itnews.boardCode == 21}">AI</option>
+          <option value="22" th:selected="${itnews.boardCode == 22}">테크</option>
+          <option value="23" th:selected="${itnews.boardCode == 23}">IT기업</option>
+          <option value="24" th:selected="${itnews.boardCode == 24}">게임</option>
+          <option value="25" th:selected="${itnews.boardCode == 25}">과학</option>
+          <option value="26" th:selected="${itnews.boardCode == 26}">우주</option>
+        </select>
+      </div>
+
+      <input type="text" name="boardTitle" class="input-title" placeholder="제목을 입력하세요" th:value="${itnews.boardTitle}">
+
+      <div class="info-row">
+        <input type="text" name="newsReporter" class="input-author" placeholder="기자명" th:value="${itnews.newsReporter}">
+
+        <input type="date" name="bCreateDate" class="input-date" th:value="${itnews.bCreateDate}">
+      </div>
+
+      <hr class="divider">
+
+      <textarea name="boardContent" class="input-content" placeholder="뉴스 내용을 검수하세요..."
+        th:text="${itnews.boardContent}"></textarea>
+    </section>
+
+    <div class="button-area">
+      <button type="button" class="cancel-btn" th:onclick="|location.href='/ITnews/${itnews.boardNo}'|">취소</button>
+      <button type="submit" class="update-btn">수정하기</button>
+    </div>
+  </form>
+
+  <script>
+    // 이미지 파일 선택 시 즉시 미리보기 로직
+    const imageInput = document.getElementById('main-image');
+    const preview = document.getElementById('preview');
+
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+
+</html>

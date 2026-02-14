@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 상태(에러/경고) 메시지를 콘솔에 보여줌: 설정 오류 찾을 때 유용 -->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+    <!-- 콘솔/파일 공통 패턴 변수 정의 -->
+    <!-- %d: 날짜, , %-5level: 로그 레벨(좌측 정렬 5칸), %logger: 로거명, %msg: 메시지, %n: 줄바꿈 -->
+    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}  level=%-5level %logger - %msg%n"/>
+    <property name="FILE_LOG_PATTERN"    value="%d{yyyy-MM-dd HH:mm:ss.SSS}  level=%-5level %logger - %msg%n"/>
+
+   
+    
+    <!-- 콘솔로 찍는 Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 위에서 정의한 콘솔 패턴 사용 -->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 파일로 찍는 Appender (롤링 파일) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 현재 로그 파일 경로 -->
+        <file>./logs/app.log</file>
+
+        <encoder>
+            <!-- 파일 패턴 -->
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+
+        <!-- 용량+시간 기준 롤링 정책: 날짜별 + 크기별로 파일 분할/보관 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 롤링될(백업) 파일 이름 형식: app-YYYY-MM-DD.i.log (i=0,1,2...) -->
+            <fileNamePattern>./logs/app-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+
+            <!-- 각 파일 최대 크기: 100MB를 넘으면 인덱스(i)를 올려 새 파일로 분할 -->
+            <maxFileSize>100MB</maxFileSize>
+
+            <!-- 보관 일수(또는 날짜 단위 히스토리): 30일치 유지 -->
+            <maxHistory>30</maxHistory>
+
+            <!-- 보관 파일들의 총 용량 상한: 2GB 넘으면 가장 오래된 것부터 삭제 -->
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+ 	<!-- Logstash로 전송할 Appender
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5044</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender> -->
+    
+    <!-- 루트 로거: 기본 로그 레벨은 INFO, 콘솔+파일에 모두 출력 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <!-- <appender-ref ref="LOGSTASH" /> -->
+    </root>
+</configuration>

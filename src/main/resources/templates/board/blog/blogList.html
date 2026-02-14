@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 목록 조회</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+    <link rel="stylesheet" th:href="@{/css/board/blog/blogList.css}">
+</head>
+
+<body>
+
+    <div th:replace="~{common/header :: header}"></div>
+
+    <main class="container">
+        <input type="hidden" id="initialIsLast" th:value="${isLast}">
+
+        <!-- 소연 - 블로그 검색 결과 할 때, 키워드 없으면(검색창을 통해 이 페이지에 온게 아니면 일반 목록 조회, 검색해서 들어온거면 검색 결과 라고 뜸) -->
+        <div class="search-result-title" th:if="${keyword != null}">
+            <h2>
+                "<span th:text="${keyword}"></span>" 검색 결과
+            </h2>
+        </div>
+        <div class="list-control">
+            <div class="filter-group">
+                <button class="filter-btn active" data-sort="id">최신순</button>
+                <button class="filter-btn" data-sort="like">인기순</button>
+                <button class="filter-btn" data-sort="view">조회순</button>
+                <button class="filter-btn" data-sort="comment">댓글순</button>
+            </div>
+            <button class="write-btn" th:onclick="|location.href='@{/blog/write}'|">
+                <img src="https://cdn-icons-png.flaticon.com/512/1159/1159633.png" alt="icon"> 글 쓰기
+            </button>
+        </div>
+
+        <div class="blog-grid" id="blogGrid">
+            <div class="blog-card" th:each="blog : ${blogList}">
+                <a th:href="@{/blog/detail/{id}(id=${blog.boardNo})}" class="card-link">
+                    <div class="card-image">
+                        <img th:src="${#strings.isEmpty(blog.thumbnailUrl) ? '/images/logo.png' : blog.thumbnailUrl}"
+                            alt="썸네일" onerror="this.src='/images/logo.png'">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">
+                            <i th:if="${blog.isPaid == 'Y'}" class="fa-solid fa-crown" style="color:#ffd700;"></i>
+                            <span th:text="${blog.boardTitle}">제목</span>
+                        </h3>
+
+                        <p class="card-desc" th:text="${blog.summary}">카드 내용</p>
+
+                        <div class="card-meta">
+                            <span class="author" th:text="${blog.memberNickname}">작성자</span>
+                            <div class="stats">
+                                <span><i class="fa-solid fa-eye"></i> <span th:text="${blog.boardCount}">0</span></span>
+                                <span><i class="fa-solid fa-comment"></i> <span
+                                        th:text="${blog.commentCount}">0</span></span>
+                            </div>
+                        </div>
+                        <div class="card-footer-time">
+                            <span th:text="${blog.bCreateDate}">날짜</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(blogList)}" class="no-data">
+                <p>등록된 게시글이 없습니다.</p>
+            </div>
+        </div>
+
+        <div id="loader" class="loader" th:style="${isLast} ? 'display:none' : 'display:block'">
+            <div class="spinner"></div>
+        </div>
+    </main>
+
+    <button id="scrollTopBtn" class="scroll-top-btn">
+        <img src="https://cdn-icons-png.flaticon.com/512/2985/2985150.png" alt="up">
+    </button>
+
+    <div th:replace="~{common/footer :: footer}"></div>
+    <script th:src="@{/js/notification/noti.js}"></script>
+    <script th:src="@{/js/common/header.js}"></script>
+    <script th:src="@{/js/board/blog/blogList.js}"></script>
+
+</body>
+
+</html>

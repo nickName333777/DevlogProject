@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카페 추천</title>
+
+    <link rel="stylesheet" href="../../../static/css/board/recommend/cafesList.css">
+    <link rel="stylesheet" href="../../../static/css/common/font.css">
+    <link rel="stylesheet" href="../../../static/css/common/main.css">
+</head>
+
+<body>
+
+  <header class="hd">
+
+  <div class="hd-in">
+    <!-- 왼쪽 영역 -->
+    <div class="hd-l">
+      <!-- 메뉴 버튼 -->
+      <button class="menu-btn" id="menuBtn" aria-label="menu">
+        <img src="../../../static/images/common/menu.svg" alt="menu" />
+      </button>
+
+      <!-- 사이드바!!! -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <img src="../../../static/images/common/devlog.svg" alt="logo" class="sidebar-logo" />
+          <span class="sidebar-title">DevLog</span>
+        </div>
+
+        <nav class="sidebar-menu">
+          <ul>
+            <li><img src="../../../static/images/common/home.svg" alt="home" /> Home</li>
+            <li><img src="../../../static/images/common/dashboard.svg" alt="dashboard" /> Dashboard</li>
+
+            <h4>Community</h4>
+            <li><img src="../../../static/images/common/blog.svg" alt="blog" /> 블로그</li>
+            <li><img src="../../../static/images/common/board.svg" alt="board" /> 자유게시판</li>
+            <li><img src="../../../static/images/common/news.svg" alt="news" /> 지식 뉴스</li>
+            <li><img src="../../../static/images/common/qa.svg" alt="qa" /> Q&A</li>
+            <li><img src="../../../static/images/common/job.svg" alt="job" /> 채용 정보</li>
+
+            <h4>Recommend</h4>
+            <li><img src="../../../static/images/common/cafe.svg" alt="cafe" /> 주변 카페</li>
+            <li><img src="../../../static/images/common/book.svg" alt="book" /> 관련 서적</li>
+
+            <hr />
+
+            <li><img src="../../../static/images/common/mode.svg" alt="mode" /> Mode</li>
+            <li><img src="../../../static/images/common/settings.svg" alt="settings" /> Settings</li>
+            <li><img src="../../../static/images/common/logout.svg" alt="logout" /> Logout</li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- 사이드바 나타났을 때 배경 회색으로 만들기 -->
+      <div class="overlay" id="overlay"></div>
+
+      <!-- 로고 -->
+      <div class="logo">
+        <img src="../../../static/images/common/devlog.svg" alt="logo" class="logo-ico" />
+        <div class="logo-text">
+          <span class="logo-sub">상상하는 모든 것을 기록하는 공간</span>
+          <span class="logo-t">DevLog</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽 영역 -->
+    <div class="hd-r">
+      <!-- 검색창 -->
+      <div class="search">
+        <input type="text" placeholder="여기에 검색어를 입력하세요." />
+        <button aria-label="search">
+          <img src="../../../static/images/common/search.svg" alt="search" />
+        </button>
+      </div>
+
+      <!-- 알림 -->
+      <button class="btn-ico" aria-label="notification">
+        <img src="../../../static/images/common/notifications.svg" alt="notification" />
+      </button>
+
+      <!-- 프로필 -->
+      <div class="profile" id="profile">
+        <img src="../../../static/images/common/d1.png" alt="profile" />
+        <span>My</span>
+
+        <!-- 드롭다운 메뉴 -->
+        <ul class="dropdown" id="dropdown">
+          <li>My Dev</li>
+          <li>Coffee Beans</li>
+          <li>DevTalk</li>
+          <li>Logout</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  const profile = document.getElementById('profile');
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+
+  profile.addEventListener('click', () => {
+    profile.classList.toggle('active');
+  });
+
+  window.addEventListener('click', (e) => {
+    if (!profile.contains(e.target)) {
+      profile.classList.remove('active');
+    }
+  });
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+</script>
+
+
+    <!-- 타임리프 변수 선언 -> main 태그 내부에서 사용 가능 -->
+    <main>
+
+    <div class="cafe-header">
+      <img src="https://t1.daumcdn.net/news/202512/11/ZDNetKorea/20251211174314543vjbe.gif" alt="카페 헤더 이미지">
+    </div>
+
+    <div class="container">
+
+          <br><br>
+  
+      <section class="cafe-box-top">
+
+      <h3>오늘 여기서 개발어때요?</h3>
+     <br>
+     <span style="font-size: 10pt; color: gray;">광고 일절없는 깐깐 계획형 INFJ 관리자 픽</span>
+          <br><br>
+   
+           <div class="cafe-container">
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe1.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">파머스카페</h3>
+      <p>서울 성동구 왕십리로6길 11 1층</p>
+      <p>전화번호 0507-1332-7364</p>
+      <p>영업시간 11:00 - 24:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">커피사는세상</h3>
+      <p>서울 종로구 원서동 106-1</p>
+      <p>전화번호 070-7931-0962</p>
+      <p>영업시간 10:30 - 20:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe1.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">쏘리낫쏘리</h3>
+      <p>서울 중구 퇴계로 334 1층</p>
+      <p>전화번호 0507-1363-4524</p>
+      <p>영업시간 09:00 - 17:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">크래킹커피</h3>
+      <p>서울 중구 마른내로 27 1층</p>
+      <p>전화번호 0507-1353-7565</p>
+      <p>영업시간 08:00 - 22:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe1.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">301h</h3>
+      <p>서울 관악구 신사로 66-1 3층</p>
+      <p>전화번호 미제공</p>
+      <p>영업시간 12:00 - 20:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">렉터스라운지</h3>
+      <p>서울 마포구 와우산로29가길 54-6</p>
+      <p>전화번호 0507-1332-7364</p>
+      <p>영업시간 12:00 - 24:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+</div>
+
+
+      </section>
+
+
+     <section  class="cafe-region-box">
+       
+        
+            
+     <h3>서울 지역별로 카페탐방</h3>
+     <br>
+         
+     <div class="cafe-region-container">
+  <div class="map-section">
+    <img src="../../../static/images/board/recommend/seoul-map.png" alt="">
+  </div>
+
+  <div class="list-section">
+    <h3 class="region-title">종로구</h3>
+    
+    <div class="item-card">
+      <div class="item-img"><img src="../../../static/images/board/recommend/cafe1.jpg" alt="카페"></div>
+      <div class="item-info">
+        <h4>카페 이름이름</h4>
+        <p>설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설</p>
+      </div>
+    </div>
+
+    <div class="item-card">
+      <div class="item-img"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+      <div class="item-info">
+        <h4>카페 이름이름</h4>
+        <p>설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명</p>
+      </div>
+    </div>
+
+      <div class="item-card">
+      <div class="item-img"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+      <div class="item-info">
+        <h4>카페 이름이름</h4>
+        <p>설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명</p>
+      </div>
+    </div>
+
+      <div class="item-card">
+      <div class="item-img"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+      <div class="item-info">
+        <h4>카페 이름이름</h4>
+        <p>설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명</p>
+      </div>
+    </div>
+    
+    </div>
+</div>
+
+
+
+     </section>
+
+
+
+
+       <section class="cafe-box-bottom">
+
+       <h3>혹은 개발에 지쳤다면</h3>
+     <br>
+     <span style="font-size: 10pt; color: gray;">거북목 예방을 위해 잠시 내려놓고 당충전 하러 갑시다</span>
+          <br><br>
+
+            <div class="cafe-container">
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe1.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">파머스카페</h3>
+      <p>서울 성동구 왕십리로6길 11 1층</p>
+      <p>전화번호 0507-1332-7364</p>
+      <p>영업시간 11:00 - 24:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">커피사는세상</h3>
+      <p>서울 종로구 원서동 106-1</p>
+      <p>전화번호 070-7931-0962</p>
+      <p>영업시간 10:30 - 20:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe1.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">쏘리낫쏘리</h3>
+      <p>서울 중구 퇴계로 334 1층</p>
+      <p>전화번호 0507-1363-4524</p>
+      <p>영업시간 09:00 - 17:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">크래킹커피</h3>
+      <p>서울 중구 마른내로 27 1층</p>
+      <p>전화번호 0507-1353-7565</p>
+      <p>영업시간 08:00 - 22:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe1.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">301h</h3>
+      <p>서울 관악구 신사로 66-1 3층</p>
+      <p>전화번호 미제공</p>
+      <p>영업시간 12:00 - 20:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><img src="../../../static/images/board/recommend/cafe2.jpg" alt="카페"></div>
+    <div class="info">
+      <h3 class="name">렉터스라운지</h3>
+      <p>서울 마포구 와우산로29가길 54-6</p>
+      <p>전화번호 0507-1332-7364</p>
+      <p>영업시간 12:00 - 24:00</p>
+      <button class="btn">길찾기 <span>▶</span></button>
+    </div>
+  </div>
+</div>
+
+
+
+
+       </section>
+
+
+    </div>     
+
+
+           
+
+    </main>
+    
+ 
+    <!-- ===== Footer ===== -->
+    <footer class="ft">
+      <div class="ft-in">
+        <!-- 상단 로고/소개 -->
+        <div class="ft-top">
+          <div class="ft-logo">
+            <img src="../../../static/images/common/devlog.svg" alt="DevLog Logo" class="ft-logo-img" />
+            <p class="ft-desc">
+              개발자의 감성과 지식을 잇는 새로운 블로그 커뮤니티<br />
+              <strong>Devlog</strong> 가 만들어갑니다.
+            </p>
+          </div>
+  
+          <ul class="ft-menu">
+            <li><a href="#">SHOP</a></li>
+            <li><a href="#">REVIEW</a></li>
+            <li><a href="#">COMMUNITY</a></li>
+            <li><a href="#">ABOUT</a></li>
+          </ul>
+        </div>
+  
+        <!-- 하단 정보 -->
+        <div class="ft-bottom">
+          <p>
+            상호 : (주)디블로그 | 대표 팀 : ZeroBoost<br />
+            사업자등록번호 : 000-00-00000 | 문의처 : dev-logs2@gmail.com<br />
+            주소 : 서울특별시 용산구 우정국로21 9층 903호
+          </p>
+  
+          <p class="ft-links">
+            <a href="#">이용약관</a> |
+            <a href="#">개인정보처리방침</a>
+          </p>
+  
+          <p class="ft-copy">Copyright © 제로부스트</p>
+        </div>
+      </div>
+    </footer>
+
+</body>
+
+</html>

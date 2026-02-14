@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT지식뉴스</title>
+  <link rel="stylesheet" th:href="@{/css/board/ITnews/ITnewsList.css}">
+  <link rel="stylesheet" th:href="@{/css/common/common.css}" />
+  <link rel="stylesheet" th:href="@{/css/common/notification.css}" />
+</head>
+<div th:replace="common/header :: header"></div>
+<script th:src="@{/js/common/header.js}"></script>
+
+<body>
+
+  <div class="ITnews">
+    <h1>IT지식뉴스</h1><br>
+<div class="form-inline">
+      <button class="filter-btn" data-type="0">
+        <img th:src="@{/images/board/ITnews/all.png}">
+        <span>전체</span>
+      </button>
+
+      <button class="filter-btn" data-type="21">
+        <img th:src="@{/images/board/ITnews/ITnews_AI.svg}">
+        <span>AI</span>
+      </button>
+
+      <button class="filter-btn" data-type="22">
+        <img th:src="@{/images/board/ITnews/ITnews_tech.svg}">
+        <span>테크</span>
+      </button>
+
+      <button class="filter-btn" data-type="23">
+        <img th:src="@{/images/board/ITnews/ITnews_IT.svg}">
+        <span>IT기업</span>
+      </button>
+
+      <button class="filter-btn" data-type="24">
+        <img th:src="@{/images/board/ITnews/ITnews_game.svg}">
+        <span>게임</span>
+      </button>
+
+      <button class="filter-btn" data-type="25">
+        <img th:src="@{/images/board/ITnews/ITnews_Science.svg}">
+        <span>과학</span>
+      </button>
+
+      <button class="filter-btn" data-type="26">
+        <img th:src="@{/images/board/ITnews/ITnews_space.svg}">
+        <span>우주</span>
+      </button>
+    </div><br><br>
+
+
+  </div>
+
+  <main>
+    <div class="news-list">
+      <article class="news-item" th:each="news : ${itnews}" th:attr="data-type=${news.boardCode}"
+        th:onclick="|location.href='/ITnews/${news.boardNo}'|" style="cursor: pointer;">
+        <div class="content">
+          <h3 class="title" th:text="${news.boardTitle}">뉴스 제목</h3>
+
+          <p class="summary" th:text="${news.boardContent}">뉴스 요약 내용...</p>
+
+          <div class="news-info">
+            <span th:text="${news.boardName}">카테고리</span>
+            <span th:text="${news.newsReporter}">기자명</span> |
+            <span th:text="${news.bCreateDate}">2025.12.28</span>
+          </div>
+        </div>
+
+        <img class="thumbnail"
+          <img th:src="${news.imgPath != null ? (news.imgPath.startsWith('http') ? news.imgPath : news.imgPath + news.imgRename) : '/images/logo.png'}">
+      </article>
+
+      <div th:if="${#lists.isEmpty(itnews)}" style="text-align: center; padding: 50px;">
+        <p>수집된 뉴스가 없습니다.</p>
+      </div>
+    </div>
+  </main>
+
+  </div>
+
+
+  <!--  페 이 지 네 이 션 !!!!!!! -->
+<div class="pagination-area">
+    <ul class="pagination">
+        <li th:if="${pagination.hasPreviousPage}">
+            <a th:href="@{/ITnews(cp=${pagination.prePage}, boardCode=${boardCode})}">&lt;</a>
+        </li>
+
+        <li th:each="p : ${pagination.navigatepageNums}">
+            <a th:href="@{/ITnews(cp=${p}, boardCode=${boardCode})}" 
+               th:text="${p}"
+               th:classappend="${p == pagination.pageNum} ? 'current' : ''">1</a>
+        </li>
+
+        <li th:if="${pagination.hasNextPage}">
+            <a th:href="@{/ITnews(cp=${pagination.nextPage}, boardCode=${boardCode})}">&gt;</a>
+        </li>
+    </ul>
+</div>
+
+
+  <div th:replace="common/footer :: footer"></div>
+  <script th:src="@{/js/notification/noti.js}"></script>
+  <script th:src="@{/js/board/ITnews/ITnews.js}"></script>
+</body>
+
+
+
+<script th:inline="javascript">
+
+  const message = /*[[${message}]]*/ null;
+  if(message != null){
+    alert(message);
+  }
+
+  const isAdmin = "${loginMember.memberAdmin}";
+</script>
+
+</html>

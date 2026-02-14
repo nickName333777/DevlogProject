@@ -1,0 +1,202 @@
+.alarm-panel {
+    width: 450px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid #E0CAFF;
+    position: absolute;
+    top: 80%;
+    right: 70px;
+    z-index: 1100;
+}
+
+.alarm-header h2 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.noti-menu-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.noti-menu-dropdown {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background: white;
+    border: 1px solid #E0CAFF;
+    border-radius: 10px;
+    list-style: none;
+    padding: 6px 0;
+    z-index: 1300;
+}
+
+.noti-menu-dropdown li {
+    padding: 8px 14px;
+    cursor: pointer;
+}
+.noti-menu-dropdown li:hover {
+    background: #F7E8F6;
+}
+
+/* 필터 */
+.alarm-filters {
+    margin-top: 10px;
+    justify-content: space-around;
+}
+
+.filter {
+    border: 1px solid #E0CAFF;
+    background: #fff;
+    border-radius: 999px;
+    width: 100px;
+    padding: 6px 4px;
+    cursor: pointer;
+}
+
+.filter.is-active {
+    background: #F4E9F8;
+}
+
+.alarm-list {
+    margin-top: 30px;
+    overflow-y: auto;
+    max-height: 380px;
+}
+
+/* 알림 아이템 */
+.alarm-item {
+    border: 1px solid #E0CAFF;
+    border-radius: 16px;
+    padding: 12px;
+}
+
+.alarm-item:hover{
+
+    cursor: pointer;
+}
+.alarm-left {
+    align-items: center;
+}
+
+.alarm-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F7E8F6;
+    font-size: 16px;
+}
+
+.alarm-text p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.alarm-text .sub {
+    font-size: 13px;
+    color: #777;
+}
+
+.alarm-right {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 6px;
+}
+
+.alarm-right .time {
+    font-size: 12px;
+    color: #999;
+}
+
+.close {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+.read-noti {
+    opacity: 0.5;
+}
+
+
+
+.flex {
+    display: flex;
+}
+
+.flex-col{
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gap-4  { gap: 4px; }
+.gap-8  { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.gap-24 { gap: 24px; }
+
+
+.display-none {
+    display: none;
+}
+
+
+.noAlarm {
+    width: 100%;
+    height: 400px;
+}
+
+.noAlarm > span {
+    color: #777;
+}
+
+
+.notiUnread, .allUnread, .likeUnread, .commentUnread, .followUnread, .mentionUnread {
+    position: absolute;
+    border-radius: 50%;
+    background-color: #BD83CE;
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+
+    top: -10px;
+    right: -10px;
+}
+
+#noti-btn, #allNoti, #likeNoti, #commentNoti, #followNoti, #mentionNoti{
+    position: relative;
+    
+}

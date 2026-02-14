@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>관리자 홈</title>
+
+  <link rel="stylesheet" th:href="@{/css/manager/manager-home.css}" />
+</head>
+
+<body>
+
+  <div th:replace="manager/common/manager-header :: header"></div>
+    <div class="layout">
+
+      <!-- 사이드바 -->
+      <div th:replace="manager/common/manager-sidebar :: sidebar('home')"></div>
+
+    <main class="main">
+
+      <iframe src="http://localhost:5601/app/dashboards#/view/3f0d7bae-83ef-4588-b95e-34c56f310dd2?embed=true&_g=%28refreshInterval%3A%28pause%3A%21t%2Cvalue%3A60000%29%2Ctime%3A%28from%3Anow-7d%2Cto%3Anow%29%29&hide-filter-bar=true" height="660" width="1200"></iframe>
+    </main>
+
+  </div>
+
+  
+</body>
+
+</html>

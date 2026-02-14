@@ -1,0 +1,396 @@
+/* === 전체 초기화 및 공통 설정 === */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    font-family: 'Pretendard Variable', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+
+table td {
+  font-size: 13px;
+}
+
+.container {
+    width: 100%;
+    text-align: center;
+}
+
+.cafe-header {
+  width: 100%;
+  height: 250px;
+}
+
+.cafe-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 1. 전체 틀 잡기 (노가다 방식: 너비를 직접 계산) */
+.cafe-container {
+  display: flex;
+  flex-wrap: wrap; /* 자리가 없으면 다음 줄로 넘김 */
+  width: 1000px;  /* 전체 너비 고정 */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 2. 각 카드 설정 (3열로 만들기 위해 약 33% 할당) */
+.card {
+  display: flex;   /* 이미지와 텍스트 가로 배치 */
+  width: 33.333%;  /* 정확히 3등분 */
+  margin-bottom: 40px;
+  box-sizing: border-box;
+  padding-right: 15px; /* 카드 사이 간격 */
+}
+
+/* 3. 이미지 영역 */
+.thumb img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+/* 4. 텍스트 영역 */
+.info {
+  margin-left: 15px;
+  font-family: sans-serif;
+  text-align: left;
+}
+
+.name {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.info p {
+  margin: 2px 0;
+  font-size: 12px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* 5. 길찾기 버튼 */
+.btn {
+  margin-top: 10px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 15px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn span {
+  color: #8a2be2; /* 보라색 화살표 */
+  font-size: 8px;
+  margin-left: 4px;
+}
+
+
+/* 전체 레이아웃 세팅 */
+.cafe-region-container {
+  display: flex;
+  width: 1000px; /* 전체 너비 고정 */
+  margin: 50px auto;
+  gap: 40px; /* 왼쪽과 오른쪽 사이 간격 */
+  align-items: flex-start;
+}
+
+/* 왼쪽 지도 영역 */
+.map-section {
+  width: 450px; /* 지도가 들어갈 너비 수동 지정 */
+}
+
+.map-section img {
+  width: 100%;
+  height: auto;
+}
+
+/* 오른쪽 리스트 영역 */
+.list-section {
+  width: 510px; /* 리스트가 들어갈 너비 수동 지정 */
+}
+
+.region-title {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+/* 개별 아이템 카드 (그림자 효과 포함) */
+.item-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); /* 이미지처럼 부드러운 그림자 */
+}
+
+/* 카드 내 이미지 */
+.item-img img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* 카드 내 텍스트 */
+.item-info {
+  margin-left: 15px;
+  text-align: left;
+}
+
+.item-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+}
+
+.item-info p {
+  margin: 0;
+  font-size: 11px;
+  color: #666;
+  line-height: 1.4;
+  /* 텍스트가 너무 길 때 두 줄만 보이게 제한 (선택 사항) */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+
+#pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;              /* 숫자 간격 */
+  margin: 30px 0;
+}
+
+/* === 전체 페이지 레이아웃 === */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+
+}
+
+.main-header,
+.main-nav,
+.main-footer {
+    height: 60px;
+    background-color: white;
+    width: 100%;
+    color: white;
+}
+
+
+/* ========================= */
+
+/* @font-face {
+    font-family: 'Pretendard';
+    src: url('../font/PretendardVariable.ttf') format('truetype');
+    font-weight: 45 920;
+    font-style: normal;
+    font-display: swap;
+} */
+/* Spring Boot 절대경로 => src: url('/font/PretendardVariable.ttf') format('truetype'); */
+/* 상대경로 => src: url('../font/PretendardVariable.ttf') format('truetype'); */
+/* Spring Security의 Security Config에 "/font/**" 로 폰트경로 허용 필요 */
+
+body {
+    margin: 0;
+    background-color: #ffffff;
+    font-family: 'Pretendard Variable', Arial, Helvetica, sans-serif;
+    /* body 전체에 Pretendard Variable Font 적용*/
+}
+
+.logo {
+    width: 238px;
+    margin-bottom: 2px;
+}
+
+/* 로그인 박스 */
+.login-box {
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 입력창 */
+.input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 2px solid #000;
+    font-size: 20px;
+    color: black;
+    box-sizing: border-box;
+}
+
+/* 로그인 버튼 */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: #BD83CE;   /* DevLog 보라 */
+    border: none;
+    border-radius: 6px;
+    font-size: 26px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-login:hover {
+    background-color: #E5B0EA;
+}
+
+/* 아이디 저장 / 회원가입 */
+.options {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+   
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    padding-left: 6px;
+}
+
+/*
+.checkbox input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.4);
+    accent-color: #2563eb; 
+}*/
+
+#inputCheckboxSaveId {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 20px;
+    height: 20px;
+
+    margin-right: 10px; /* '아이디저장' 들여쓰기 되도록 */
+
+    border: 1px solid #999;
+    border-radius: 0;
+
+    background-color: #fff;   /* 필수 */
+    cursor: pointer;
+    position: relative;
+}
+
+#inputCheckboxSaveId:checked {
+    background-color: #BD83CE;
+    border-color: #BD83CE;
+}
+
+#inputCheckboxSaveId:checked::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    top: 1px;
+    left: 3px;
+    bottom: 0px;
+    margin-bottom: 1px;
+    margin-left: 2px;
+}
+
+
+.signUp {
+    text-decoration: none;
+    color: #000;
+    font-size: 20px;
+}
+
+.signUp:hover {
+    text-decoration: underline;    
+}
+
+/* OR Divider */
+.divider {
+    width: 100%;
+    text-align: center;
+    color: #000;
+
+    margin-bottom: 20px;
+    position: relative;
+    font-size: 20px;
+    /*font-weight: bold;*/
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    width: 40%;
+    height: 4px;
+    background-color: #BD83CE;
+    position: absolute;
+    top: 50%;
+}
+
+.divider::before {
+    left: 6px;
+}
+
+.divider::after {
+    right: 6px;
+}
+
+/* 카카오 로그인 버튼 */
+.btn-kakao {
+    width: 100%;
+    padding: 6px;
+    background-color: #F2D51F;
+    font-size: 20px;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kakao-icon {
+    width: 48px;
+    margin-right: 28px;
+}
+
+.btn-kakao:hover {
+    background-color: #FEE500;
+}
+

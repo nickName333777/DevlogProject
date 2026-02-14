@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.devlog.project.board.blog.mapper.BlogMapper">
+	
+	<!-- 게시글 생성 -->
+    <insert id="insertBoard" parameterType="com.devlog.project.board.blog.dto.BlogDTO">
+        <selectKey keyProperty="boardNo" resultType="long" order="BEFORE">
+            SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO "BOARD" (
+            BOARD_NO, BOARD_CODE, MEMBER_NO, BOARD_TITLE, BOARD_CONTENT,
+            B_CREATE_DATE, BOARD_DEL_FL, BOARD_COUNT
+        ) VALUES (
+            #{boardNo}, 1, #{memberNo}, #{boardTitle}, #{boardContent},
+            SYSDATE, 'N', 0
+        )
+    </insert>
+	
+	<!-- 블로그 저장 -->
+    <insert id="insertBlog" parameterType="com.devlog.project.board.blog.dto.BlogDTO">
+        INSERT INTO "BLOG" (
+            BOARD_NO, IS_PAID, PRICE, TEMP_FL
+        ) VALUES (
+            #{boardNo}, #{isPaid}, #{price}, #{tempFl}
+        )
+    </insert>
+	
+	<!-- 태그 테이블 저장 -->
+    <update id="insertTag" parameterType="string">
+        MERGE INTO "TAG" t USING DUAL ON (t.TAG_NAME = #{tagName})
+        WHEN NOT MATCHED THEN INSERT (TAG_NO, TAG_NAME) VALUES (SEQ_TAG_NO.NEXTVAL, #{tagName})
+    </update>
+	
+	<!-- 태그 - 게시글 연결 -->
+    <select id="selectTagNoByName" parameterType="string" resultType="long">
+        SELECT TAG_NO FROM "TAG" WHERE TAG_NAME = #{tagName}
+    </select>
+	
+	<!-- BLOG_TAG 데이터 삽입 -->
+    <insert id="insertBlogTag" parameterType="map">
+        INSERT INTO "BLOG_TAG" (BOARD_NO, TAG_NO) VALUES (#{boardNo}, #{tagNo})
+    </insert>
+
+    <select id="selectBlogList" parameterType="map" resultType="com.devlog.project.board.blog.dto.BlogDTO">
+        SELECT * FROM (
+            SELECT ROWNUM AS RNUM, A.* FROM (
+                SELECT
+                    b.BOARD_NO AS boardNo,
+                    b.BOARD_TITLE AS boardTitle,
+                    DBMS_LOB.SUBSTR(b.BOARD_CONTENT, 600, 1) AS boardContent,
+                    b.BOARD_COUNT AS boardCount,
+                    TO_CHAR(b.B_CREATE_DATE, 'YYYY.MM.DD') AS bCreateDate,
+                    m.MEMBER_NICKNAME AS memberNickname,
+                    m.MEMBER_EMAIL AS memberEmail,
+                    
+                    (SELECT i.IMG_PATH || i.IMG_RENAME 
+                     FROM BOARD_IMG i 
+                     WHERE i.BOARD_NO = b.BOARD_NO AND i.IMG_ORDER = 0) AS thumbnailUrl,
+                     
+                    (SELECT LISTAGG(T.TAG_NAME, ',') WITHIN GROUP (ORDER BY BT.TAG_NO)
+                     FROM BLOG_TAG BT
+                     JOIN TAG T ON BT.TAG_NO = T.TAG_NO
+                     WHERE BT.BOARD_NO = b.BOARD_NO) AS tagsStr,
+                     
+                    bl.IS_PAID AS isPaid,
+                    bl.PRICE AS price,
+                    (SELECT COUNT(*) FROM "COMMENT" c WHERE c.BOARD_NO = b.BOARD_NO AND c.COMMENT_DEL_FL = 'N') AS commentCount,
+                    (SELECT COUNT(*) FROM "BOARD_LIKE" l WHERE l.BOARD_NO = b.BOARD_NO) AS likeCount
+                FROM "BOARD" b
+                JOIN "MEMBER" m ON b.MEMBER_NO = m.MEMBER_NO
+                JOIN "BLOG" bl ON b.BOARD_NO = bl.BOARD_NO
+                WHERE b.BOARD_CODE = 1 AND b.BOARD_DEL_FL = 'N' AND bl.TEMP_FL = 'N'
+                <choose>
+                    <when test="sort == 'viewCount'">ORDER BY b.BOARD_COUNT DESC, b.BOARD_NO DESC</when>
+                    <when test="sort == 'likeCount'">ORDER BY likeCount DESC, b.BOARD_NO DESC</when>
+                    <when test="sort == 'commentCount'">ORDER BY commentCount DESC, b.BOARD_NO DESC</when>
+                    <otherwise>ORDER BY b.BOARD_NO DESC</otherwise>
+                </choose>
+            ) A
+        )
+        WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+    </select>
+
+    <select id="countBlogList" parameterType="map" resultType="_int">
+        SELECT COUNT(*)
+        FROM "BOARD" b
+        JOIN "BLOG" bl ON (b.BOARD_NO = bl.BOARD_NO)
+        WHERE b.BOARD_CODE = 1
+        AND b.BOARD_DEL_FL = 'N'
+        AND bl.TEMP_FL = 'N'
+    </select>
+    
+    <select id="countPostPurchases" parameterType="long" resultType="_int">
+        SELECT COUNT(*)
+        FROM COFFEE_BEANS_TRADE
+        WHERE CONTENT_TYPE = 'POST'
+          AND CONTENT_ID = #{boardNo}
+    </select>
+
+
+    <select id="countMyBlogList" parameterType="map" resultType="_int">
+        SELECT COUNT(*)
+        FROM "BOARD" b
+        JOIN "MEMBER" m ON (b.MEMBER_NO = m.MEMBER_NO)
+        LEFT JOIN "BLOG" bl ON (b.BOARD_NO = bl.BOARD_NO)
+        <if test="type == 'scrap'">
+            JOIN "USER_SCRAP" us ON (b.BOARD_NO = us.TARGET_NO AND us.TYPE = '1')
+        </if>
+        WHERE b.BOARD_DEL_FL = 'N'
+        AND (bl.TEMP_FL IS NULL OR bl.TEMP_FL = 'N')
+        
+        <choose>
+            <when test="type == 'scrap'">
+                <if test="loginMemberNo != null">AND us.MEMBER_NO = #{loginMemberNo}</if>
+                <if test="loginMemberNo == null">AND 1 = 2</if>
+                
+                AND (
+                    b.BOARD_CODE = 1 
+                    OR b.BOARD_CODE = 2
+                    OR b.BOARD_CODE BETWEEN 21 AND 29
+                )
+            </when>
+            <otherwise>
+                AND b.BOARD_CODE = 1
+                AND m.MEMBER_EMAIL = #{blogId}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectMyBlogList" parameterType="map" resultType="com.devlog.project.board.blog.dto.BlogDTO">
+	    SELECT * FROM (
+	        SELECT ROWNUM AS RNUM, A.* FROM (
+	            
+	            <choose>
+	                <when test="type == 'scrap'">
+	                    SELECT 
+	                        US.TARGET_NO AS boardNo,
+	                        US.TYPE AS type,
+	                        
+	                        CASE 
+	                            WHEN US.TYPE = '1' THEN B.BOARD_TITLE 
+	                            WHEN US.TYPE = '2' THEN J.POSTING_TITLE 
+	                        END AS boardTitle,
+	                        
+	                        CASE 
+	                            WHEN US.TYPE = '1' THEN DBMS_LOB.SUBSTR(B.BOARD_CONTENT, 600, 1)
+	                            WHEN US.TYPE = '2' THEN '채용공고 입니다.' 
+	                        END AS boardContent,
+	                        
+	                        CASE 
+	                            WHEN US.TYPE = '1' THEN TO_CHAR(B.B_CREATE_DATE, 'YYYY.MM.DD')
+	                            WHEN US.TYPE = '2' THEN J.APPLY_END 
+	                        END AS bCreateDate,
+	                        
+	                        CASE WHEN US.TYPE = '1' THEN B.BOARD_COUNT ELSE 0 END AS boardCount,
+	                        CASE WHEN US.TYPE = '1' THEN (SELECT COUNT(*) FROM BOARD_LIKE L WHERE L.BOARD_NO = B.BOARD_NO) ELSE 0 END AS likeCount,
+	                        CASE WHEN US.TYPE = '1' THEN (SELECT COUNT(*) FROM "COMMENT" C WHERE C.BOARD_NO = B.BOARD_NO AND C.COMMENT_DEL_FL = 'N') ELSE 0 END AS commentCount,
+	                        
+	                        CASE 
+	                            WHEN US.TYPE = '1' THEN 
+	                                (SELECT I.IMG_PATH || I.IMG_RENAME FROM BOARD_IMG I WHERE I.BOARD_NO = B.BOARD_NO AND I.IMG_ORDER = 0)
+	                            WHEN US.TYPE = '2' THEN 
+	                                NULL
+	                        END AS thumbnailUrl,
+	
+	                        CASE WHEN US.TYPE = '1' THEN B.BOARD_CODE ELSE 0 END AS "boardCode",
+	                        
+	                        'N' AS isPaid,
+	                        NULL AS tagsStr
+	
+	                    FROM USER_SCRAP US
+	                    LEFT JOIN BOARD B ON (US.TARGET_NO = B.BOARD_NO AND US.TYPE = '1')
+	                    LEFT JOIN JOB_POSTING J ON (US.TARGET_NO = J.POSTING_NO AND US.TYPE = '2')
+	                    
+	                    WHERE US.MEMBER_NO = #{loginMemberNo}
+	                    
+	                    ORDER BY US.SCRAP_NO DESC
+	                </when>
+	
+	                <otherwise>
+	                    SELECT
+	                        b.BOARD_NO AS boardNo,
+	                        '1' AS type,
+	                        b.BOARD_TITLE AS boardTitle,
+	                        DBMS_LOB.SUBSTR(b.BOARD_CONTENT, 600, 1) AS boardContent,
+	                        b.BOARD_COUNT AS boardCount,
+	                        TO_CHAR(b.B_CREATE_DATE, 'YYYY.MM.DD') AS bCreateDate,
+	                        m.MEMBER_NICKNAME AS memberNickname,
+	                        m.MEMBER_EMAIL AS memberEmail,
+	                        b.BOARD_CODE AS boardCode,
+	                        
+	                        (SELECT i.IMG_PATH || i.IMG_RENAME 
+	                         FROM BOARD_IMG i 
+	                         WHERE i.BOARD_NO = b.BOARD_NO AND i.IMG_ORDER = 0) AS thumbnailUrl,
+	                         
+	                        (SELECT LISTAGG(T.TAG_NAME, ',') WITHIN GROUP (ORDER BY BT.TAG_NO)
+	                         FROM BLOG_TAG BT
+	                         JOIN TAG T ON BT.TAG_NO = T.TAG_NO
+	                         WHERE BT.BOARD_NO = b.BOARD_NO) AS tagsStr,
+	                         
+	                        bl.IS_PAID AS isPaid,
+	                        (SELECT COUNT(*) FROM "COMMENT" c WHERE c.BOARD_NO = b.BOARD_NO AND c.COMMENT_DEL_FL = 'N') AS commentCount,
+	                        (SELECT COUNT(*) FROM "BOARD_LIKE" l WHERE l.BOARD_NO = b.BOARD_NO) AS likeCount
+	                    FROM "BOARD" b
+	                    JOIN "MEMBER" m ON b.MEMBER_NO = m.MEMBER_NO
+	                    LEFT JOIN "BLOG" bl ON b.BOARD_NO = bl.BOARD_NO
+	                    
+	                    WHERE b.BOARD_DEL_FL = 'N'
+	                    AND (bl.TEMP_FL IS NULL OR bl.TEMP_FL = 'N')
+	                    AND b.BOARD_CODE = 1
+	                    AND m.MEMBER_EMAIL = #{blogId}
+	
+	                    <if test="type == 'paid'"> AND bl.IS_PAID = 'Y' </if>
+	                    <if test="query != null and query != ''">
+	                        AND (b.BOARD_TITLE LIKE '%' || #{query} || '%' OR b.BOARD_CONTENT LIKE '%' || #{query} || '%')
+	                    </if>
+	                    <if test="tag != null and tag != ''">
+	                        AND b.BOARD_NO IN (
+	                            SELECT BT.BOARD_NO FROM BLOG_TAG BT
+	                            JOIN TAG T ON BT.TAG_NO = T.TAG_NO WHERE T.TAG_NAME = #{tag}
+	                        )
+	                    </if>
+	
+	                    <choose>
+	                        <when test="sort == 'viewCount'">ORDER BY b.BOARD_COUNT DESC, b.BOARD_NO DESC</when>
+	                        <when test="sort == 'likeCount'">ORDER BY likeCount DESC, b.BOARD_NO DESC</when>
+	                        <otherwise>ORDER BY b.BOARD_NO DESC</otherwise>
+	                    </choose>
+	                </otherwise>
+	            </choose>
+	        ) A
+	    )
+	    WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+	</select>
+
+    <select id="selectBlogDetail" parameterType="long" resultType="com.devlog.project.board.blog.dto.BlogDTO">
+        SELECT
+            b.BOARD_NO AS boardNo,
+            b.BOARD_TITLE AS boardTitle,
+            b.BOARD_CONTENT AS boardContent,
+            b.BOARD_COUNT AS boardCount,
+            TO_CHAR(b.B_CREATE_DATE, 'YYYY.MM.DD HH24:MI') AS bCreateDate,
+            m.MEMBER_NO AS memberNo,
+            m.MEMBER_EMAIL AS memberEmail,
+            m.MEMBER_NICKNAME AS memberNickname,
+            m.PROFILE_IMG AS profileImg,
+            bl.PRICE AS price,
+            bl.IS_PAID AS isPaid,
+            (SELECT COUNT(*) FROM "COMMENT" c WHERE c.BOARD_NO = b.BOARD_NO AND c.COMMENT_DEL_FL = 'N') AS commentCount,
+            (SELECT COUNT(*) FROM "BOARD_LIKE" l WHERE l.BOARD_NO = b.BOARD_NO) AS likeCount
+        FROM "BOARD" b
+        JOIN "MEMBER" m ON b.MEMBER_NO = m.MEMBER_NO
+        JOIN "BLOG" bl ON b.BOARD_NO = bl.BOARD_NO
+        WHERE b.BOARD_NO = #{boardNo}
+    </select>
+
+    <update id="updateViewCount" parameterType="long">
+        UPDATE "BOARD" SET BOARD_COUNT = BOARD_COUNT + 1 WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <select id="selectPopularPost" parameterType="string" resultType="com.devlog.project.board.blog.dto.BlogDTO">
+        SELECT * FROM (
+            SELECT
+                b.BOARD_NO AS boardNo,
+                b.BOARD_TITLE AS boardTitle,
+                b.BOARD_CODE AS boardCode,
+                TO_CHAR(b.B_CREATE_DATE, 'YYYY.MM.DD') AS bCreateDate,
+                b.BOARD_COUNT AS boardCount,
+                
+                (SELECT i.IMG_PATH || i.IMG_RENAME 
+                 FROM BOARD_IMG i 
+                 WHERE i.BOARD_NO = b.BOARD_NO AND i.IMG_ORDER = 0) AS thumbnailUrl,
+                 
+                (SELECT COUNT(*) FROM "BOARD_LIKE" l WHERE l.BOARD_NO = b.BOARD_NO) AS likeCount
+            FROM "BOARD" b
+            JOIN "MEMBER" m ON b.MEMBER_NO = m.MEMBER_NO
+            JOIN "BLOG" bl ON b.BOARD_NO = bl.BOARD_NO
+            WHERE b.BOARD_DEL_FL = 'N'
+            AND bl.TEMP_FL = 'N'
+            AND m.MEMBER_EMAIL = #{blogId}
+            ORDER BY b.BOARD_COUNT DESC, b.BOARD_NO DESC
+        )
+        WHERE ROWNUM = 1
+    </select>
+
+    <select id="selectBlogTagList" parameterType="string" resultType="com.devlog.project.board.blog.dto.TagDto">
+        SELECT
+            t.TAG_NAME AS name,
+            COUNT(bt.TAG_NO) AS count
+        FROM "TAG" t
+        JOIN "BLOG_TAG" bt ON t.TAG_NO = bt.TAG_NO
+        JOIN "BOARD" b ON bt.BOARD_NO = b.BOARD_NO
+        JOIN "MEMBER" m ON b.MEMBER_NO = m.MEMBER_NO
+        WHERE m.MEMBER_EMAIL = #{blogId}
+        AND b.BOARD_DEL_FL = 'N'
+        GROUP BY t.TAG_NAME
+        ORDER BY count DESC
+    </select>
+
+    <select id="selectBoardTags" resultType="string">
+        SELECT T.TAG_NAME
+        FROM TAG T
+        JOIN BLOG_TAG BT ON T.TAG_NO = BT.TAG_NO
+        WHERE BT.BOARD_NO = #{boardNo}
+    </select>
+
+    <select id="checkFollowStatus" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM "FOLLOW" WHERE FOLLOW_ID = #{followerId} AND FOLLOWED_ID = #{targetId}
+    </select>
+
+    <insert id="insertFollow" parameterType="map">
+        INSERT INTO "FOLLOW" (FOLLOW_ID, FOLLOWED_ID) VALUES (#{followerId}, #{targetId})
+    </insert>
+
+    <delete id="deleteFollow" parameterType="map">
+        DELETE FROM "FOLLOW" WHERE FOLLOW_ID = #{followerId} AND FOLLOWED_ID = #{targetId}
+    </delete>
+
+    <select id="countFollower" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM "FOLLOW" WHERE FOLLOWED_ID = #{memberNo}
+    </select>
+
+    <select id="countFollowing" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM "FOLLOW" WHERE FOLLOW_ID = #{memberNo}
+    </select>
+
+    <select id="countTotalPosts" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM "BOARD" b
+        JOIN "MEMBER" m ON b.MEMBER_NO = m.MEMBER_NO
+        WHERE m.MEMBER_EMAIL = #{blogId}
+        AND b.BOARD_DEL_FL = 'N'
+        AND b.BOARD_CODE = 1
+    </select>
+
+    <select id="selectVisitCount" parameterType="long" resultType="map">
+        SELECT TOTAL_VISIT, DAILY_VISIT, TO_CHAR(LAST_DATE, 'YYYYMMDD') AS LAST_DATE
+        FROM "VISIT_COUNT" WHERE MEMBER_NO = #{memberNo}
+    </select>
+
+    <insert id="insertVisitCount" parameterType="long">
+        INSERT INTO "VISIT_COUNT" (MEMBER_NO, TOTAL_VISIT, DAILY_VISIT, LAST_DATE)
+        VALUES (#{memberNo}, 1, 1, SYSDATE)
+    </insert>
+
+    <update id="updateVisitCount" parameterType="long">
+        UPDATE "VISIT_COUNT"
+        SET TOTAL_VISIT = TOTAL_VISIT + 1,
+            DAILY_VISIT = CASE WHEN TO_CHAR(LAST_DATE, 'YYYYMMDD') = TO_CHAR(SYSDATE, 'YYYYMMDD') THEN DAILY_VISIT + 1 ELSE 1 END,
+            LAST_DATE = SYSDATE
+        WHERE MEMBER_NO = #{memberNo}
+    </update>
+
+    <select id="selectFollowerList" parameterType="map" resultType="com.devlog.project.board.blog.dto.UserProfileDto">
+        SELECT
+            m.MEMBER_NO AS memberNo,   m.MEMBER_EMAIL AS id,
+            m.MEMBER_NICKNAME AS nickname,
+            m.PROFILE_IMG AS profileImgUrl,
+            m.MY_INFO_INTRO AS bio,
+            <choose>
+                <when test="myMemberNo != null">
+                    (SELECT COUNT(*) FROM "FOLLOW" sub WHERE sub.FOLLOW_ID = #{myMemberNo} AND sub.FOLLOWED_ID = m.MEMBER_NO) AS isFollowed
+                </when>
+                <otherwise>0 AS isFollowed</otherwise>
+            </choose>
+        FROM "FOLLOW" f
+        JOIN "MEMBER" m ON f.FOLLOW_ID = m.MEMBER_NO
+        WHERE f.FOLLOWED_ID = #{memberNo}
+    </select>
+
+    <select id="selectFollowingList" parameterType="map" resultType="com.devlog.project.board.blog.dto.UserProfileDto">
+        SELECT
+            m.MEMBER_NO AS memberNo,   m.MEMBER_EMAIL AS id,
+            m.MEMBER_NICKNAME AS nickname,
+            m.PROFILE_IMG AS profileImgUrl,
+            m.MY_INFO_INTRO AS bio,
+            <choose>
+                <when test="myMemberNo != null">
+                    (SELECT COUNT(*) FROM "FOLLOW" sub WHERE sub.FOLLOW_ID = #{myMemberNo} AND sub.FOLLOWED_ID = m.MEMBER_NO) AS isFollowed
+                </when>
+                <otherwise>0 AS isFollowed</otherwise>
+            </choose>
+        FROM "FOLLOW" f
+        JOIN "MEMBER" m ON f.FOLLOWED_ID = m.MEMBER_NO
+        WHERE f.FOLLOW_ID = #{memberNo}
+    </select>
+
+    <update id="deleteBoard" parameterType="long">
+        UPDATE "BOARD" SET BOARD_DEL_FL = 'Y' WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <select id="checkBoardLike" resultType="_int">
+        SELECT COUNT(*) FROM "BOARD_LIKE" WHERE BOARD_NO = #{boardNo} AND MEMBER_NO = #{memberNo}
+    </select>
+
+    <insert id="insertBoardLike">
+        INSERT INTO "BOARD_LIKE" (BOARD_NO, MEMBER_NO) VALUES (#{boardNo}, #{memberNo})
+    </insert>
+
+    <delete id="deleteBoardLike">
+        DELETE FROM "BOARD_LIKE" WHERE BOARD_NO = #{boardNo} AND MEMBER_NO = #{memberNo}
+    </delete>
+
+    <update id="updateBoard" parameterType="com.devlog.project.board.blog.dto.BlogDTO">
+        UPDATE "BOARD"
+        SET BOARD_TITLE = #{boardTitle}, BOARD_CONTENT = #{boardContent}
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <update id="updateBlog" parameterType="com.devlog.project.board.blog.dto.BlogDTO">
+        UPDATE "BLOG"
+        SET IS_PAID = #{isPaid}, PRICE = #{price}, TEMP_FL = #{tempFl}
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <delete id="deleteBlogTags" parameterType="long">
+        DELETE FROM "BLOG_TAG" WHERE BOARD_NO = #{boardNo}
+    </delete>
+
+    <select id="checkScrapStatus" parameterType="map" resultType="_int">
+        SELECT COUNT(*) FROM "USER_SCRAP" WHERE MEMBER_NO = #{memberNo} AND TARGET_NO = #{boardNo} AND TYPE = '1'
+    </select>
+
+    <insert id="insertScrap" parameterType="map">
+        INSERT INTO "USER_SCRAP" (SCRAP_NO, MEMBER_NO, TYPE, TARGET_NO)
+        VALUES (SEQ_SCRAP_NO.NEXTVAL, #{memberNo}, '1', #{boardNo})
+    </insert>
+
+    <delete id="deleteScrap" parameterType="map">
+        DELETE FROM "USER_SCRAP" WHERE MEMBER_NO = #{memberNo} AND TARGET_NO = #{boardNo} AND TYPE = '1'
+    </delete>
+
+    <insert id="insertBoardImg" parameterType="map">
+        INSERT INTO "BOARD_IMG" (
+            IMG_NO, IMG_PATH, IMG_RENAME, IMG_ORDER, BOARD_NO
+        ) VALUES (
+            SEQ_IMAGE_NO.NEXTVAL, #{imgPath}, #{imgRename}, #{imgOrder}, #{boardNo}
+        )
+    </insert>
+
+    <delete id="deleteThumbnail" parameterType="long">
+        DELETE FROM "BOARD_IMG" WHERE BOARD_NO = #{boardNo} AND IMG_ORDER = 0
+    </delete>
+
+    <select id="selectReceiverNo" resultType="Long">
+        SELECT MEMBER_NO FROM BOARD WHERE BOARD_NO = ${boardNo}
+    </select>
+
+    <select id="selectMemberNickname" resultType="string">
+        SELECT MEMBER_NICKNAME FROM MEMBER WHERE MEMBER_NO = ${receiver}
+    </select>
+
+    <select id="selectBoardTitle" resultType="string">
+        SELECT BOARD_TITLE FROM BOARD WHERE BOARD_NO = ${boardNo}
+    </select>
+    
+    <select id="selectBoardImg" resultType="_int">
+    	SELECT COUNT(*) FROM BOARD_IMG
+    	WHERE BOARD_NO = ${boardNo}
+    </select>
+    
+    <update id="updateBoardImg">
+    	UPDATE BOARD_IMG SET IMG_RENAME = #{imgRename}
+    	WHERE BOARD_NO = ${boardNo}
+    
+    </update>
+    
+    <!-- 구독 관련 -->
+    <select id="countSubscriber" parameterType="long" resultType="int">
+        SELECT COUNT(*) 
+        FROM "SUBSCRIBE" 
+        WHERE CREATOR_ID = #{memberNo} 
+    </select>
+    
+    <select id="countSubscriberViews" parameterType="long" resultType="_int">
+        SELECT COUNT(*)
+        FROM VIEW_LOG V
+        JOIN BOARD B ON V.BOARD_NO = B.BOARD_NO
+        JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+        JOIN "SUBSCRIBE" S ON (S.CREATOR_ID = M.MEMBER_NO AND S.SUBSCRIBER_ID = V.MEMBER_NO)
+        WHERE V.BOARD_NO = #{boardNo}
+    </select>
+
+    <select id="checkSubscribeStatus" parameterType="map" resultType="int">
+        SELECT COUNT(*) 
+        FROM "SUBSCRIBE" 
+        WHERE SUBSCRIBER_ID = #{me} 
+          AND CREATOR_ID = #{target}
+    </select>
+
+    <select id="selectSubscriberList" parameterType="map" resultType="com.devlog.project.board.blog.dto.UserProfileDto">
+        SELECT
+            m.MEMBER_NO AS memberNo,   m.MEMBER_EMAIL AS id,
+            m.MEMBER_NICKNAME AS nickname,
+            m.PROFILE_IMG AS profileImgUrl,
+            m.MY_INFO_INTRO AS bio,
+            <choose>
+                <when test="myMemberNo != null">
+                    (SELECT COUNT(*) FROM "FOLLOW" sub WHERE sub.FOLLOW_ID = #{myMemberNo} AND sub.FOLLOWED_ID = m.MEMBER_NO) AS isFollowed
+                </when>
+                <otherwise>0 AS isFollowed</otherwise>
+            </choose>
+        FROM "SUBSCRIBE" s
+        JOIN "MEMBER" m ON s.SUBSCRIBER_ID = m.MEMBER_NO
+        WHERE s.CREATOR_ID = #{memberNo}
+    </select>
+    
+    <!-- 소연 - 블로그 검색 결과 조회용 (희준님 sql문 좀 빌려쓰겠습니다)-->
+    <select id="searchBlogByTitle"
+        parameterType="map"
+        resultType="com.devlog.project.board.blog.dto.BlogDTO">
+
+    SELECT * FROM (
+        SELECT ROWNUM AS RNUM, A.* FROM (
+            SELECT
+                b.BOARD_NO AS boardNo,
+                b.BOARD_TITLE AS boardTitle,
+                DBMS_LOB.SUBSTR(b.BOARD_CONTENT, 600, 1) AS boardContent,
+                b.BOARD_COUNT AS boardCount,
+                TO_CHAR(b.B_CREATE_DATE, 'YYYY.MM.DD') AS bCreateDate,
+                m.MEMBER_NICKNAME AS memberNickname,
+                m.MEMBER_EMAIL AS memberEmail,
+
+                (SELECT i.IMG_PATH || i.IMG_RENAME
+                 FROM BOARD_IMG i
+                 WHERE i.BOARD_NO = b.BOARD_NO AND i.IMG_ORDER = 0) AS thumbnailUrl,
+
+                (SELECT LISTAGG(T.TAG_NAME, ',') WITHIN GROUP (ORDER BY BT.TAG_NO)
+                 FROM BLOG_TAG BT
+                 JOIN TAG T ON BT.TAG_NO = T.TAG_NO
+                 WHERE BT.BOARD_NO = b.BOARD_NO) AS tagsStr,
+
+                bl.IS_PAID AS isPaid,
+                bl.PRICE AS price,
+
+                (SELECT COUNT(*) FROM "COMMENT" c
+                 WHERE c.BOARD_NO = b.BOARD_NO AND c.COMMENT_DEL_FL = 'N') AS commentCount,
+
+                (SELECT COUNT(*) FROM "BOARD_LIKE" l
+                 WHERE l.BOARD_NO = b.BOARD_NO) AS likeCount
+
+            FROM "BOARD" b
+            JOIN "MEMBER" m ON b.MEMBER_NO = m.MEMBER_NO
+            JOIN "BLOG" bl ON b.BOARD_NO = bl.BOARD_NO
+
+            WHERE b.BOARD_CODE = 1
+              AND b.BOARD_DEL_FL = 'N'
+              AND bl.TEMP_FL = 'N'
+              AND b.BOARD_TITLE LIKE '%' || #{keyword} || '%'
+
+            ORDER BY b.BOARD_NO DESC
+        	) A
+    	)
+    	WHERE RNUM BETWEEN #{offset} + 1 AND #{offset} + #{limit}
+	</select>
+	
+	<select id="countSearchBlogByTitle"
+        parameterType="map"
+        resultType="_int">
+
+    SELECT COUNT(*)
+    FROM "BOARD" b
+    JOIN "BLOG" bl ON b.BOARD_NO = bl.BOARD_NO
+    WHERE b.BOARD_CODE = 1
+      AND b.BOARD_DEL_FL = 'N'
+      AND bl.TEMP_FL = 'N'
+      AND b.BOARD_TITLE LIKE '%' || #{keyword} || '%'
+	</select>
+
+
+</mapper>
+    
+

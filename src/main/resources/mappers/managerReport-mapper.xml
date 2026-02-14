@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.devlog.project.manager.model.mapper.ManagerReportMapper">
+
+    <!-- 게시글 번호로 board_code 조회 -->
+    <select id="selectBoardCode" resultType="int">
+        SELECT board_code
+        FROM board
+        WHERE board_no = #{boardNo}
+    </select>
+
+    <!-- 댓글 번호로 board_no 조회 -->
+    <select id="selectBoardNoByComment" resultType="long">
+        SELECT board_no
+        FROM comment
+        WHERE comment_no = #{commentNo}
+    </select>
+    
+    <!-- 게시글 삭제 -->
+	<update id="deleteBoard">
+	    UPDATE board
+	    SET board_del_fl = 'Y'
+	    WHERE board_no = #{boardNo}
+	</update>
+	
+	<!-- 게시글 삭제 여부 조회 -->
+	<select id="isBoardDeleted" resultType="int">
+	  SELECT
+	    CASE
+	      WHEN BOARD_DEL_FL = 'Y' THEN 1
+	      ELSE 0
+	    END
+	  FROM BOARD
+	  WHERE BOARD_NO = #{boardNo}
+	</select>
+
+	<select id="searchForManager" resultType="ReportManagerDTO">
+	    SELECT
+	        r.report_id            AS reportId,
+	        r.target_id            AS targetId,
+	        r.message_no           AS messageNo,
+	        rc.report_type         AS reportType,
+	        r.target_type          AS targetType,
+	        r.content              AS reportReason,
+	        rm.member_nickname     AS reporterNickname,
+	        tm.member_nickname     AS targetNickname,
+	        r.created_at           AS reportDate,
+	        r.processed_at         AS processDate,
+	        r.status               AS status,
+	        m.message_content      AS messageContent
+	    FROM report r
+	        JOIN member rm ON r.reporter_no = rm.member_no
+	        JOIN member tm ON r.reported_no = tm.member_no
+	        JOIN report_code rc ON r.report_code = rc.report_code
+	        LEFT JOIN message m ON r.message_no = m.message_no
+	    WHERE 1 = 1
+	
+	    <!-- 통합 검색 -->
+	    <if test="query != null and query != ''">
+	        AND (
+	            r.content            LIKE '%' || #{query} || '%'
+	         OR rc.report_type       LIKE '%' || #{query} || '%'
+	         OR rm.member_nickname   LIKE '%' || #{query} || '%'
+	         OR tm.member_nickname   LIKE '%' || #{query} || '%'
+	        )
+	    </if>
+	
+	    <!-- 신고 유형 -->
+	    <if test="reportType != null and reportType != ''">
+	        AND rc.report_type = #{reportType}
+	    </if>
+	
+	    <!-- 처리 상태 -->
+	    <if test="status != null">
+	        AND r.status = #{status}
+	    </if>
+	
+	    <!-- 대상 타입 -->
+	    <if test="targetType != null">
+	        AND r.target_type = #{targetType}
+	    </if>
+	
+	    ORDER BY r.report_id DESC
+	</select>
+
+
+
+</mapper>
