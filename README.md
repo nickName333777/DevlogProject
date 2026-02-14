@@ -2,7 +2,7 @@
 
 KDT  빅데이터 분석 & Java 웹개발 과정 Final 프로젝트 (Team-ZeroBoost github link: https://github.com/Team-ZeroBoost/Devlog)
 
-- 동기: 기존 개발자 블로그 플랫폼들이 정보전달과 기술 기록 기능에 주로 치중하고 있는 단점을 보완하여 전문적인 개발내용의 블로깅 기능 뿐아니라 커뮤니티 기능과 수익창출 모델 기능 부분을 보강하여 개발자 커뮤니티로 한단계 발전하고자 했다.<br>
+- 동기: 기존 개발자 블로그 플랫폼들이 정보전달과 기술 기록 기능에 주로 치중하고 있는 단점을 보완하여 전문적인 개발내용의 블로깅 기능 뿐아니라 커뮤니티 기능과 수익창출 모델 기능 부분을 보강한 개발자 커뮤니티 사이트를 개발하고자 한다.<br>
 
 - 프로젝트명:  Devlog  프로젝트<br>
 
@@ -18,10 +18,12 @@ KDT  빅데이터 분석 & Java 웹개발 과정 Final 프로젝트 (Team-ZeroBo
 https://github.com/user-attachments/assets/0255a6f4-1a4e-4262-8b37-7d327bf8c04b
 
 - 프로젝트 다운로드/실행시 유의사항:
-1. 첨부된 config_properties_example.txt 에서 요구되는 유효한 키 값들을 설정한 파일을 Devlog/src/main/resources/config.properties 로 저장하여야 함.
-   
+1. 첨부된 config_properties_example.txt 에서 요구되는 유효한 키 값들이 설정된 파일이 다음 경로: Devlog/src/main/resources/config.properties 로 저장되어야 함.
+
+<br>
 2. Project의 Java Compiler 설정에서 methed parameter 저장(via reflection)이 아래 처럼 활성화 되어야 함.
 <img width="735" height="730" alt="JavaCompilerMethodParaOptionCheck" src="https://github.com/user-attachments/assets/3c463ee1-8def-458e-9865-a5c85603fca9" />
 
+<br>
 3. 카카오 소셜로그인과 챗봇구현을 위한 키 설정은 아래와 같이 Run configurations의 환경변수 탭에 환경변수로 설정한다.
 <img width="1336" height="868" alt="image" src="https://github.com/user-attachments/assets/e930b6e6-a46d-4bf7-9279-5492951d588f" />
