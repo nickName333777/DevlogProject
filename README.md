@@ -18,6 +18,6 @@ KDT  빅데이터 분석 & Java 웹개발 과정 Final 프로젝트 (Team-ZeroBo
 https://github.com/user-attachments/assets/0255a6f4-1a4e-4262-8b37-7d327bf8c04b
 
 - 프로젝트 다운로드/실행시 유의사항:
-1. 첨부된 config_properties_example.txt 처럼 유효한 키 값들이 설정되어야 합니다.
-2. Project의 Java Compiler 설정에서 methed parameter 저장(via reflection)이 아래 처럼 활성화 되어 있어야 합니다.
+1. 첨부된 config_properties_example.txt 에서 요구되는 유효한 키 값들을 설정한 파일을 Devlog/src/main/resources/config.properties 로 저장하여야 함.
+2. Project의 Java Compiler 설정에서 methed parameter 저장(via reflection)이 아래 처럼 활성화 되어야 함.
 - <img width="735" height="730" alt="JavaCompilerMethodParaOptionCheck" src="https://github.com/user-attachments/assets/3c463ee1-8def-458e-9865-a5c85603fca9" />
