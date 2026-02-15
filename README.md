@@ -25,9 +25,9 @@ https://github.com/user-attachments/assets/0255a6f4-1a4e-4262-8b37-7d327bf8c04b
 
 3. 카카오 소셜로그인과 챗봇구현을 위한 키 설정은 아래와 같이 Run configurations의 환경변수 탭에 환경변수로 설정한다.
 <img width="1336" height="868" alt="image" src="https://github.com/user-attachments/assets/e930b6e6-a46d-4bf7-9279-5492951d588f" />
-4. 오라클 데이터 베이스는 관리자 계정에서 아래 처럼 사용자 계정을 생성한 후, 사용자 계정으로 로그인 하여 "Devlog 테스트용 sql문.sql" SQL 스크립트를 실행하여 각 테이블을 생성하고, 테스트용 dummy data를 삽입하여야 한다.
-   • [관리자 계정 생성 구문]
-    ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE;
-    CREATE USER your_user_name IDENTIFIED BY your_user_pwd; -- 계정 생성
-    GRANT CONNECT, RESOURCE, CREATE VIEW TO your_user_name; -- 권한 부여
-    ALTER USER your_user_name DEFAULT TABLESPACE SYSTEM QUOTA UNLIMITED ON SYSTEM; -- 객체 생성 공간 할당
+4. 오라클 데이터 베이스는 관리자 계정에서 아래 처럼 사용자 계정을 생성한 후, 사용자 계정으로 로그인 하여 "Devlog 테스트용 sql문.sql" SQL 스크립트를 실행하여 각 테이블을 생성하고, 테스트용 dummy data를 삽입하여야 한다.<br>
+   • [관리자 계정 생성 구문] <br>
+    ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE; <br>
+    CREATE USER your_user_name IDENTIFIED BY your_user_pwd; -- 계정 생성 <br>
+    GRANT CONNECT, RESOURCE, CREATE VIEW TO your_user_name; -- 권한 부여 <br>
+    ALTER USER your_user_name DEFAULT TABLESPACE SYSTEM QUOTA UNLIMITED ON SYSTEM; -- 객체 생성 공간 할당 <br>
